@@ -1,0 +1,95 @@
+<div
+  class="w-full flex min-h-screen overflow-y-auto items-center justify-center px-4 bg-black/50"
+>
+  <img
+    class="lg:mr-36 lg:ml-20 xl:mr-40 hidden lg:flex w-[50%] lg:w-[40%]"
+    src="assets/images/angular.png"
+    alt="angular-logo"
+    style="filter: brightness(200);"
+  />
+  <form
+    class="flex w-full md:w-3/5 lg:w-3/6 xl:w-2/4 2xl:w-1/4 lg:mr-14"
+  >
+    <p-card
+      styleClass="p-10 md:px-16 text-center shadow-lg bg-white/20 backdrop-blur-md rounded-2xl"
+      class="w-full"
+    >
+      <ng-template #header>
+        <div class="flex justify-center">
+          <img
+            class="w-20 mx-auto mt-4"
+            alt=""
+            src="assets/images/angular-icon.png"
+            style="filter: brightness(200);"
+          />
+        </div>
+      </ng-template>
+      <ng-template #title>
+        <span class="text-gray-50">Incio de sesión</span>
+      </ng-template>
+      <ng-template #content>
+        <div class="mb-4">
+          <p-iconfield styleClass="w-full">
+            <p-inputicon class="pi pi-user" />
+            <input type="text" pInputText placeholder="Search" class="w-full"/>
+          </p-iconfield>
+          <!-- <small
+            v-for="error in v$.email.$errors"
+            :key="error.$uid"
+            class="block text-red-400 text-start pl-2"
+            >{{ error.$message }}</small
+          > -->
+        </div>
+        <div class="text-start">
+          <p-iconfield>
+            <p-inputicon class="pi pi-user pl-2" />
+            <input type="text" pInputText placeholder="Search" class="w-full" />
+          </p-iconfield>
+          <!-- <IconField>
+            <InputIcon class="z-30">
+              <i class="pi pi-key" />
+            </InputIcon>
+            <Password
+              v-model="loginRequest.password"
+              toggleMask
+              :feedback="false"
+              :placeholder="t('login.password')"
+              fluid
+              :invalid="v$.password.$error"
+              :pt="{
+                pcInputText: {
+                  root: 'pl-10'
+                }
+              }"
+            />
+          </IconField>
+          <small
+            v-for="error in v$.password.$errors"
+            :key="error.$uid"
+            class="block text-red-400 text-start pl-2"
+            >{{ error.$message }}</small
+          > -->
+        </div>
+      </ng-template>
+      <ng-template #footer>
+        <p-button label="Submit" styleClass="w-full !mt-4 bg-purple-500 border-purple-500 text-white" />
+        <!-- <ButtonComponent
+          :label="t('login.submit')"
+          @click="handleLogin()"
+          :loading="loading"
+          class="sm:w-52 mt-4 mx-auto block"
+        />
+        <div class="mt-5">
+          <p
+            class="text-sm text-center text-gray-50 font-light underline cursor-pointer"
+          >
+            <span
+              @click="router.push({ name: 'recover-password', replace: false })"
+              >{{ t("login.forgotPassword") }}</span
+            >
+          </p>
+        </div> -->
+      </ng-template>
+    </p-card>
+  </form>
+</div>
