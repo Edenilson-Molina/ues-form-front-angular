@@ -1,0 +1,44 @@
+<p-autoComplete
+  #autoComplete
+  inputStyleClass="!border-white text-gray-900 placeholder-slate-300 text-sm rounded shadow focus:ring-blue-500 focus:border-blue-500 w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+  [(ngModel)]="selectedUser"
+  [ngClass]="{
+    'hidden lg:block': !sidebar,
+    'block lg:hidden': sidebar
+  }"
+  appendTo="body"
+  [suggestions]="filteredUsers"
+  optionLabel="name"
+  (onSelect)="onSelect($event)"
+  [style]="{ width: '100%' }"
+  (completeMethod)="filterUsers($event)"
+  placeholder="Buscar otros usuarios"
+  showEmptyMessage="true"
+  emptyMessage="No se encontraron resultados"
+  scrollHeight="400px"
+>
+  <ng-template let-user pTemplate="item">
+    <div class="flex items-center gap-2">
+      <img
+        [src]="
+          '../../../../assets/img/avatars/avatar' +
+          (user.gender === 'M' ? '-men.jpeg' : '-women.jpeg')
+        "
+        class="w-8 h-8 rounded-full"
+      />
+      <div>
+        <span class="font-medium text-[13px]">{{ user.name }}</span>
+        <div class="text-[11px] text-color-secondary -mt-1">{{ user.email }}</div>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <!-- Ver mas resultados -->
+    <button
+      class="bg-indigo-100 text-indigo-800 font-semibold text-sm py-2 w-full hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50"
+      (click)="showMoreResults()"
+    >
+      Ver mas resultados
+    </button>
+  </ng-template>
+</p-autoComplete>

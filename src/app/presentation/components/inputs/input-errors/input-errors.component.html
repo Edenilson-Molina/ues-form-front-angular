@@ -1,0 +1,53 @@
+<ng-container
+  class="relative"
+  *ngIf="formField?.invalid && (formField?.dirty || formField.touched)"
+>
+  <span [class]="errorsStyles" *ngIf="formField?.hasError('required')">
+    El campo {{ fieldName }} es requerido.
+  </span>
+
+  <span [class]="errorsStyles" *ngIf="formField?.hasError('noEmptyString')">
+    Ingresa un valor válido
+  </span>
+
+  <span [class]="errorsStyles" *ngIf="formField?.hasError('email')">
+    Formato inválido del email
+  </span>
+
+  <span [class]="errorsStyles" *ngIf="formField?.hasError('noWhitespaceRequired')">
+    No spaces allowed.
+  </span>
+
+  <span [class]="errorsStyles" *ngIf="formField?.hasError('minlength')">
+    Campo {{ fieldName }} debe tener al menos
+    {{ formField.errors?.['minlength'].requiredLength }} caracteres.
+  </span>
+
+  <span [class]="errorsStyles" *ngIf="formField?.hasError('maxlength')">
+    Campo {{ fieldName }} debe tener máximo
+    {{ formField.errors?.['maxlength'].requiredLength }} caracteres.
+  </span>
+
+  <span [class]="errorsStyles" *ngIf="formField?.hasError('pattern')">
+    Campo {{ fieldName }} debe ser un número telefono.
+  </span>
+
+  <span [class]="errorsStyles" *ngIf="formField?.hasError('min')">
+    Campo {{ fieldName }} debe disponer de un valor mínimo de {{ formField.errors?.['min'].min }}.
+  </span>
+
+  <span [class]="errorsStyles" *ngIf="formField?.hasError('max')">
+    Campo {{ fieldName }} debe disponer de un valor máximo de {{ formField.errors?.['max'].max }}.
+  </span>
+
+  <span [class]="errorsStyles" *ngIf="formField?.hasError('joiError')">
+    {{ getJoiErrorMessage(formField.errors?.['joiError']) }}
+  </span>
+
+  <span
+    [class]="errorsStyles"
+    *ngIf="formField?.hasError(propertyName) && formField?.getError(propertyName) !== true"
+  >
+    {{ formField.getError(propertyName) }}
+  </span>
+</ng-container>

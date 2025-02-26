@@ -1,0 +1,114 @@
+<button
+  (click)="toggleDropdown($event)"
+  #btnDropdownRef
+  id="btnDropdownRef"
+  data-container="body"
+  data-placement="bottom"
+  class="flex items-center text-sm pe-1 font-medium text-primary lg:text-white rounded-full hover:text-blue-300 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:text-white"
+  type="button"
+>
+  <div>
+    <span class="sr-only">Open user menu</span>
+  </div>
+  {{ time | async | date: 'hh:mm:ss a' }}&nbsp;
+  {{ sessionValue?.company?.logo }}
+  <img
+    class="w-8 h-8 me-2 rounded-full"
+    [src]="
+      sessionValue?.company
+        ? sessionValue?.company?.logo
+          ? sessionValue?.company?.logo
+          : 'assets/img/avatars/avatar-company.png'
+        : sessionValue?.person?.gender === 'F'
+          ? 'assets/img/avatars/avatar-women.jpeg'
+          : 'assets/img/avatars/avatar-men.jpeg'
+    "
+    alt="user-avatar"
+  />
+  <div class="hidden md:block">
+    @if (sessionValue?.person) {
+      {{ sessionValue?.person?.firstName + ' ' + sessionValue?.person?.lastName }}
+    } @else {
+      {{ sessionValue?.company?.name }}
+    }
+  </div>
+  <svg
+    class="w-2.5 h-2.5 ms-3"
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 10 6"
+  >
+    <path
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="m1 1 4 4 4-4"
+    />
+  </svg>
+</button>
+
+<div class="min-w-48 z-30 -translate-x-20" #popoverDropdownRef>
+  <div
+    class="bg-white text-base z-30 float-left py-2 list-none text-left rounded shadow-lg mt-1 min-w-48"
+    [ngClass]="dropdownPopoverShow ? 'block' : 'hidden'"
+  >
+    <div class="px-4 py-2 text-sm text-gray-900 dark:text-white">
+      <div class="font-medium">
+        @if (sessionValue?.person) {
+          {{ sessionValue?.person?.firstName + ' ' + sessionValue?.person?.lastName }}
+        } @else {
+          {{ sessionValue?.company?.name }}
+        }
+      </div>
+      <div class="!text-[12px]">{{ sessionValue?.user?.email }}</div>
+    </div>
+    <ul
+      class="text-sm text-gray-700 dark:text-gray-200"
+      aria-labelledby="dropdownInformdropdownAvatarNameButtonationButton"
+    >
+      @if (person.candidateId) {
+        <a
+          [routerLink]="['perfil']"
+          class="block hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+        >
+          <li class="cursor-pointer px-4 py-2 flex items-center hover:bg-primary/30">
+            <span class="material-symbols-outlined text-slate-700" style="font-size: 20px">
+              person
+            </span>
+            Perfil
+          </li>
+        </a>
+        <li class="cursor-pointer flex items-center hover:bg-primary/30">
+          <button
+            class="flex items-center justify-between pl-3 pr-4 py-2 w-full h-full"
+            (click)="downloadCV()"
+            [disabled]="downloadFileMutation.isPending()"
+          >
+            <div class="flex items-center">
+              <span class="material-symbols-outlined text-slate-700 mr-1" style="font-size: 20px">
+                article
+              </span>
+              Descargar CV
+            </div>
+            @if (downloadFileMutation.isPending()) {
+              <app-spinner [styles]="{ width: '1.3rem', height: '1.3rem' }" />
+            }
+          </button>
+        </li>
+      }
+      <a
+        (click)="logout()"
+        class="block hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+      >
+        <li class="cursor-pointer px-4 py-2 flex items-center hover:bg-primary/30">
+          <span class="material-symbols-outlined text-slate-700" style="font-size: 20px">
+            logout
+          </span>
+          Cerrar sesión
+        </li>
+      </a>
+    </ul>
+  </div>
+</div>

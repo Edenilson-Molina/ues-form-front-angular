@@ -1,0 +1,29 @@
+<div class="relative w-full">
+  <label
+    [for]="fieldName"
+    class="block uppercase text-slate-600 text-xs font-bold mb-2 dark:text-white"
+    >{{ label }}{{ required ? ' *' : '' }}</label
+  >
+  <textarea
+    [id]="fieldName"
+    [name]="fieldName"
+    [rows]="rows"
+    [placeholder]="placeholder"
+    [value]="value"
+    [disabled]="isDisabled"
+    [spellcheck]="true"
+    class="block border-white text-gray-900 placeholder-slate-300 px-3 py-3 text-sm rounded shadow w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+    [ngClass]="{
+      '!border-red-500 text-red-900 placeholder-red-700 focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block':
+        formField.errors !== null && formField.touched,
+      '!border-white': formField.errors === null && formField.touched
+    }"
+    (input)="onChange($event)"
+    (blur)="touched()"
+  ></textarea>
+  <app-input-errors
+    [formField]="formField"
+    [fieldName]="label.toLocaleLowerCase()"
+    [propertyName]="fieldName"
+  ></app-input-errors>
+</div>

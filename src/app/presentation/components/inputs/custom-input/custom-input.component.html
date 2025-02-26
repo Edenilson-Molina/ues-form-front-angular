@@ -1,0 +1,59 @@
+<div class="relative w-full">
+  <label
+    [for]="fieldName"
+    class="block uppercase text-slate-600 text-xs font-bold mb-2 dark:text-white"
+    >{{ label }}{{ required ? ' *' : '' }}</label
+  >
+  <input
+    [id]="fieldName"
+    [name]="fieldName"
+    [type]="type"
+    [placeholder]="placeholder"
+    [value]="value"
+    [disabled]="isDisabled"
+    class="block border-white text-gray-900 placeholder-slate-300 !px-2 !py-1.5 text-sm rounded shadow focus:ring-blue-500 focus:border-blue-500 w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+    [ngClass]="{
+      '!border-red-500 text-red-900 placeholder-red-700 focus:ring-red-500 dark:bg-gray-700 focus:border-red-500 block':
+        formField.errors !== null && formField.touched,
+      '!border-white': formField.errors === null && formField.touched,
+      'file-input border-2': type === 'file',
+      'pl-11': prependIcon.length > 0,
+      'pr-11': endIcon.length > 0
+    }"
+    (input)="onChange($event)"
+    (blur)="touched()"
+  />
+  @if (type === 'file' && formField.value !== null && formField.errors === null) {
+    <div class="flex flex-row justify-start items-center mt-1">
+      <p class="text-primary-500 text-sm"><b>Archivo cargado:</b> {{ formField.value.name }}</p>
+      <div class="flex justify-end items-center ml-2">
+        <button
+          class="rounded-full h-5 w-5 flex -p-1 items-center justify-center bg-red-500 text-white"
+          pTooltip="Eliminar archivo"
+          tooltipPosition="top"
+          (click)="deleteFile()"
+        >
+          <span class="material-symbols-outlined" style="font-size: 12px">close</span>
+        </button>
+      </div>
+    </div>
+  }
+  <div class="absolute inset-y-12 start-3 flex items-center" *ngIf="prependIcon">
+    <span class="material-symbols-outlined items-center text-slate-600">{{ prependIcon }}</span>
+  </div>
+  <div class="absolute inset-y-12 end-3 pt-1 flex items-center" *ngIf="endIcon">
+    <span class="material-symbols-outlined items-center text-slate-600">{{ endIcon }}</span>
+  </div>
+  <div class="absolute inset-y-12 end-3 pt-1 flex items-center" *ngIf="fieldName === 'password'">
+    <button (click)="togglePasswordVisibility($event)">
+      <span class="material-symbols-outlined font-normal items-center text-slate-600">{{
+        showPassword ? 'visibility_off' : 'visibility'
+      }}</span>
+    </button>
+  </div>
+  <app-input-errors
+    [formField]="formField"
+    [fieldName]="label.toLocaleLowerCase()"
+    [propertyName]="fieldName"
+  ></app-input-errors>
+</div>
