@@ -3,3 +3,32 @@
 <p-button label="Save" icon="pi pi-check" iconPos="right" />
 <p-colorpicker [(ngModel)]="color" />
 <p-datepicker [(ngModel)]="date" />
+<div class="flex justify-center px-4 lg:px-10 pb-6 w-full">
+  <form [formGroup]="userForm" (ngSubmit)="submit()" class="w-full max-w-2xl">
+    <app-custom-input
+      [parentForm]="userForm"
+      label="Nombre de usuario"
+      fieldName="username"
+      formControlName="username"
+    />
+
+    <app-custom-input
+      [parentForm]="userForm"
+      label="Correo electrónico"
+      placeholder="example@gmail.com"
+      fieldName="email"
+      formControlName="email"
+      [type]="'email'"
+    />
+
+    <app-custom-input
+      [parentForm]="userForm"
+      label="Edad"
+      type="number"
+      fieldName="age"
+      formControlName="age"
+    />
+
+    <button type="submit" class="!bg-blue-500">Submit</button>
+  </form>
+</div>

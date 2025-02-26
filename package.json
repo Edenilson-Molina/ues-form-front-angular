@@ -23,6 +23,7 @@
     "@primeng/themes": "^19.0.6",
     "@tailwindcss/postcss": "^4.0.8",
     "axios": "^1.7.9",
+    "joi": "^17.13.3",
     "jwt-decode": "^4.0.0",
     "luxon": "^3.5.0",
     "ngx-sonner": "^3.0.0",
