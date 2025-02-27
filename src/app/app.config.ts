@@ -16,12 +16,14 @@ export const appConfig: ApplicationConfig = {
     provideStore(reducers),
     provideAnimationsAsync(),
     providePrimeNG({
+      ripple: true,
       theme: {
         preset: Aura,
         options: {
+          darkModeSelector: '.dark-mode',
           cssLayer: {
             name: 'primeng',
-            order: 'theme, base, primeng',
+            order: 'tailwind-base, primeng, tailwind-utilities',
           },
         },
       },

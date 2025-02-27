@@ -29,7 +29,7 @@
       </ng-template>
       <ng-template #content>
         <div class="mb-4">
-          <p-iconfield styleClass="w-full">
+          <p-iconfield>
             <p-inputicon class="pi pi-user" />
             <input type="text" pInputText placeholder="Search" class="w-full"/>
           </p-iconfield>
@@ -42,7 +42,7 @@
         </div>
         <div class="text-start">
           <p-iconfield>
-            <p-inputicon class="pi pi-user pl-2" />
+            <p-inputicon class="pi pi-user" />
             <input type="text" pInputText placeholder="Search" class="w-full" />
           </p-iconfield>
           <!-- <IconField>
@@ -72,7 +72,7 @@
         </div>
       </ng-template>
       <ng-template #footer>
-        <p-button label="Submit" styleClass="w-full !mt-4 bg-purple-500 border-purple-500 text-white" />
+        <p-button label="Submit" styleClass="w-full mt-4 bg-purple-500 border-purple-500 text-white" />
         <!-- <ButtonComponent
           :label="t('login.submit')"
           @click="handleLogin()"
