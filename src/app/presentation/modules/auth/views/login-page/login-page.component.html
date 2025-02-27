@@ -5,13 +5,16 @@
     class="lg:mr-36 lg:ml-20 xl:mr-40 hidden lg:flex w-[50%] lg:w-[40%]"
     src="assets/images/angular.png"
     alt="angular-logo"
-    style="filter: brightness(200);"
+    style="filter: brightness(200)"
   />
   <form
+    [formGroup]="form"
+    (submit)="submit()"
+    (keydown)="handleFormSubmit($event)"
     class="flex w-full md:w-3/5 lg:w-3/6 xl:w-2/4 2xl:w-1/4 lg:mr-14"
   >
     <p-card
-      styleClass="p-10 md:px-16 text-center shadow-lg bg-white/20 backdrop-blur-md rounded-2xl"
+      styleClass="p-10 md:px-16 text-center shadow-lg bg-white/10 backdrop-blur-md rounded-2xl"
       class="w-full"
     >
       <ng-template #header>
@@ -20,7 +23,7 @@
             class="w-20 mx-auto mt-4"
             alt=""
             src="assets/images/angular-icon.png"
-            style="filter: brightness(200);"
+            style="filter: brightness(200)"
           />
         </div>
       </ng-template>
@@ -28,51 +31,51 @@
         <span class="text-gray-50">Incio de sesión</span>
       </ng-template>
       <ng-template #content>
-        <div class="mb-4">
+        <div class="mb-4 text-start">
           <p-iconfield>
             <p-inputicon class="pi pi-user" />
-            <input type="text" pInputText placeholder="Search" class="w-full"/>
+            <input
+              pInputText
+              formControlName="email"
+              type="text"
+              placeholder="Correo electrónico"
+              class="w-full"
+            />
           </p-iconfield>
-          <!-- <small
-            v-for="error in v$.email.$errors"
-            :key="error.$uid"
-            class="block text-red-400 text-start pl-2"
-            >{{ error.$message }}</small
-          > -->
+          <input-errors
+            [formField]="getFormField('email')"
+            label="correo electrónico"
+            propertyName="email"
+            color="text-red-400"
+          />
         </div>
         <div class="text-start">
           <p-iconfield>
-            <p-inputicon class="pi pi-user" />
-            <input type="text" pInputText placeholder="Search" class="w-full" />
+            <p-inputicon class="pi pi-key z-10" />
+            <p-password
+              formControlName="password"
+              inputStyleClass="pl-10"
+              placeholder="Contraseña"
+              class="w-full"
+              [feedback]="false"
+              [toggleMask]="true"
+              [fluid]="true"
+            ></p-password>
           </p-iconfield>
-          <!-- <IconField>
-            <InputIcon class="z-30">
-              <i class="pi pi-key" />
-            </InputIcon>
-            <Password
-              v-model="loginRequest.password"
-              toggleMask
-              :feedback="false"
-              :placeholder="t('login.password')"
-              fluid
-              :invalid="v$.password.$error"
-              :pt="{
-                pcInputText: {
-                  root: 'pl-10'
-                }
-              }"
-            />
-          </IconField>
-          <small
-            v-for="error in v$.password.$errors"
-            :key="error.$uid"
-            class="block text-red-400 text-start pl-2"
-            >{{ error.$message }}</small
-          > -->
+          <input-errors
+            [formField]="getFormField('password')"
+            label="Contraseña"
+            propertyName="password"
+            color="text-red-400"
+          />
         </div>
       </ng-template>
       <ng-template #footer>
-        <p-button label="Submit" styleClass="w-full mt-4 bg-purple-500 border-purple-500 text-white" />
+        <p-button
+          label="Submit"
+          type="submit"
+          styleClass="w-full mt-4 bg-purple-500 border-purple-500 text-white"
+        />
         <!-- <ButtonComponent
           :label="t('login.submit')"
           @click="handleLogin()"
