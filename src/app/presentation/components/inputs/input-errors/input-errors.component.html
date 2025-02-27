@@ -1,53 +1,50 @@
-<ng-container
-  class="relative"
-  *ngIf="formField?.invalid && (formField?.dirty || formField.touched)"
->
-  <span [class]="errorsStyles" *ngIf="formField?.hasError('required')">
-    El campo {{ fieldName }} es requerido.
+@if(formField.invalid && (formField.dirty || formField.touched)) {
+  <span [class]="errorStyles()" *ngIf="formField?.hasError('required')">
+    El campo {{ label }} es requerido.
   </span>
 
-  <span [class]="errorsStyles" *ngIf="formField?.hasError('noEmptyString')">
+  <span [class]="errorStyles()" *ngIf="formField?.hasError('noEmptyString')">
     Ingresa un valor válido
   </span>
 
-  <span [class]="errorsStyles" *ngIf="formField?.hasError('email')">
+  <span [class]="errorStyles()" *ngIf="formField?.hasError('email')">
     Formato inválido del email
   </span>
 
-  <span [class]="errorsStyles" *ngIf="formField?.hasError('noWhitespaceRequired')">
+  <span [class]="errorStyles()" *ngIf="formField?.hasError('noWhitespaceRequired')">
     No spaces allowed.
   </span>
 
-  <span [class]="errorsStyles" *ngIf="formField?.hasError('minlength')">
-    Campo {{ fieldName }} debe tener al menos
+  <span [class]="errorStyles()" *ngIf="formField?.hasError('minlength')">
+    Campo {{ label }} debe tener al menos
     {{ formField.errors?.['minlength'].requiredLength }} caracteres.
   </span>
 
-  <span [class]="errorsStyles" *ngIf="formField?.hasError('maxlength')">
-    Campo {{ fieldName }} debe tener máximo
+  <span [class]="errorStyles()" *ngIf="formField?.hasError('maxlength')">
+    Campo {{ label }} debe tener máximo
     {{ formField.errors?.['maxlength'].requiredLength }} caracteres.
   </span>
 
-  <span [class]="errorsStyles" *ngIf="formField?.hasError('pattern')">
-    Campo {{ fieldName }} debe ser un número telefono.
+  <span [class]="errorStyles()" *ngIf="formField?.hasError('pattern')">
+    Campo {{ label }} debe ser un número telefono.
   </span>
 
-  <span [class]="errorsStyles" *ngIf="formField?.hasError('min')">
-    Campo {{ fieldName }} debe disponer de un valor mínimo de {{ formField.errors?.['min'].min }}.
+  <span [class]="errorStyles()" *ngIf="formField?.hasError('min')">
+    Campo {{ label }} debe disponer de un valor mínimo de {{ formField.errors?.['min'].min }}.
   </span>
 
-  <span [class]="errorsStyles" *ngIf="formField?.hasError('max')">
-    Campo {{ fieldName }} debe disponer de un valor máximo de {{ formField.errors?.['max'].max }}.
+  <span [class]="errorStyles()" *ngIf="formField?.hasError('max')">
+    Campo {{ label }} debe disponer de un valor máximo de {{ formField.errors?.['max'].max }}.
   </span>
 
-  <span [class]="errorsStyles" *ngIf="formField?.hasError('joiError')">
+  <span [class]="errorStyles()" *ngIf="formField?.hasError('joiError')">
     {{ getJoiErrorMessage(formField.errors?.['joiError']) }}
   </span>
 
   <span
-    [class]="errorsStyles"
+    [class]="errorStyles()"
     *ngIf="formField?.hasError(propertyName) && formField?.getError(propertyName) !== true"
   >
     {{ formField.getError(propertyName) }}
   </span>
-</ng-container>
+}

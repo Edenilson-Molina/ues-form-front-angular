@@ -12,8 +12,10 @@ export interface UserData {
 
 export interface Session {
   user: UserData | null;
-  token: string | null;
+  accessToken: string | null;
+  refreshToken: string | null;
   isLoading: boolean;
+  darkMode: boolean;
   showMenu: boolean;
   // person: Person | null;
   // company: Company | null;
