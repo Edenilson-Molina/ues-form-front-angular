@@ -1,3 +1,5 @@
 export const environment = {
-  api: import.meta.env.NG_APP_API,
+  api: "http://localhost:4000/api",
+  apiVersion: "v1",
+  secret: 'my-secret-key',
 };

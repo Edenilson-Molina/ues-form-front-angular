@@ -1,67 +1,74 @@
 import { createReducer, on } from '@ngrx/store';
 import { Session } from '@interfaces/store';
 import { decoderToken } from '@utils/token.utils';
-import { isLoading, login, logout, resetState, showMenu } from './auth.actions';
-// import { Person } from '../interfaces/person.interface';
+import { isLoading, login, logout, resetState, showMenu, toggleDarkMode } from './auth.actions';
 import { LOCAL_STORAGE } from '@utils/constants.utils';
 
 export const initialState: Session = initStore();
 
 function initStore() {
-  const token = localStorage.getItem(LOCAL_STORAGE.ACCESS_TOKEN);
-  if (token) {
-    const userInfo = decoderToken(token);
-    // const person: Person = JSON.parse(localStorage.getItem(LOCAL_STORAGE.PERSON) as string);
-    // const company = JSON.parse(localStorage.getItem(LOCAL_STORAGE.COMPANY) as string);
-    return {
-      token: token,
-      user: userInfo,
-      isLoading: false,
-      showMenu: true,
-      // person: person,
-      // company: company,
-    };
-  } else
-    return {
-      token: '',
-      user: null,
-      isLoading: false,
-      showMenu: true,
-      // person: null,
-      // company: null,
-    };
+  const initState: Session = {
+    accessToken: '',
+    refreshToken: '',
+    user: null,
+    isLoading: false,
+    showMenu: true,
+    darkMode: false,
+  };
+
+  // const token = localStorage.getItem(LOCAL_STORAGE.ACCESS_TOKEN);
+  // const showMenu = Boolean(localStorage.getItem(LOCAL_STORAGE.SHOW_MENU))
+  // const darkMode = Boolean(localStorage.getItem(LOCAL_STORAGE.DARK_MODE));
+  // const isLoading = Boolean(localStorage.getItem(LOCAL_STORAGE.IS_LOADING));
+  // if (token) {
+  //   const userInfo = decoderToken(token);
+  //   initState.token = token;
+  //   initState.user = userInfo;
+  // }
+  // if (showMenu) {
+  //   initState.showMenu = showMenu;
+  // }
+  // if (darkMode) {
+  //   initState.darkMode = darkMode;
+  // }
+  // if (isLoading) {
+  //   initState.isLoading = isLoading;
+  // }
+  return initState;
 }
 
 export const sessionReducer = createReducer(
   initialState,
-  on(login, (state) => {
-    const token = localStorage.getItem(LOCAL_STORAGE.ACCESS_TOKEN);
-    const userInfo = decoderToken(token!);
+  on(login, (state, { accessToken, refreshToken }) => {
+    // localStorage.setItem(LOCAL_STORAGE.ACCESS_TOKEN, accessToken);
+    // localStorage.setItem(LOCAL_STORAGE.REFRESH_TOKEN, refreshToken);
+    const userInfo = decoderToken(accessToken!);
     return {
       ...state,
-      token: token,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
       user: userInfo,
     };
   }),
   on(logout, (state) => {
-    localStorage.removeItem(LOCAL_STORAGE.ACCESS_TOKEN);
-    localStorage.removeItem(LOCAL_STORAGE.REFRESH_TOKEN);
-    // localStorage.removeItem(LOCAL_STORAGE.PERSON);
-    // localStorage.removeItem(LOCAL_STORAGE.COMPANY);
+    // localStorage.removeItem(LOCAL_STORAGE.ACCESS_TOKEN);
+    // localStorage.removeItem(LOCAL_STORAGE.REFRESH_TOKEN);
     return {
       ...state,
       token: '',
       user: null,
-      // person: null,
-      // company: null,
     };
   }),
   on(resetState, () => {
-    return initStore();
+    const initialState = initStore();
+    return {
+      ...initialState,
+      showMenu: false,
+    }
   }),
 
   on(isLoading, (state, { isLoading }) => {
-    localStorage.setItem(LOCAL_STORAGE.IS_LOADING, isLoading.toString());
+    // localStorage.setItem(LOCAL_STORAGE.IS_LOADING, isLoading.toString());
     return {
       ...state,
       isLoading: isLoading,
@@ -69,10 +76,18 @@ export const sessionReducer = createReducer(
   }),
 
   on(showMenu, (state, { showMenu }) => {
-    localStorage.setItem(LOCAL_STORAGE.SHOW_MENU, showMenu.toString());
+    // localStorage.setItem(LOCAL_STORAGE.SHOW_MENU, showMenu.toString());
     return {
       ...state,
       showMenu: showMenu,
+    };
+  }),
+
+  on(toggleDarkMode, (state, { darkMode }) => {
+    // localStorage.setItem(LOCAL_STORAGE.DARK_MODE, darkMode.toString());
+    return {
+      ...state,
+      darkMode: darkMode,
     };
   }),
   // on(setPerson, (state, { person }) => {

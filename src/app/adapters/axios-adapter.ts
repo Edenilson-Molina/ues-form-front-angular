@@ -26,7 +26,7 @@ export class AxiosAdapter implements HttpAdapter<AxiosRequestConfig> {
     });
 
     this.axios = axios.create({
-      baseURL: environment.api || 'http://localhost:4000/api',
+      baseURL: `${environment.api}/${environment.apiVersion}` || 'http://localhost:4000/api/v1',
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
@@ -36,8 +36,8 @@ export class AxiosAdapter implements HttpAdapter<AxiosRequestConfig> {
 
     this.axios.interceptors.request.use((config) => {
       this.store.dispatch(isLoading(true));
-      if (this.sessionStore?.token) {
-        config.headers.Authorization = `Bearer ${this.sessionStore.token}`;
+      if (this.sessionStore?.accessToken) {
+        config.headers.Authorization = `Bearer ${this.sessionStore.accessToken}`;
       }
       return config;
     }),
@@ -117,11 +117,12 @@ export class AxiosAdapter implements HttpAdapter<AxiosRequestConfig> {
       let type: ToastType = 'error';
       let details: string[] = [];
 
-      switch (error.response.status) {
-        case 0:
-          summary = 'Error de conexión';
-          message = 'No se pudo conectar con el servidor';
-          break;
+      if(error.code === 'ERR_NETWORK') {
+        summary = 'Error de conexión';
+        message = 'No se pudo conectar con el servidor';
+      }
+
+      switch (error.response?.status) {
         case 300:
           return Promise.reject(error);
         case 500:
@@ -173,7 +174,7 @@ export class AxiosAdapter implements HttpAdapter<AxiosRequestConfig> {
             }
             summary = 'Advertencia';
           } else {
-            message = error.response.statusText;
+            if(!message) message = error.response.statusText;
           }
           break;
       }
