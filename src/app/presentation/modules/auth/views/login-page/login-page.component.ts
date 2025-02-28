@@ -90,7 +90,7 @@ export default class LoginPageComponent {
         const response = await this.authService.login(this.form.value);
         const { accessToken, refreshToken } = response;
         this.store.dispatch(login(accessToken, refreshToken));
-        // this.router.navigate([this.redirect]);
+        this.router.navigate([this.redirect]);
       } catch (error) {
         console.error(error);
       }

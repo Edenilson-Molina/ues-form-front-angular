@@ -1,0 +1,56 @@
+<p-menubar class="m-0 py-2 px-0 bg-transparent border-none">
+  <ng-template #end>
+    <div class="flex items-center gap-x-4">
+
+      <!-- Icono de cliente socket conectado / desconectado -->
+      <!-- <ButtonComponent
+        :severity="online ? 'success' : 'danger'"
+        variant="text"
+        :icon-only="true"
+        :icon="online ? 'power' : 'power_off'"
+        rounded="full"
+        class="!px-1.5 !py-0.5 select-none !cursor-default"
+        :class="online ? 'active:!bg-success-100 dark:active:!bg-success-950' : 'active:!bg-danger-100 dark:active:!bg-danger-950'"
+        v-tooltip.bottom="{
+            value: `Socket ${online ? 'Conectado' : 'Desconectado'}`,
+            pt: {
+                arrow: {
+                  class: online ? 'border-b-success-400 dark:border-b-success-500' : 'border-b-danger-500'
+                },
+                text: `${ online ? 'bg-success-400 dark:bg-success-500' : 'bg-danger-500'} !text-primary-contrast !font-medium text-center`
+            }
+        }"
+      /> -->
+
+      <!-- Boton de cambio de tema -->
+      <p-button [icon]="sessionValue.darkMode ? 'pi pi-moon' : 'pi pi-sun'" variant="text" severity="secondary" size="large"
+        rounded aria-label="Theme" (onClick)="toggleDarkMode()" class=""
+        [pTooltip]="'Tema ' + (sessionValue.darkMode ? 'Oscuro' : 'Claro')"
+      />
+
+      <!-- Boton de cambio de idioma -->
+      <!-- <SplitButton :label="rootStore.language.toUpperCase()" icon="pi pi-language" severity="secondary"
+        outlined dropdownIcon="pi pi-angle-down" :model="items" size="small" :pt="{
+          pcMenu : {
+            root: 'min-w-[6.8rem]',
+          }
+        }" /> -->
+
+      <!-- Componente de notificaciones -->
+      <!-- <NotificacionComponent /> -->
+
+      <div class="flex flex-col items-center relative cursor-pointer h-auto group select-none"
+        (onClick)="router.navigate(['/perfil'])">
+        <p-avatar image="https://i.ibb.co/Yt6XZrc/DALL-E-2025-01-17-08-30-30-A-highly-realistic-portrait-of-a-young-woman-with-long-wavy-hair-in-a-ric.webp"
+          size="xlarge" shape="circle"
+          class="border-[3px] group-hover:border-none dark:border-primary-400 border-primary-500 p-[2px] group-hover:p-0 w-[3.7rem] h-[3.7rem] transition-all ease-linear" />
+
+          <div class="absolute bg-blend-overlay bg-gray-900 bg-opacity-60 w-full h-full rounded-full top-0 left-0 flex justify-center items-center opacity-0 group-hover:opacity-100 transition-all ease-linear">
+            <span class="text-[0.9rem] text-white font-medium relative" :title="username.split(' ')[0]">
+              {{ username.split(' ')[0].length > 5 ? username.split(' ')[0].substring(0, 5) + '...' : username.split(' ')[0] }}
+            </span>
+          </div>
+      </div>
+    </div>
+  </ng-template>
+</p-menubar>

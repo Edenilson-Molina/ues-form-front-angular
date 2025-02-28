@@ -12,7 +12,7 @@ function initStore() {
     refreshToken: '',
     user: null,
     isLoading: false,
-    showMenu: true,
+    showMenu: false,
     darkMode: false,
   };
 
@@ -83,11 +83,11 @@ export const sessionReducer = createReducer(
     };
   }),
 
-  on(toggleDarkMode, (state, { darkMode }) => {
+  on(toggleDarkMode, (state) => {
     // localStorage.setItem(LOCAL_STORAGE.DARK_MODE, darkMode.toString());
     return {
       ...state,
-      darkMode: darkMode,
+      darkMode: !state.darkMode,
     };
   }),
   // on(setPerson, (state, { person }) => {

@@ -1,0 +1,91 @@
+import { CommonModule } from '@angular/common';
+import { Router, RouterLinkActive, RouterLink, ActivatedRoute } from '@angular/router';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+  WritableSignal,
+} from '@angular/core';
+
+import { Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
+
+import { DrawerModule } from 'primeng/drawer';
+import { ButtonModule } from 'primeng/button';
+import { AvatarModule } from 'primeng/avatar';
+import { RippleModule } from 'primeng/ripple';
+
+import { Session } from '@interfaces/store';
+import { Route } from '@interfaces/common/route.interface';
+import { logout, showMenu } from '@app/store/auth.actions';
+
+@Component({
+  selector: 'drawer',
+  imports: [
+    CommonModule,
+    RouterLink,
+    RouterLinkActive,
+    DrawerModule,
+    ButtonModule,
+    AvatarModule,
+    RippleModule,
+  ],
+  templateUrl: './drawer.component.html',
+  styles: ``,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    class: 'w-[300PX]',
+  },
+})
+export class DrawerComponent {
+  private store = inject(Store);
+  protected router = inject(Router);
+  protected route = inject(ActivatedRoute);
+  menu: Route[] = [
+    {
+      name: 'Perfil',
+      path: '/dashboard/perfil',
+      icon: 'person',
+    },
+    {
+      name: 'Experiencia Laboral',
+      path: '/dashboard/experiencia-laboral',
+      icon: 'business_center',
+    },
+    {
+      name: 'Educación',
+      path: '/dashboard/educacion',
+      icon: 'school',
+    },
+  ];
+
+  username: string = 'Name not found';
+  loading = signal<boolean>(false);
+
+  session$!: Observable<Session>;
+  sessionValue = signal<Session | null>(null);
+
+  constructor() {
+    this.session$ = this.store.select('session');
+    this.session$.subscribe((session) => {
+      this.sessionValue.set(session);
+    });
+  }
+
+  setShowMenu(value: boolean): void {
+    this.store.dispatch(showMenu(value));
+  }
+
+  logout(): void {
+    try {
+      this.loading.set(true);
+      this.store.dispatch(logout());
+      this.router.navigate(['/login']);
+    } catch (error) {
+      console.error('Error al cerrar la sesión');
+    } finally {
+      this.loading.set(false);
+    }
+  }
+}

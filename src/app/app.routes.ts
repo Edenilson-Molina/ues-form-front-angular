@@ -8,5 +8,15 @@ export const routes: Routes = [
   {
     path: 'login',
     loadComponent: () => import('./presentation/modules/auth/views/login-page/login-page.component')
+  },
+  {
+    path: 'dashboard',
+    loadComponent: () => import('./presentation/layouts/dashboard/dashboard.component'),
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./presentation/modules/home/home.component')
+      }
+    ]
   }
 ];
