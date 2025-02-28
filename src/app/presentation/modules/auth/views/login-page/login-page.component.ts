@@ -91,7 +91,6 @@ export default class LoginPageComponent {
         const { accessToken, refreshToken } = response;
         this.store.dispatch(login(accessToken, refreshToken));
         // this.router.navigate([this.redirect]);
-        console.log(this.sessionValue);
       } catch (error) {
         console.error(error);
       }
