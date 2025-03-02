@@ -1,0 +1,301 @@
+<div class="flex justify-center items-center w-full">
+  <span class="material-symbols-outlined text-primary-500 dark:text-primary-300 mr-1 !text-3xl">experiment</span>
+  <span class="text-primary-500 dark:text-primary-300 font-semibold text-2xl">Pruebas</span>
+</div>
+<p-divider styleClass="mb-10" />
+
+<div class="flex flex-col w-full p-5 rounded-lg border dark:border-gray-500 mb-10">
+  <div class="flex items-center justify-start mb-4 ms-5">
+    <span class="text-2xl font-bold text-primary-500 dark:text-primary-300">
+      Modal Component
+    </span>
+  </div>
+  <div class="w-full flex justify-center">
+    <c-button
+      severity="primary"
+      variant="solid"
+      label="Abrir Modal"
+      class="mb-5"
+      (onClick)="openModal()"
+    />
+  </div>
+  <modal
+      [visible]="showModal"
+      [closable]="true"
+      (onClose)="closeModal()"
+      styleClass="w-[90%] sm:w-[80%] md:w-[80%] lg:w-[80%] xl:w-[30%] bg-auto"
+      [style]="{ 'border-radius': '20px' }"
+  >
+    <header>
+      <div class="w-full flex justify-center items-center">
+        <h1 class="text-xl font-bold text-gray-800 dark:text-gray-200 ms-10">
+          Título del Modal
+        </h1>
+      </div>
+    </header>
+    <content>
+      <div class="flex w-full justify-center items-center">
+        <span>Contenido del Modal</span>
+      </div>
+    </content>
+    <footer>
+      <div class="flex w-full justify-center items-center gap-x-2">
+        <c-button
+          severity="primary"
+          variant="solid"
+          label="Aceptar"
+          (onClick)="closeModal()"
+        />
+        <c-button
+          severity="danger"
+          variant="solid"
+          label="Cancelar"
+          (onClick)="closeModal()"
+        />
+      </div>
+    </footer>
+  </modal>
+</div>
+
+<div class="flex flex-col w-full p-5 mb-10 rounded-md border dark:border-gray-500">
+  <div class="flex items-center justify-start mb-4 ms-5">
+    <span class="text-2xl font-bold text-primary-500 dark:text-primary-300">
+      Button Component
+    </span>
+  </div>
+  <div class="grid grid-cols-1 xl:grid-cols-2 ">
+
+    <section class="flex-col mx-4 p-5 rounded-lg border dark:border-gray-500 mb-10">
+      <div class="mb-4">
+        <span class="text-2xl font-bold text-gray-500 dark:text-gray-500">
+          Solid
+        </span>
+      </div>
+      <div class="flex justify-center flex-wrap gap-3 mb-4">
+        @for(button of buttons; track button.label) {
+          <c-button
+            [severity]="button.severity"
+            variant="solid"
+            [label]="button.label"
+            (onClick)="test()"
+          />
+        }
+      </div>
+    </section>
+
+    <section class="flex-col mx-4 p-5 rounded-lg border dark:border-gray-500 mb-10">
+      <div class="mb-4">
+        <span class="text-2xl font-bold text-gray-500 dark:text-gray-500">Outlined</span>
+      </div>
+      <div class="flex justify-center flex-wrap gap-3 mb-4">
+        @for(button of buttons; track button.label) {
+          <c-button
+            [severity]="button.severity"
+            variant="outlined"
+            [label]="button.label"
+            (onClick)="test()"
+          />
+        }
+      </div>
+    </section>
+
+    <section class="flex-col mx-4 p-5 rounded-lg border dark:border-gray-500 mb-10">
+      <div class="mb-4">
+        <span class="text-2xl font-bold text-gray-500 dark:text-gray-500">Link</span>
+      </div>
+      <div class="flex justify-center flex-wrap gap-3 mb-4">
+        @for(button of buttons; track button.label) {
+          <c-button
+            [severity]="button.severity"
+            variant="link"
+            [label]="button.label"
+            (onClick)="test()"
+          />
+        }
+      </div>
+    </section>
+
+    <section class="flex-col mx-4 p-5 rounded-lg border dark:border-gray-500 mb-10">
+      <div class="mb-4">
+        <span class="text-2xl font-bold text-gray-500 dark:text-gray-500">Text</span>
+      </div>
+      <div class="flex justify-center flex-wrap gap-3 mb-4">
+        @for(button of buttons; track button.label) {
+          <c-button
+            [severity]="button.severity"
+            variant="text"
+            [label]="button.label"
+            (onClick)="test()"
+            shadow="md"
+          />
+        }
+      </div>
+    </section>
+
+    <section class="flex-col mx-4 p-5 rounded-lg border dark:border-gray-500 mb-10">
+      <div class="mb-4">
+        <span class="text-2xl font-bold text-gray-500 dark:text-gray-500">Solid with Icon (Left)</span>
+      </div>
+      <div class="flex justify-center flex-wrap gap-3 mb-4">
+        @for(button of buttons; track button.label) {
+          <c-button
+            [severity]="button.severity"
+            variant="solid"
+            [label]="button.label"
+            (onClick)="test()"
+            [icon]="button.icon"
+            iconPosition="left"
+            rounded="md"
+          />
+        }
+      </div>
+    </section>
+
+    <section class="flex-col mx-4 p-5 rounded-lg border dark:border-gray-500 mb-10">
+      <div class="mb-4">
+        <span class="text-2xl font-bold text-gray-500 dark:text-gray-500">Solid with Icon (Right)</span>
+      </div>
+      <div class="flex justify-center flex-wrap gap-3 mb-4">
+        @for(button of buttons; track button.label) {
+          <c-button
+            [severity]="button.severity"
+            variant="solid"
+            [label]="button.label"
+            (onClick)="test()"
+            [icon]="button.icon"
+            iconPosition="right"
+            rounded="full"
+          />
+        }
+      </div>
+    </section>
+
+    <section class="flex-col mx-4 p-5 rounded-lg border dark:border-gray-500 mb-10">
+      <div class="mb-4">
+        <span class="text-2xl font-bold text-gray-500 dark:text-gray-500">Outline Icon Only</span>
+      </div>
+      <div class="flex justify-center flex-wrap gap-3 mb-4">
+        @for(button of buttons; track button.label) {
+          <c-button
+            [severity]="button.severity"
+            variant="outlined"
+            [label]="button.label"
+            (onClick)="test()"
+            [icon]="button.icon"
+            [iconOnly]="true"
+            rounded="full"
+          />
+        }
+      </div>
+    </section>
+
+    <section class="flex-col mx-4 p-5 rounded-lg border dark:border-gray-500 mb-10">
+      <div class="mb-4">
+        <span class="text-2xl font-bold text-gray-500 dark:text-gray-500">Loading Buttons</span>
+      </div>
+      <div class="flex justify-center flex-wrap gap-3 mb-4">
+        <c-button
+          severity="primary"
+          variant="solid"
+          (onClick)="test()"
+          [loading]="true"
+          label="Loading"
+        />
+
+        <c-button
+          severity="secondary"
+          variant="outlined"
+          (onClick)="test()"
+          [loading]="true"
+          label="Loading"
+        />
+
+        <c-button
+          severity="success"
+          variant="link"
+          (onClick)="test()"
+          [loading]="true"
+          label="Loading"
+        />
+
+        <c-button
+          severity="info"
+          variant="text"
+          (onClick)="test()"
+          [loading]="true"
+          label="Loading"
+        />
+
+        <c-button
+          severity="warning"
+          variant="solid"
+          (onClick)="test()"
+          [loading]="true"
+          label="Loading"
+          rounded="full"
+        />
+      </div>
+    </section>
+
+    <section class="flex-col mx-4 p-5 rounded-lg border dark:border-gray-500 mb-10">
+      <div class="mb-4">
+        <span class="text-2xl font-bold text-gray-500 dark:text-gray-500">Otros ejemplos...</span>
+      </div>
+      <div class="flex justify-center flex-wrap gap-3 mb-4">
+        <c-button
+          severity="primary"
+          variant="solid"
+          [iconOnly]="true"
+          (onClick)="test()"
+          icon="person"
+          rounded="full"
+        />
+
+        <c-button
+          severity="secondary"
+          variant="outlined"
+          label="Secondary"
+          (onClick)="test()"
+          rounded="full"
+          icon="settings"
+        />
+
+        <c-button
+          severity="success"
+          variant="outlined"
+          [iconOnly]="true"
+          (onClick)="test()"
+          icon="check"
+          rounded="full"
+        />
+
+        <c-button
+          severity="info"
+          variant="solid"
+          label="Link"
+          (onClick)="test()"
+          rounded="md"
+        />
+
+        <c-button
+          severity="warning"
+          variant="text"
+          [iconOnly]="true"
+          (onClick)="test()"
+          rounded="full"
+          icon="warning"
+        />
+
+        <c-button
+          severity="danger"
+          variant="solid"
+          [iconOnly]="true"
+          (onClick)="test()"
+          rounded="full"
+          icon="error"
+        />
+      </div>
+    </section>
+
+  </div>
+  </div>
