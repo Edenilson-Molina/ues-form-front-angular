@@ -9,8 +9,8 @@
       <div class="w-full flex justify-end">
         <p-button
           icon="pi pi-times"
-          class="bg-transparent border-none text-zinc-700 dark:text-white mt-3 me-3"
-          (onClick)="closeCallback($event)"
+          styleClass="bg-transparent border-none text-zinc-700 dark:text-white mt-3 me-3"
+          (click)="closeCallback($event)"
         />
       </div>
       <div class="flex items-center justify-between px-6 pt-4 shrink-0">
@@ -87,7 +87,7 @@
         <a
           pRipple
           class="mx-3 my-1.5 flex items-center p-3 gap-2 rounded-md text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-neutral-800 duration-150 transition-colors cursor-pointer"
-          (onClick)="router.navigate(['/perfil'])"
+          (click)="router.navigate(['/perfil'])"
         >
           <p-avatar
             image="https://i.ibb.co/Yt6XZrc/DALL-E-2025-01-17-08-30-30-A-highly-realistic-portrait-of-a-young-woman-with-long-wavy-hair-in-a-ric.webp"
@@ -100,7 +100,7 @@
         <a
           pRipple
           class="mx-3 my-1.5 flex items-center cursor-pointer p-3 gap-2 rounded text-slate-700 hover:bg-slate-200 dark:text-slate-200 dark:hover:bg-neutral-800 duration-150 transition-colors"
-          (onClick)="handleLogout()"
+          (click)="handleLogout()"
         >
           <p-avatar
             [icon]=" loading() ? 'pi pi-spin pi-spinner-dotted' : 'pi pi-sign-out'"
@@ -120,6 +120,6 @@
     icon="pi pi-bars"
     styleClass="bg-slate-200 dark:bg-transparent border-none z-50"
     severity="secondary"
-    (onClick)="setVisible(true)"
+    (click)="setVisible(true)"
   />
 </div>

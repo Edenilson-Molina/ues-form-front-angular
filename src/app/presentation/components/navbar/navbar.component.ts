@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -26,7 +26,7 @@ import { toggleDarkMode } from '@app/store/auth.actions';
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit{
   private store = inject(Store);
   protected router = inject(Router);
   session$!: Observable<Session>;
@@ -40,6 +40,14 @@ export class NavbarComponent {
       this.sessionValue = session;
       // this.username = session.user?.username || 'Name not found';
     });
+  }
+
+  ngOnInit() {
+    if(this.sessionValue.darkMode) {
+      const root = document.documentElement;
+      root.classList.toggle('dark-mode', this.sessionValue.darkMode);
+      root.classList.toggle('dark', this.sessionValue.darkMode);
+    }
   }
 
   toggleDarkMode() {

@@ -80,7 +80,6 @@ export class DrawerComponent {
   }
 
   closeCallback(e: Event): void {
-    console.log('closeCallback', e, this.drawerRef);
     this.setVisible(false);
   }
 
