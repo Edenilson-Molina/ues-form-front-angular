@@ -1,0 +1,35 @@
+<p-dialog
+  #dialogRef
+  [(visible)]="visible"
+  [closable]="closable"
+  [styleClass]="styleClass"
+  [style]="style"
+
+  [position]="position!"
+  [maximizable]="maximizable"
+  [maximizeIcon]="maximizeIcon"
+  [minimizeIcon]="minimizeIcon"
+
+  [modal]="true"
+  [draggable]="false"
+  >
+  <ng-template #closeicon>
+    <p-button
+      icon="pi pi-times"
+      styleClass="bg-transparent z-10 border-none text-zinc-700 dark:text-white"
+      (onClick)="executeCallback()"
+    />
+  </ng-template>
+
+  <!-- Modal header -->
+  <ng-template #header>
+    <ng-content select="header"></ng-content>
+  </ng-template>
+
+  <ng-content select="content"></ng-content>
+
+  <!-- Modal footer -->
+  <ng-template #footer>
+    <ng-content select="footer"></ng-content>
+  </ng-template>
+</p-dialog>

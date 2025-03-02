@@ -1,0 +1,53 @@
+<button
+  [type]="type"
+  class="cursor-pointer flex items-center justify-center py-2 font-medium transition-colors ease-linear"
+  [ngClass]="[
+    class,
+    variantClasses(),
+    iconClasses(),
+    'rounded-' + rounded,
+    'shadow-' + shadow,
+    disabled ? 'opacity-50 pointer-events-none select-none' : '',
+    loading ? 'opacity-100 pointer-events-none' : '',
+    iconOnly ? 'px-3' : 'px-4'
+  ]"
+  [style]="buttonStyle()"
+  [disabled]="disabled"
+  (click)="executeCallback($event)"
+>
+    <!-- Estado de carga: muestra spinner -->
+    @if(loading){
+      <span class="animate-spin material-symbols-outlined !text-2xl absolute">
+        progress_activity
+      </span>
+    }
+
+     <!-- Icono a la izquierda -->
+    @if(icon && iconPosition === 'left'){
+      <span class="material-symbols-outlined !text-2xl order-2" [ngClass]="iconOnly ? 'me-0' : 'me-1'">
+        <span [ngClass]="loading ? 'opacity-0' : ''">
+          {{ icon }}
+        </span>
+      </span>
+    }
+
+    <!-- Texto del botón -->
+    <span [class]="[
+      iconOnly ? 'hidden' : '',
+      variant === 'link' ? 'hover:underline' : '',
+    ]">
+      <span [class]="loading ? 'opacity-0' : ''">
+        {{ label }}
+      </span>
+    </span>
+    <!-- Icono a la derecha -->
+
+    @if(icon && iconPosition === 'right'){
+      <span class="material-symbols-outlined !text-2xl ms-1 order-1" [ngClass]="iconOnly ? 'me-0' : 'me-1'">
+        <span [ngClass]="loading ?
+          'opacity-0' : ''">
+          {{ icon }}
+        </span>
+      </span>
+    }
+  </button>
