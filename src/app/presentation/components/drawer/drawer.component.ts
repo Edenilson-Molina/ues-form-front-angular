@@ -5,13 +5,13 @@ import {
   Component,
   inject,
   signal,
-  WritableSignal,
+  ViewChild,
 } from '@angular/core';
 
 import { Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { DrawerModule } from 'primeng/drawer';
+import { DrawerModule, Drawer } from 'primeng/drawer';
 import { ButtonModule } from 'primeng/button';
 import { AvatarModule } from 'primeng/avatar';
 import { RippleModule } from 'primeng/ripple';
@@ -34,14 +34,14 @@ import { logout, showMenu } from '@app/store/auth.actions';
   templateUrl: './drawer.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: {
-    class: 'w-[300PX]',
-  },
 })
 export class DrawerComponent {
   private store = inject(Store);
   protected router = inject(Router);
   protected route = inject(ActivatedRoute);
+
+  @ViewChild('drawerRef') drawerRef!: Drawer;
+
   menu: Route[] = [
     {
       name: 'Perfil',
@@ -60,6 +60,7 @@ export class DrawerComponent {
     },
   ];
 
+  visible = false;
   username: string = 'Name not found';
   loading = signal<boolean>(false);
 
@@ -70,14 +71,22 @@ export class DrawerComponent {
     this.session$ = this.store.select('session');
     this.session$.subscribe((session) => {
       this.sessionValue.set(session);
+      this.visible = session.showMenu;
     });
   }
 
-  setShowMenu(value: boolean): void {
+  setVisible(value: boolean): void {
     this.store.dispatch(showMenu(value));
   }
 
-  logout(): void {
+  closeCallback(e: Event): void {
+    console.log('closeCallback', e, this.drawerRef);
+    this.setVisible(false);
+  }
+
+
+  handleLogout(): void {
+    console.log('handleLogout');
     try {
       this.loading.set(true);
       this.store.dispatch(logout());

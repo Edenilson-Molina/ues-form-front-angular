@@ -1,22 +1,23 @@
 <p-drawer
-  [(visible)]="sessionValue()!.showMenu"
+  #drawerRef
+  [(visible)]="visible"
   [closable]="false"
   position="left"
-  styleClass="w-[300px] p-0!"
+  styleClass="w-[300px]"
 >
-    <div class="flex flex-col h-[95vh] lg:h-screen bg-white dark:bg-zinc-700">
+    <ng-template #headless class="flex flex-col h-[95vh] lg:h-screen bg-white dark:bg-zinc-700">
       <div class="w-full flex justify-end">
         <p-button
           icon="pi pi-times"
           class="bg-transparent border-none text-zinc-700 dark:text-white mt-3 me-3"
-          (oClick)="setShowMenu(false)"
+          (onClick)="closeCallback($event)"
         />
       </div>
       <div class="flex items-center justify-between px-6 pt-4 shrink-0">
         <span class="inline-flex items-center gap-2">
           <span class="inline-flex items-center gap-2">
             <img
-              class="w-full brightness-0 dark:brightness-75"
+              class="w-full dark:brightness-75"
               alt="Logo"
               src="assets/images/angular.png"
             />
@@ -84,6 +85,7 @@
           class="mb-3 mx-4 border-t border-0 border-slate-300 dark:border-slate-200"
         />
         <a
+          pRipple
           class="mx-3 my-1.5 flex items-center p-3 gap-2 rounded-md text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-neutral-800 duration-150 transition-colors cursor-pointer"
           (onClick)="router.navigate(['/perfil'])"
         >
@@ -96,12 +98,12 @@
           <span class="font-bold capitalize">{{ username }}</span>
         </a>
         <a
-          v-ripple
-          class="mx-3 my-1.5 flex items-center cursor-pointer p-3 gap-2 rounded text-slate-700 hover:bg-slate-200 dark:text-slate-200 dark:hover:bg-neutral-800 duration-150 transition-colors p-ripple"
-          (onClick)="logout()"
+          pRipple
+          class="mx-3 my-1.5 flex items-center cursor-pointer p-3 gap-2 rounded text-slate-700 hover:bg-slate-200 dark:text-slate-200 dark:hover:bg-neutral-800 duration-150 transition-colors"
+          (onClick)="handleLogout()"
         >
           <p-avatar
-            :icon=" loading() ? 'pi pi-spin pi-spinner-dotted' : 'pi pi-sign-out'"
+            [icon]=" loading() ? 'pi pi-spin pi-spinner-dotted' : 'pi pi-sign-out'"
             shape="circle"
             size="normal"
             class="bg-slate-100 dark:bg-gray-600"
@@ -109,7 +111,7 @@
           <span class="font-bold capitalize">Cerrar sesión</span>
         </a>
       </div>
-    </div>
+    </ng-template>
 </p-drawer>
 <div
   class="py-4 rounded-r-xl bg-slate-200 dark:bg-zinc-700 fixed h-full left-0 top-0 z-10"
@@ -118,6 +120,6 @@
     icon="pi pi-bars"
     styleClass="bg-slate-200 dark:bg-transparent border-none z-50"
     severity="secondary"
-    (onClick)="setShowMenu(true)"
+    (onClick)="setVisible(true)"
   />
 </div>

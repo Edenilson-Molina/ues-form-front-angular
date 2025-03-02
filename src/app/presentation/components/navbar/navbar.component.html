@@ -1,30 +1,10 @@
-<p-menubar class="m-0 py-2 px-0 bg-transparent border-none">
+<p-menubar styleClass="m-0 py-4 px-4  bg-transparent border-none">
   <ng-template #end>
-    <div class="flex items-center gap-x-4">
-
-      <!-- Icono de cliente socket conectado / desconectado -->
-      <!-- <ButtonComponent
-        :severity="online ? 'success' : 'danger'"
-        variant="text"
-        :icon-only="true"
-        :icon="online ? 'power' : 'power_off'"
-        rounded="full"
-        class="!px-1.5 !py-0.5 select-none !cursor-default"
-        :class="online ? 'active:!bg-success-100 dark:active:!bg-success-950' : 'active:!bg-danger-100 dark:active:!bg-danger-950'"
-        v-tooltip.bottom="{
-            value: `Socket ${online ? 'Conectado' : 'Desconectado'}`,
-            pt: {
-                arrow: {
-                  class: online ? 'border-b-success-400 dark:border-b-success-500' : 'border-b-danger-500'
-                },
-                text: `${ online ? 'bg-success-400 dark:bg-success-500' : 'bg-danger-500'} !text-primary-contrast !font-medium text-center`
-            }
-        }"
-      /> -->
+    <div class="flex items-center gap-x-4 px-4">
 
       <!-- Boton de cambio de tema -->
-      <p-button [icon]="sessionValue.darkMode ? 'pi pi-moon' : 'pi pi-sun'" variant="text" severity="secondary" size="large"
-        rounded aria-label="Theme" (onClick)="toggleDarkMode()" class=""
+      <p-button [icon]="sessionValue.darkMode ? 'pi pi-moon' : 'pi pi-sun'" variant="text" size="large"
+        rounded aria-label="Theme" (onClick)="toggleDarkMode()" tooltipPosition="bottom"
         [pTooltip]="'Tema ' + (sessionValue.darkMode ? 'Oscuro' : 'Claro')"
       />
 

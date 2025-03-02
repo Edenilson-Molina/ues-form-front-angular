@@ -28,12 +28,12 @@ export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionRedu
               data,
               environment.secret
             ).toString(CryptoJS.enc.Utf8)
-            console.log('decryptedData', decryptedData)
             return JSON.parse(decryptedData)
           },
         }
       }
-    ]
+    ],
+    rehydrate: true,
   })(reducer);
 }
 

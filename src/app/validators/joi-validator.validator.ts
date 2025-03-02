@@ -13,8 +13,6 @@ export function createValidatorFromSchema(schema: ObjectSchema) {
       }
     );
 
-    console.log(result.error?.details);
-
     if (result.error) {
       // Create an object to hold the errors
       const errorObj: ValidationErrors = {};

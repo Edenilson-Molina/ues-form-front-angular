@@ -55,7 +55,8 @@ export const sessionReducer = createReducer(
     // localStorage.removeItem(LOCAL_STORAGE.REFRESH_TOKEN);
     return {
       ...state,
-      token: '',
+      accessToken: '',
+      refreshToken: '',
       user: null,
     };
   }),
@@ -85,6 +86,9 @@ export const sessionReducer = createReducer(
 
   on(toggleDarkMode, (state) => {
     // localStorage.setItem(LOCAL_STORAGE.DARK_MODE, darkMode.toString());
+    const root = document.documentElement;
+    root.classList.toggle('dark-mode', !state.darkMode);
+    root.classList.toggle('dark', !state.darkMode);
     return {
       ...state,
       darkMode: !state.darkMode,
