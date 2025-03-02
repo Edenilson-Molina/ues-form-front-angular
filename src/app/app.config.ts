@@ -4,11 +4,19 @@ import { routes } from './app.routes';
 
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { providePrimeNG } from 'primeng/config';
+import { definePreset } from '@primeng/themes';
+import { colorPaletteMap } from '@utils/color-palette-map';
 import Aura from '@primeng/themes/aura';
 
 import { provideStore } from '@ngrx/store';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { reducers, metaReducers } from '@store/index';
+
+const MyPreset = definePreset(Aura, {
+  semantic: {
+    primary: JSON.parse(localStorage.getItem('color-palette') as string)?.primary ?? colorPaletteMap.primary,
+  }
+});
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -27,7 +35,7 @@ export const appConfig: ApplicationConfig = {
     providePrimeNG({
       ripple: true,
       theme: {
-        preset: Aura,
+        preset: MyPreset,
         options: {
           darkModeSelector: '.dark-mode',
           cssLayer: {
