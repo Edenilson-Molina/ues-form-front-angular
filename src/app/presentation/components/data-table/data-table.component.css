@@ -1,0 +1,53 @@
+/* Mostrar/Ocultar dropdown de paginación extendida */
+.datatable-custom-component ::ng-deep .p-paginator-rpp-dropdown {
+  display: var(--show-per-page-options-dropdown-value);
+}
+
+/* Mostrar/Ocultar botones de páginación normal: PrevPageLink y NextPageLink */
+.datatable-custom-component ::ng-deep .p-paginator-prev,
+.datatable-custom-component ::ng-deep .p-paginator-next {
+  display: var(--show-prev-next-links-value);
+}
+
+/* Mostrar/Ocultar botones de páginación extendida: FirstPageLink y LastPageLink */
+.datatable-custom-component ::ng-deep .p-paginator-first,
+.datatable-custom-component ::ng-deep .p-paginator-last {
+  display: var(--show-first-last-links-value);
+}
+
+/* Para cambiar el color del spinner */
+:root {
+  --p-progressspinner-color-1: var(--p-primary-500);
+  --p-progressspinner-color-2: var(--p-primary-500);
+  --p-progressspinner-color-3: var(--p-primary-500);
+  --p-progressspinner-color-4: var(--p-primary-500);
+}
+
+/* Personalización de los estilos de la paginación: Funciona solo cuando paginationCustomDesign es true */
+.pagination-custom-design ::ng-deep .p-paginator-page.p-highlight {
+  background: var(--page-selected-background) !important;
+  color: var(--page-selected-color) !important;
+}
+
+.pagination-custom-design ::ng-deep .p-paginator-page {
+  background: var(--page-background);
+  color: var(--page-color);
+  border: 1px solid var(--page-border);
+  border-radius: var(--page-border-radius);
+}
+
+.pagination-custom-design ::ng-deep .p-paginator-prev,
+.pagination-custom-design ::ng-deep .p-paginator-next {
+  background: var(--pagination-prev-next-background);
+  color: var(--pagination-prev-next-color);
+  border: 1px solid var(--pagination-prev-next-border);
+  border-radius: var(--pagination-prev-next-border-radius);
+}
+
+.pagination-custom-design ::ng-deep .p-paginator-first,
+.pagination-custom-design ::ng-deep .p-paginator-last {
+  background: var(--pagination-first-last-background);
+  color: var(--pagination-first-last-color);
+  border: 1px solid var(--pagination-first-last-border);
+  border-radius: var(--pagination-first-last-border-radius);
+}

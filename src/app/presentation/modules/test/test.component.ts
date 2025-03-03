@@ -1,13 +1,34 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, signal, WritableSignal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnInit,
+  signal,
+  WritableSignal,
+} from '@angular/core';
 
 import { DividerModule } from 'primeng/divider';
 
-import { ButtonComponent } from '@app/presentation/components/button/button.component';
-import { ModalComponent } from '@app/presentation/components/modal/modal.component';
-import { TabsComponent } from '@app/presentation/components/tabs/tabs.component';
+import { UserService } from '@services/user.service';
 
-type Severity = 'primary' | 'secondary' | 'success' | 'info' | 'warning' | 'danger';
+import { ButtonComponent } from '@components/button/button.component';
+import { ModalComponent } from '@components/modal/modal.component';
+import { TabsComponent } from '@components/tabs/tabs.component';
+import { DataTableComponent } from '@components/data-table/data-table.component';
+import { UserResponse } from '@app/interfaces/responses/user.dto';
+import { Observable } from 'rxjs';
+import { PaginationParams } from '@interfaces/common/pagination.interface';
+import { Store } from '@ngrx/store';
+import { Session } from '@app/interfaces/store';
+
+type Severity =
+  | 'primary'
+  | 'secondary'
+  | 'success'
+  | 'info'
+  | 'warning'
+  | 'danger';
 interface ButtonCustom {
   label: string;
   severity: Severity;
@@ -16,15 +37,31 @@ interface ButtonCustom {
 
 @Component({
   selector: 'app-test',
-  imports: [CommonModule, DividerModule, ButtonComponent, ModalComponent, TabsComponent],
+  imports: [
+    CommonModule,
+    DividerModule,
+    ButtonComponent,
+    ModalComponent,
+    TabsComponent,
+    DataTableComponent,
+  ],
   templateUrl: './test.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    class: 'flex flex-col items-center justify-center w-full'
-  }
+    class: 'flex flex-col items-center justify-center w-full',
+  },
 })
-export default class TestComponent {
+export default class TestComponent implements OnInit {
+  private store = inject(Store);
+  sessionValue!: Session
+  isLoading = signal(false);
+
+  constructor() {
+    this.store.select('session').subscribe((session) => {
+      this.isLoading.set(session.loading);
+    });
+  }
   ////////////////////////////////////////////////////////////////
   //                    ModalComponent                          //
   ////////////////////////////////////////////////////////////////
@@ -45,43 +82,42 @@ export default class TestComponent {
   test() {
     console.log('Test action');
   }
-  buttons: ButtonCustom[]  = [
+  buttons: ButtonCustom[] = [
     {
       label: 'Primary',
       severity: 'primary',
-      icon: 'account_circle'
-
+      icon: 'account_circle',
     },
     {
       label: 'Secondary',
       severity: 'secondary',
-      icon: 'palette'
+      icon: 'palette',
     },
     {
       label: 'Success',
       severity: 'success',
-      icon: 'check_circle'
+      icon: 'check_circle',
     },
     {
       label: 'Info',
       severity: 'info',
-      icon: 'info'
+      icon: 'info',
     },
     {
       label: 'Warning',
       severity: 'warning',
-      icon: 'warning'
+      icon: 'warning',
     },
     {
       label: 'Danger',
       severity: 'danger',
-      icon: 'dangerous'
-    }
-  ]
+      icon: 'dangerous',
+    },
+  ];
   ////////////////////////////////////////////////////////////////
   //                     TabComponent                           //
   ////////////////////////////////////////////////////////////////
-  test2(data:any) {
+  test2(data: any) {
     console.log(data);
   }
 
@@ -125,4 +161,71 @@ export default class TestComponent {
     { label: 'Label 4', content: 'Contenido del Tab 4' },
     { label: 'Label 5', content: 'Contenido del Tab 5' },
   ];
+
+  //////////////////////////////////////////////////////////////////
+  //                      TableComponent                          //
+  //////////////////////////////////////////////////////////////////
+  protected userService = inject(UserService);
+  users = signal<UserResponse[]>([]);
+  paginationObserver = Observable<PaginationParams>
+  paginationParams = signal<PaginationParams>({ page: 1, limit: 10, paginate: true });
+
+  async ngOnInit(): Promise<void> {
+    // Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+    // Add 'implements OnInit' to the class.
+    this.userService.getAllUsers(this.paginationParams()).subscribe((response) => {
+      if ('data' in response) {
+        this.users.set(response.data.flat());
+      } else {
+        this.users.set(response);
+      }
+      console.log(this.users());
+    });
+
+    console.log(this.users());
+  }
+
+  columns = [
+    { field: 'id', header: 'ID', sortable: true },
+    { field: 'nombre', header: 'Nombre', sortable: true },
+    { field: 'email', header: 'Correo electrónico', sortable: true },
+  ];
+
+  actionButtons = [
+    {
+      icon: 'edit',
+      class: 'bg-blue-500 hover:bg-blue-600',
+      onClick: (data: any) => this.editItem(data)
+    },
+    {
+      icon: 'delete',
+      class: 'bg-red-500 hover:bg-red-600',
+      onClick: (data: any) => this.deleteItem(data)
+    }
+  ];
+
+  pagination = {
+    from: 1,
+    page: 1,
+    perPage: 10,
+    to: 3,
+    total: 3
+  };
+
+  getStatusClass(status: string) {
+    switch (status) {
+      case 'active': return 'bg-green-100 text-green-800 px-2 py-1 rounded';
+      case 'inactive': return 'bg-red-100 text-red-800 px-2 py-1 rounded';
+      case 'pending': return 'bg-yellow-100 text-yellow-800 px-2 py-1 rounded';
+      default: return '';
+    }
+  }
+
+  editItem(item: any) {
+    console.log('Edit item:', item);
+  }
+
+  deleteItem(item: any) {
+    console.log('Delete item:', item);
+  }
 }
