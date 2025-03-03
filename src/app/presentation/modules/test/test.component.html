@@ -1,10 +1,17 @@
 <div class="flex justify-center items-center w-full">
-  <span class="material-symbols-outlined text-primary-500 dark:text-primary-300 mr-1 !text-3xl">experiment</span>
-  <span class="text-primary-500 dark:text-primary-300 font-semibold text-2xl">Pruebas</span>
+  <span
+    class="material-symbols-outlined text-primary-500 dark:text-primary-300 mr-1 !text-3xl"
+    >experiment</span
+  >
+  <span class="text-primary-500 dark:text-primary-300 font-semibold text-2xl"
+    >Pruebas</span
+  >
 </div>
 <p-divider styleClass="mb-10" />
 
-<div class="flex flex-col w-full p-5 rounded-lg border dark:border-gray-500 mb-10">
+<div
+  class="flex flex-col w-full p-5 rounded-lg border dark:border-gray-500 mb-10"
+>
   <div class="flex items-center justify-start mb-4 ms-5">
     <span class="text-2xl font-bold text-primary-500 dark:text-primary-300">
       Modal Component
@@ -20,11 +27,11 @@
     />
   </div>
   <modal
-      [visible]="showModal"
-      [closable]="true"
-      (onClose)="closeModal()"
-      styleClass="w-[90%] sm:w-[80%] md:w-[80%] lg:w-[80%] xl:w-[30%] bg-auto"
-      [style]="{ 'border-radius': '20px' }"
+    [visible]="showModal"
+    [closable]="true"
+    (onClose)="closeModal()"
+    styleClass="w-[90%] sm:w-[80%] md:w-[80%] lg:w-[80%] xl:w-[30%] bg-auto"
+    [style]="{ 'border-radius': '20px' }"
   >
     <header>
       <div class="w-full flex justify-center items-center">
@@ -57,15 +64,18 @@
   </modal>
 </div>
 
-<div class="flex flex-col w-full p-5 mb-10 rounded-md border dark:border-gray-500">
+<div
+  class="flex flex-col w-full p-5 mb-10 rounded-md border dark:border-gray-500"
+>
   <div class="flex items-center justify-start mb-4 ms-5">
     <span class="text-2xl font-bold text-primary-500 dark:text-primary-300">
       Button Component
     </span>
   </div>
-  <div class="grid grid-cols-1 xl:grid-cols-2 ">
-
-    <section class="flex-col mx-4 p-5 rounded-lg border dark:border-gray-500 mb-10">
+  <div class="grid grid-cols-1 xl:grid-cols-2">
+    <section
+      class="flex-col mx-4 p-5 rounded-lg border dark:border-gray-500 mb-10"
+    >
       <div class="mb-4">
         <span class="text-2xl font-bold text-gray-500 dark:text-gray-500">
           Solid
@@ -73,125 +83,153 @@
       </div>
       <div class="flex justify-center flex-wrap gap-3 mb-4">
         @for(button of buttons; track button.label) {
-          <c-button
-            [severity]="button.severity"
-            variant="solid"
-            [label]="button.label"
-            (onClick)="test()"
-          />
+        <c-button
+          [severity]="button.severity"
+          variant="solid"
+          [label]="button.label"
+          (onClick)="test()"
+        />
         }
       </div>
     </section>
 
-    <section class="flex-col mx-4 p-5 rounded-lg border dark:border-gray-500 mb-10">
+    <section
+      class="flex-col mx-4 p-5 rounded-lg border dark:border-gray-500 mb-10"
+    >
       <div class="mb-4">
-        <span class="text-2xl font-bold text-gray-500 dark:text-gray-500">Outlined</span>
+        <span class="text-2xl font-bold text-gray-500 dark:text-gray-500"
+          >Outlined</span
+        >
       </div>
       <div class="flex justify-center flex-wrap gap-3 mb-4">
         @for(button of buttons; track button.label) {
-          <c-button
-            [severity]="button.severity"
-            variant="outlined"
-            [label]="button.label"
-            (onClick)="test()"
-          />
+        <c-button
+          [severity]="button.severity"
+          variant="outlined"
+          [label]="button.label"
+          (onClick)="test()"
+        />
         }
       </div>
     </section>
 
-    <section class="flex-col mx-4 p-5 rounded-lg border dark:border-gray-500 mb-10">
+    <section
+      class="flex-col mx-4 p-5 rounded-lg border dark:border-gray-500 mb-10"
+    >
       <div class="mb-4">
-        <span class="text-2xl font-bold text-gray-500 dark:text-gray-500">Link</span>
+        <span class="text-2xl font-bold text-gray-500 dark:text-gray-500"
+          >Link</span
+        >
       </div>
       <div class="flex justify-center flex-wrap gap-3 mb-4">
         @for(button of buttons; track button.label) {
-          <c-button
-            [severity]="button.severity"
-            variant="link"
-            [label]="button.label"
-            (onClick)="test()"
-          />
+        <c-button
+          [severity]="button.severity"
+          variant="link"
+          [label]="button.label"
+          (onClick)="test()"
+        />
         }
       </div>
     </section>
 
-    <section class="flex-col mx-4 p-5 rounded-lg border dark:border-gray-500 mb-10">
+    <section
+      class="flex-col mx-4 p-5 rounded-lg border dark:border-gray-500 mb-10"
+    >
       <div class="mb-4">
-        <span class="text-2xl font-bold text-gray-500 dark:text-gray-500">Text</span>
+        <span class="text-2xl font-bold text-gray-500 dark:text-gray-500"
+          >Text</span
+        >
       </div>
       <div class="flex justify-center flex-wrap gap-3 mb-4">
         @for(button of buttons; track button.label) {
-          <c-button
-            [severity]="button.severity"
-            variant="text"
-            [label]="button.label"
-            (onClick)="test()"
-            shadow="md"
-          />
+        <c-button
+          [severity]="button.severity"
+          variant="text"
+          [label]="button.label"
+          (onClick)="test()"
+          shadow="md"
+        />
         }
       </div>
     </section>
 
-    <section class="flex-col mx-4 p-5 rounded-lg border dark:border-gray-500 mb-10">
+    <section
+      class="flex-col mx-4 p-5 rounded-lg border dark:border-gray-500 mb-10"
+    >
       <div class="mb-4">
-        <span class="text-2xl font-bold text-gray-500 dark:text-gray-500">Solid with Icon (Left)</span>
+        <span class="text-2xl font-bold text-gray-500 dark:text-gray-500"
+          >Solid with Icon (Left)</span
+        >
       </div>
       <div class="flex justify-center flex-wrap gap-3 mb-4">
         @for(button of buttons; track button.label) {
-          <c-button
-            [severity]="button.severity"
-            variant="solid"
-            [label]="button.label"
-            (onClick)="test()"
-            [icon]="button.icon"
-            iconPosition="left"
-            rounded="md"
-          />
+        <c-button
+          [severity]="button.severity"
+          variant="solid"
+          [label]="button.label"
+          (onClick)="test()"
+          [icon]="button.icon"
+          iconPosition="left"
+          rounded="md"
+        />
         }
       </div>
     </section>
 
-    <section class="flex-col mx-4 p-5 rounded-lg border dark:border-gray-500 mb-10">
+    <section
+      class="flex-col mx-4 p-5 rounded-lg border dark:border-gray-500 mb-10"
+    >
       <div class="mb-4">
-        <span class="text-2xl font-bold text-gray-500 dark:text-gray-500">Solid with Icon (Right)</span>
+        <span class="text-2xl font-bold text-gray-500 dark:text-gray-500"
+          >Solid with Icon (Right)</span
+        >
       </div>
       <div class="flex justify-center flex-wrap gap-3 mb-4">
         @for(button of buttons; track button.label) {
-          <c-button
-            [severity]="button.severity"
-            variant="solid"
-            [label]="button.label"
-            (onClick)="test()"
-            [icon]="button.icon"
-            iconPosition="right"
-            rounded="full"
-          />
+        <c-button
+          [severity]="button.severity"
+          variant="solid"
+          [label]="button.label"
+          (onClick)="test()"
+          [icon]="button.icon"
+          iconPosition="right"
+          rounded="full"
+        />
         }
       </div>
     </section>
 
-    <section class="flex-col mx-4 p-5 rounded-lg border dark:border-gray-500 mb-10">
+    <section
+      class="flex-col mx-4 p-5 rounded-lg border dark:border-gray-500 mb-10"
+    >
       <div class="mb-4">
-        <span class="text-2xl font-bold text-gray-500 dark:text-gray-500">Outline Icon Only</span>
+        <span class="text-2xl font-bold text-gray-500 dark:text-gray-500"
+          >Outline Icon Only</span
+        >
       </div>
       <div class="flex justify-center flex-wrap gap-3 mb-4">
         @for(button of buttons; track button.label) {
-          <c-button
-            [severity]="button.severity"
-            variant="outlined"
-            [label]="button.label"
-            (onClick)="test()"
-            [icon]="button.icon"
-            [iconOnly]="true"
-            rounded="full"
-          />
+        <c-button
+          [severity]="button.severity"
+          variant="outlined"
+          [label]="button.label"
+          (onClick)="test()"
+          [icon]="button.icon"
+          [iconOnly]="true"
+          rounded="full"
+        />
         }
       </div>
     </section>
 
-    <section class="flex-col mx-4 p-5 rounded-lg border dark:border-gray-500 mb-10">
+    <section
+      class="flex-col mx-4 p-5 rounded-lg border dark:border-gray-500 mb-10"
+    >
       <div class="mb-4">
-        <span class="text-2xl font-bold text-gray-500 dark:text-gray-500">Loading Buttons</span>
+        <span class="text-2xl font-bold text-gray-500 dark:text-gray-500"
+          >Loading Buttons</span
+        >
       </div>
       <div class="flex justify-center flex-wrap gap-3 mb-4">
         <c-button
@@ -237,9 +275,13 @@
       </div>
     </section>
 
-    <section class="flex-col mx-4 p-5 rounded-lg border dark:border-gray-500 mb-10">
+    <section
+      class="flex-col mx-4 p-5 rounded-lg border dark:border-gray-500 mb-10"
+    >
       <div class="mb-4">
-        <span class="text-2xl font-bold text-gray-500 dark:text-gray-500">Otros ejemplos...</span>
+        <span class="text-2xl font-bold text-gray-500 dark:text-gray-500"
+          >Otros ejemplos...</span
+        >
       </div>
       <div class="flex justify-center flex-wrap gap-3 mb-4">
         <c-button
@@ -296,6 +338,117 @@
         />
       </div>
     </section>
+  </div>
+</div>
 
+<div class="flex flex-col w-full p-5 rounded-lg border dark:border-gray-500 mb-10">
+  <div class="flex items-center justify-start mb-4 ms-5">
+    <span class="text-2xl font-bold text-primary-500 dark:text-primary-300">
+      Tabs Component
+    </span>
   </div>
+  <div class="grid grid-cols-1">
+    <c-tabs
+      [items]="tabsItems"
+      [activeItem]="activeTabItem"
+      (changeTab)="activeTabItem = $event"
+    >
+      <!-- Custom Label Slot -->
+      <!-- <ng-template #customLabel let-data="data" let-index="index">
+        <span class="text-lg font-bold"
+          >{{ data.title }} ({{ index + 1 }})</span
+        >
+      </ng-template> -->
+
+      <!-- Tab Content Slot -->
+      <ng-template #tabContent let-data="data">
+        <div class="p-5">
+          <span class="text-xl font-bold text-pretty">Básico</span><br />
+          <p class="text-gray-500 dark:text-gray-500 mb-10">{{ data.content }}</p>
+        </div>
+      </ng-template>
+    </c-tabs>
+
+    <c-tabs
+      [items]="tabsItems2"
+      [activeItem]="activeTabItem2"
+      (changeTab)="activeTabItem2 = $event"
+      tabsDesign="panel"
+      backgroundColorTab="#54d6d0"
+      rounded="md"
+    >
+      <!-- Custom Label Slot -->
+      <!-- <ng-template #customLabel let-data="data" let-index="index">
+        <span class="text-lg font-bold"
+          >{{ data.title }} ({{ index + 1 }})</span
+        >
+      </ng-template> -->
+
+      <!-- Tab Content Slot -->
+      <ng-template #tabContent let-data="data" let-index="index">
+        <div class="p-5 mb-16 border border-[#54d6d08f]">
+          <span class="text-xl font-bold text-pretty text-[#54d6d0]">Contenido personalizado</span><br>
+          <span class="text-2xl font-bold text-gray-500 dark:text-gray-500">{{ data.label }}</span>
+          <p class="text-gray-500 dark:text-gray-500">{{ data.content }}</p>
+          <p (click)="test2(data)" class="text-red-500 dark:text-red-300">index: {{ index }}</p>
+        </div>
+      </ng-template>
+    </c-tabs>
+
+    <c-tabs
+      [items]="tabsItems3"
+      [activeItem]="activeTabItem3"
+      (changeTab)="activeTabItem3 = $event"
+      containerTabsClass="w-[100rem]"
+      backgroundColorTab="#eb9e65"
+      rounded="none"
+    >
+      <!-- Custom Label Slot -->
+      <ng-template #customLabel let-data="data" let-index="index">
+        <div class="">
+          <span class="uppercase"
+            [ngClass]="[
+              index === activeTabItem3
+                ? 'underline text-purple-500 font-bold transition-all ease-in-out duration-300'
+                : 'text-yellow-500'
+            ]">
+            {{ data.label }}
+          </span>
+        </div>
+      </ng-template>
+
+      <!-- Tab Content Slot -->
+      <ng-template #tabContent let-data="data">
+        <div class="p-5 mb-10">
+          <span class="text-xl font-bold text-pretty text-[#eb9e65]">Label personalizado</span><br>
+          <p class="text-gray-500 dark:text-gray-500">{{ data.content }}</p>
+        </div>
+      </ng-template>
+    </c-tabs>
+
+    <c-tabs
+      [items]="tabsItems4"
+      [activeItem]="activeTabItem4()"
+      (changeTab)="changeTab4($event)"
+      tabsDesign="panel"
+      containerTabsClass="w-[100rem]"
+      backgroundColorTab="#ee64b2"
+      rounded="full"
+    >
+      <!-- Tab Content Slot -->
+      <ng-template #tabContent>
+        <div class="w-full text-left bg-auto overflow-hidden relative">
+          <div class="transition-transform duration-500 ease-in-out whitespace-nowrap flex"
+            [style]="{ transform: 'translateX(-' + (activeTabItem4() * 100) + '%)' }">
+            @for(tab of tabsItems4; let index = $index; track index) {
+              <div class="w-full shrink-0 rounded-2xl p-5">
+                <span class="text-xl font-bold text-pretty">Contenido animado</span><br>
+                <p class="text-gray-500 dark:text-gray-500">{{ tab.content }}</p>
+              </div>
+            }
+          </div>
+        </div>
+      </ng-template>
+    </c-tabs>
   </div>
+</div>

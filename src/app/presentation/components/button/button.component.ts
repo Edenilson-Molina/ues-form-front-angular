@@ -156,7 +156,6 @@ export class ButtonComponent {
   });
 
   buttonStyle = computed<string>(() => {
-    console.log(this.buttonColors());
     return `
     --bg-color: ${this.buttonColors().bg};
     --hover-bg-color: ${this.buttonColors().hoverBg};

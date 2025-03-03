@@ -85,7 +85,6 @@ export class DrawerComponent {
 
 
   handleLogout(): void {
-    console.log('handleLogout');
     try {
       this.loading.set(true);
       this.store.dispatch(logout());

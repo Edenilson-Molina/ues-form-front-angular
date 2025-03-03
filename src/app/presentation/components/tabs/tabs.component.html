@@ -1,0 +1,65 @@
+<div class="overflow-x-auto pb-2 pt-1 px-[0.04rem] border-0" [ngClass]="mainContainerClass">
+  <div
+    class="relative flex flex-row z-20 overflow-x-auto lg:overflow-x-hidden items-center justify-center shadow-md p-0 w-[700px] lg:w-full transition-all duration-300 ease-linear
+    bg-gray-100 dark:bg-neutral-800 border-0 dark:ring-1 border-gray-200 dark:ring-neutral-700"
+    [ngClass]="[
+      containerTabsClass,
+      'rounded-' + rounded
+    ]"
+  >
+    <!-- Indicador de color activo -->
+    <div
+      class="absolute transition-all duration-300 ease-linear"
+      [ngStyle]="{
+        width: (100 / items.length) + '%',
+        left: (100 / items.length) * activeItem + '%',
+        backgroundColor: backgroundColorTab
+      }"
+      [ngClass]="[
+        activeItem === 0 && tabsDesign === 'panel' ? 'translate-x-1.5' : '',
+        activeItem === items.length - 1 && tabsDesign === 'panel' ? '-translate-x-1.5' : '',
+        tabsDesign === 'line' ? 'rounded-none' : 'rounded-' + rounded,
+        tabsDesign === 'line' ? 'h-[10%] bottom-0' : 'h-[80%]',
+        tabsDesign === 'line' ? 'z-10' : 'z-5'
+      ]"
+    ></div>
+
+    <!-- Renderizar Tabs -->
+     @for(tab of items; let index = $index; track index){
+       <div
+         class="relative cursor-pointer w-full transition-all duration-300 ease-linear text-center py-4 group"
+         [ngClass]="[
+           containerItemsClass,
+           tabsDesign === 'line' ? 'hover:bg-gray-200 dark:hover:bg-neutral-700' : ''
+         ]"
+         (click)="selectTab(index)"
+       >
+         <!-- Verifica si hay customLabel -->
+         @if(customLabelTemplate) {
+           <!-- Si hay customLabel, mostrar el label personalizado -->
+           <ng-container *ngTemplateOutlet="customLabelTemplate; context: { data: tab, index: index }"></ng-container>
+         } @else {
+           <!-- Si no hay customLabel, mostrar el label por defecto -->
+           <span
+             class="text-md font-semibold z-10 transition-colors duration-300 ease-in-out"
+             [ngStyle]="{ color: getTextDesign(index) }"
+             [ngClass]="[
+               tabsDesign === 'panel' && activeItem === index
+                 ? 'text-white group-hover:text-white'
+                 : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-200'
+             ]"
+           >
+             {{ tab[label] }}
+           </span>
+         }
+       </div>
+     }
+  </div>
+</div>
+
+<!-- Renderizar Contenido de Tabs -->
+<div *ngFor="let tab of items; let index = index">
+  <ng-container *ngIf="tabContentTemplate && activeItem === index">
+    <ng-container *ngTemplateOutlet="tabContentTemplate; context: { data: tab, index: index }"></ng-container>
+  </ng-container>
+</div>
