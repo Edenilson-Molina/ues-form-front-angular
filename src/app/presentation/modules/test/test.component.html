@@ -530,7 +530,7 @@
       [showPerPageOptionsDropdown]="true"
       [showPrevNextLinks]="true"
       [showFirstLastLinks]="true"
-      headerAlign="center"
+      headerAlign="start"
       actionsAlign="center"
     >
       <!-- Custom template for a specific column -->
@@ -541,14 +541,14 @@
       </ng-template>
 
       <!-- Custom template for actions -->
-      <ng-template pTemplate="actions" let-data>
+      <!-- <ng-template #actions let-data>
         <button class="p-button p-button-success mr-2" (click)="editItem(data)">
           <span class="material-symbols-outlined">edit</span>
         </button>
         <button class="p-button p-button-danger" (click)="deleteItem(data)">
           <span class="material-symbols-outlined">delete</span>
         </button>
-      </ng-template>
+      </ng-template> -->
     </data-table>
   </div>
 </div>

@@ -187,19 +187,22 @@ export default class TestComponent implements OnInit {
 
   columns = [
     { field: 'id', header: 'ID', sortable: true },
-    { field: 'nombre', header: 'Nombre', sortable: true },
+    { field: 'name', header: 'Nombre', sortable: true },
     { field: 'email', header: 'Correo electrónico', sortable: true },
+    { field: 'status', header: 'Status', sortable: true },
   ];
 
   actionButtons = [
     {
       icon: 'edit',
-      class: 'bg-blue-500 hover:bg-blue-600',
+      label: 'Editar usuario',
+      class: 'text-blue-500 hover:text-blue-600 bg-transparent',
       onClick: (data: any) => this.editItem(data)
     },
     {
       icon: 'delete',
-      class: 'bg-red-500 hover:bg-red-600',
+      label: 'Eliminar usuario',
+      class: 'text-red-500 hover:text-red-600 bg-transparent',
       onClick: (data: any) => this.deleteItem(data)
     }
   ];

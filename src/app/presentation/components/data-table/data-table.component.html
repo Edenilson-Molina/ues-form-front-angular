@@ -1,65 +1,111 @@
-<div class="datatable-custom-component shadow-md border dark:border-none"
-     [ngClass]="'rounded-' + roundedTypeTable"
-     [ngStyle]="getCustomStyles()">
-
-  <p-table [value]="data"
-           [loading]="loadingData"
-           [stripedRows]="stripedRows"
-           [scrollable]="scrollable"
-           [scrollHeight]="scrollable ? scrollHeight : undefined"
-           [styleClass]="tableClass"
-           [tableStyle]="tableStyle">
-
+<div
+  class="datatable-custom-component shadow-md dark:shadow-[0_6px_8px_0px_rgba(255,255,255,0.2)] border dark:border-none"
+  [ngClass]="'rounded-' + roundedTypeTable"
+  [ngStyle]="getCustomStyles()"
+>
+  <p-table
+    [value]="data"
+    [loading]="loadingData"
+    [stripedRows]="stripedRows"
+    [scrollable]="scrollable"
+    [scrollHeight]="scrollable ? scrollHeight : undefined"
+    [styleClass]="styleClass"
+    [tableStyleClass]="tableClass"
+    [tableStyle]="tableStyle"
+  >
     <!-- Empty Template -->
-    <ng-template pTemplate="emptymessage" *ngIf="!loadingData">
-      <div class="flex justify-center items-center h-[220px] text-gray-500">
-        <span class="material-symbols-outlined !text-4xl me-1">
-          problem
-        </span>
-        <p class="!text-lg">No hay registros para mostrar</p>
-      </div>
+    <ng-template #emptymessage *ngIf="!loadingData">
+      <tr>
+        <td [attr.colspan]="columns.length + 1">
+          <div
+            class="w-full flex justify-center flex-col gap-2 py-5 text-yellow-400 dark:text-yellow-700"
+          >
+            <span
+              class="material-symbols-outlined text-center"
+              style="font-size: 40px"
+            >
+              error
+            </span>
+            <h1 class="font-bold text-primary-dark text-center">
+              Sin datos para mostrar
+            </h1>
+          </div>
+        </td>
+      </tr>
     </ng-template>
 
     <!-- Loading Template -->
-    <ng-template pTemplate="loadingbody" *ngIf="loadingData">
-      <div class="flex justify-center items-center">
-        <p-progressSpinner styleClass="w-[50px] h-[300px]"
-                          strokeWidth="5"
-                          fill="transparent"
-                          animationDuration=".9s"
-                          aria-label="Custom ProgressSpinner">
-        </p-progressSpinner>
-      </div>
+    <ng-template #loadingbody *ngIf="loadingData">
+      <tr>
+        <td [attr.colspan]="columns.length + 1">
+          <div class="flex justify-center items-center">
+            <p-progress-spinner
+              styleClass="w-[50px] h-[300px]"
+              strokeWidth="5"
+              fill="transparent"
+              animationDuration=".9s"
+              aria-label="Custom ProgressSpinner"
+            >
+            </p-progress-spinner>
+          </div>
+        </td>
+      </tr>
     </ng-template>
 
     <!-- Header Template -->
-    <ng-template pTemplate="header">
+    <ng-template #header>
       <tr>
-        <th *ngFor="let column of columns"
-            [pSortableColumn]="column.sortable ? column.field : undefined"
-            [ngStyle]="column.headerStyle"
-            [ngClass]="getHeaderClass(column)">
-          {{ column.header }}
-          <p-sortIcon *ngIf="column.sortable" [field]="column.field"></p-sortIcon>
+        <th
+          *ngFor="let column of columns; let index = index"
+          [pSortableColumn]="column.sortable ? column.field : undefined"
+          [ngStyle]="column.headerStyle"
+          [ngClass]="getHeaderClass(column, index)"
+        >
+          <div
+            [class]="'flex items-center gap-2 cursor-pointer justify-' + this.headerAlign"
+          >
+            {{ column.header }}
+            <p-sortIcon
+              *ngIf="column.sortable"
+              [field]="column.field"
+            ></p-sortIcon>
+          </div>
         </th>
-        <th *ngIf="actionButtonsConfiguration.length > 0"
-            [ngClass]="{'bg-slate-100': true, 'dark:bg-black': true, 'text-gray-600': true, 'dark:text-white': true}"
-            [class]="'justify-' + headerAlign">
-          Acciones
+        <th
+          *ngIf="actionButtonsConfiguration.length > 0"
+          [ngClass]="
+            getHeaderClass(
+              { header: 'Acciones', field: 'actions' },
+              columns.length
+            )
+          "
+          [class]="'justify-' + headerAlign"
+        >
+          <div
+              [class]="'flex items-center gap-2 cursor-pointer justify-' + this.headerAlign"
+            >
+            Acciones
+          </div>
         </th>
       </tr>
     </ng-template>
 
     <!-- Body Template -->
-    <ng-template pTemplate="body" let-rowData>
+    <ng-template #body let-rowData>
       <tr>
-        <td *ngFor="let column of columns"
-            [ngStyle]="column.bodyStyle"
-            [ngClass]="getBodyClass(column)">
-
+        <td
+          *ngFor="let column of columns"
+          [ngStyle]="column.bodyStyle"
+          [ngClass]="getBodyClass(column)"
+        >
           <!-- Use custom template if available -->
           <ng-container *ngIf="columnTemplates[column.field]; else defaultCell">
-            <ng-container *ngTemplateOutlet="columnTemplates[column.field]; context: { $implicit: rowData, data: rowData }"></ng-container>
+            <ng-container
+              *ngTemplateOutlet="
+                columnTemplates[column.field];
+                context: { $implicit: rowData, data: rowData }
+              "
+            ></ng-container>
           </ng-container>
 
           <!-- Default cell template -->
@@ -69,20 +115,33 @@
         </td>
 
         <!-- Actions column -->
-        <td *ngIf="actionButtonsConfiguration.length > 0"
-            [ngClass]="'flex justify-' + actionsAlign + ' items-center gap-2'">
-
+        <td
+          *ngIf="actionButtonsConfiguration.length > 0"
+          [ngClass]="'flex justify-' + actionsAlign + ' items-center gap-2'"
+        >
           <!-- Use custom actions template if available -->
           <ng-container *ngIf="actionsTemplate; else defaultActions">
-            <ng-container *ngTemplateOutlet="actionsTemplate; context: { $implicit: rowData, data: rowData }"></ng-container>
+            <ng-container
+              *ngTemplateOutlet="
+                actionsTemplate;
+                context: { $implicit: rowData, data: rowData }
+              "
+            ></ng-container>
           </ng-container>
 
           <!-- Default actions template -->
           <ng-template #defaultActions>
-            <span *ngFor="let actionButton of actionButtonsConfiguration; let i = index"
-                  class="material-symbols-outlined !text-xxl text-md text-white font-bold p-2 w-auto transition-all duration-300 ease-in-out flex justify-center items-center cursor-pointer"
-                  [ngClass]="actionButton.class"
-                  (click)="actionButton.onClick(rowData)">
+            <span
+              *ngFor="
+                let actionButton of actionButtonsConfiguration;
+                let i = index
+              "
+              class="material-symbols-outlined p-1 w-auto transition-all duration-300 ease-in-out flex justify-center items-center cursor-pointer"
+              [ngClass]="actionButton.class"
+              [pTooltip]="actionButton.label"
+              tooltipPosition="top"
+              (click)="actionButton.onClick(rowData)"
+            >
               {{ actionButton.icon }}
             </span>
           </ng-template>
@@ -92,14 +151,18 @@
   </p-table>
 
   <!-- Pagination -->
-  <div *ngIf="showPagination" [ngClass]="{'pagination-custom-design': paginationCustomDesign}">
+  <div
+    *ngIf="showPagination"
+    [ngClass]="{ 'pagination-custom-design': paginationCustomDesign }"
+  >
     <p-paginator
       styleClass="py-5 bg-transparent"
       [rows]="pagination.perPage"
       [first]="pagination.from - 1"
       [totalRecords]="pagination.total"
       [rowsPerPageOptions]="rowsPerPageOptions"
-      (onPageChange)="handlePageChange($event)">
+      (onPageChange)="handlePageChange($event)"
+    >
     </p-paginator>
   </div>
 </div>

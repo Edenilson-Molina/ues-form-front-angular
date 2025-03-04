@@ -2,6 +2,7 @@ import { Component, Input, ContentChildren, QueryList, TemplateRef, AfterContent
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { PaginatorModule } from 'primeng/paginator';
+import { TooltipModule } from 'primeng/tooltip';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { PrimeTemplate } from 'primeng/api';
 
@@ -15,6 +16,7 @@ export interface PaginationInterface {
 
 export interface ActionButtonConfiguration {
   icon: string;
+  label: string
   class: string;
   onClick: (data: any) => void;
 }
@@ -58,7 +60,8 @@ export interface PaginationCustomDesignProperties {
     CommonModule,
     TableModule,
     PaginatorModule,
-    ProgressSpinnerModule
+    ProgressSpinnerModule,
+    TooltipModule
   ],
   templateUrl: './data-table.component.html',
   styleUrls: ['./data-table.component.css']
@@ -69,7 +72,8 @@ export class DataTableComponent implements AfterContentInit {
   @Input() loadingData: boolean = false;
   @Input() roundedTypeTable: string = 'lg';
   @Input() stripedRows: boolean = true;
-  @Input() tableStyle: Record<string, string> = {};
+  @Input() styleClass: string = '';
+  @Input() tableStyle: Record<string, string> = { 'min-width': '50rem' };
   @Input() tableClass:  string = '';
   @Input() scrollable: boolean = false;
   @Input() scrollHeight: string = '400px';
@@ -157,13 +161,16 @@ export class DataTableComponent implements AfterContentInit {
     console.log('Page changed:', pageEvent);
   }
 
-  getHeaderClass(column: ColumnDefinition) {
+  getHeaderClass(column: ColumnDefinition, index: number) {
+
+    console.log('column', column.header, 'index', index);
     return {
-      'bg-slate-100': true,
+      'bg-blue-100': true,
       'dark:bg-black': true,
       'text-gray-600': true,
       'dark:text-white': true,
-      [`justify-${this.headerAlign}`]: true,
+      'rounded-tl-lg' : index === 0,
+      'rounded-tr-lg' : index === this.columns.length,
       ...(column.headerClass ? this.parseClassString(column.headerClass) : {})
     };
   }
