@@ -15,7 +15,7 @@ import { UserService } from '@services/user.service';
 import { ButtonComponent } from '@components/button/button.component';
 import { ModalComponent } from '@components/modal/modal.component';
 import { TabsComponent } from '@components/tabs/tabs.component';
-import { DataTableComponent } from '@components/data-table/data-table.component';
+import { ColumnDefinition, DataTableActionsDirective, DataTableColumnDirective, DataTableComponent } from '@components/data-table/data-table.component';
 import { UserResponse } from '@app/interfaces/responses/user.dto';
 import { Observable } from 'rxjs';
 import { PaginationParams } from '@interfaces/common/pagination.interface';
@@ -44,6 +44,8 @@ interface ButtonCustom {
     ModalComponent,
     TabsComponent,
     DataTableComponent,
+    DataTableColumnDirective,
+    DataTableActionsDirective
   ],
   templateUrl: './test.component.html',
   styles: ``,
@@ -58,8 +60,8 @@ export default class TestComponent implements OnInit {
   isLoading = signal(false);
 
   constructor() {
-    this.store.select('session').subscribe((session) => {
-      this.isLoading.set(session.loading);
+    this.store.select('session').subscribe((session: Session) => {
+      this.isLoading.set(session.isLoading);
     });
   }
   ////////////////////////////////////////////////////////////////
@@ -179,14 +181,15 @@ export default class TestComponent implements OnInit {
       } else {
         this.users.set(response);
       }
-      console.log(this.users());
-    });
 
-    console.log(this.users());
+      this.users().forEach((user, index) => {
+        user.status = (index % 2) === 0 ? 'active' : 'inactive';
+      });
+    });
   }
 
-  columns = [
-    { field: 'id', header: 'ID', sortable: true },
+  columns: ColumnDefinition[] = [
+    { field: 'id', header: 'ID', sortable: false, class:'text-center font-bold' },
     { field: 'name', header: 'Nombre', sortable: true },
     { field: 'email', header: 'Correo electrónico', sortable: true },
     { field: 'status', header: 'Status', sortable: true },

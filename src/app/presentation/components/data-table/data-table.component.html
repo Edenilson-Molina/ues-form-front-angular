@@ -1,24 +1,25 @@
 <div
-  class="datatable-custom-component shadow-md dark:shadow-[0_6px_8px_0px_rgba(255,255,255,0.2)] border dark:border-none"
+  class="flex flex-col w-full datatable-custom-component shadow-md dark:shadow-[0_3px_5px_0px_rgba(255,255,255,0.2)] border dark:border-none"
   [ngClass]="'rounded-' + roundedTypeTable"
   [ngStyle]="getCustomStyles()"
 >
   <p-table
     [value]="data"
-    [loading]="loadingData"
+    [loading]="isLoading"
     [stripedRows]="stripedRows"
     [scrollable]="scrollable"
     [scrollHeight]="scrollable ? scrollHeight : undefined"
     [styleClass]="styleClass"
     [tableStyleClass]="tableClass"
     [tableStyle]="tableStyle"
+    [showLoader]="false"
   >
     <!-- Empty Template -->
-    <ng-template #emptymessage *ngIf="!loadingData">
+    <ng-template #emptymessage>
       <tr>
         <td [attr.colspan]="columns.length + 1">
           <div
-            class="w-full flex justify-center flex-col gap-2 py-5 text-yellow-400 dark:text-yellow-700"
+            class="w-full flex justify-center flex-col gap-2 py-5 text-warning-400 min-h-[13rem] dark:text-warning-300"
           >
             <span
               class="material-symbols-outlined text-center"
@@ -35,12 +36,12 @@
     </ng-template>
 
     <!-- Loading Template -->
-    <ng-template #loadingbody *ngIf="loadingData">
+    <ng-template #loadingbody>
       <tr>
         <td [attr.colspan]="columns.length + 1">
           <div class="flex justify-center items-center">
             <p-progress-spinner
-              styleClass="w-[50px] h-[300px]"
+              styleClass="w-[70px] h-[300px]"
               strokeWidth="5"
               fill="transparent"
               animationDuration=".9s"
@@ -110,7 +111,9 @@
 
           <!-- Default cell template -->
           <ng-template #defaultCell>
+            <div [ngClass]="column.class">
             {{ rowData[column.field] }}
+            </div>
           </ng-template>
         </td>
 

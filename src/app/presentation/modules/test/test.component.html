@@ -456,73 +456,16 @@
 <div
   class="flex flex-col w-full p-5 rounded-lg border dark:border-gray-500 mb-10"
 >
-  <div class="flex items-center justify-start mb-[1000px] ms-5">
+  <div class="flex items-center justify-start mb-[300px] ms-5">
     <span class="text-2xl font-bold text-primary-500 dark:text-primary-300">
       Table Component
     </span>
   </div>
   <div class="w-full flex justify-center">
-    <!-- <DataTableComponent
-      :data="selectItem === 0 ? permissionUser : permissionProfile"
-      :columns="[
-        { field: 'nombre', header: 'Nombre', sortable: true },
-        { field: 'descripcion', header: 'Descripción', sortable: true },
-        { field: 'habilitaMenu', header: 'Habilita Menu', sortable: false }
-      ]"
-
-      :loading-data="loadingData"
-
-      rounded-type-table="lg"
-      :striped-rows="true"
-
-      :action-buttons-configuration="[
-        {
-          icon: 'edit',
-          text: 'Editar',
-          class: 'bg-secondary-500 hover:bg-secondary-400 rounded-xl',
-          onClick: handleEditClick,
-        },
-        {
-          icon: 'delete',
-          text: 'Eliminar',
-          class: 'bg-red-500 hover:bg-rose-400 rounded-full',
-          onClick: handleDeleteClick,
-        },
-      ]"
-
-      :pagination="pagination"
-      :show-per-page-options-dropdown="true"
-      :rows-per-page-options="[2, 5, 10, 15]"
-      :show-prev-next-links="true"
-      :show-first-last-links="true"
-      :handle-page-change="handlePageChange"
-
-      :pagination-custom-design="true"
-      :pagination-custom-design-properties="{
-        pageSelectedBackgroundColor: '#56b686',
-        pageSelectedColor: '#FFFFFF',
-
-        pageBackgroundColor: 'transparent',
-        pageColor: '#56b686',
-        pageBorderColor: '#56b686',
-        pageBorderRadius: 10,
-
-        paginationPrevNextBackgroundColor: 'transparent',
-        paginationPrevNextColor: '#dfb628',
-        paginationPrevNextBorderColor: '#dfb628',
-        paginationPrevNextBorderRadius: 20,
-
-        paginationFirstLastBackgroundColor: 'transparent',
-        paginationFirstLastColor: '#d85749',
-        paginationFirstLastBorderColor: '#d85749',
-        paginationFirstLastBorderRadius: 0,
-      }"
-
-    /> -->
     <data-table
       [data]="users()"
       [columns]="columns"
-      [loadingData]="isLoading()"
+      [isLoading]="isLoading()"
       [actionButtonsConfiguration]="actionButtons"
       [pagination]="pagination"
       [paginationCustomDesign]="false"
@@ -534,21 +477,19 @@
       actionsAlign="center"
     >
       <!-- Custom template for a specific column -->
-      <ng-template pTemplate="status" let-data>
-        <span [ngClass]="getStatusClass(data.status)">
-          {{ data.status }}
-        </span>
+      <ng-template dataTableColumn="email" let-rowData>
+        <a href="mailto:{{rowData.email}}">{{ rowData.email }}</a>
       </ng-template>
 
       <!-- Custom template for actions -->
-      <!-- <ng-template #actions let-data>
+      <ng-template dataTableActions let-data>
         <button class="p-button p-button-success mr-2" (click)="editItem(data)">
           <span class="material-symbols-outlined">edit</span>
         </button>
         <button class="p-button p-button-danger" (click)="deleteItem(data)">
           <span class="material-symbols-outlined">delete</span>
         </button>
-      </ng-template> -->
+      </ng-template>
     </data-table>
   </div>
 </div>
