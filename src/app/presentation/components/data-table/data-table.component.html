@@ -56,99 +56,100 @@
     <!-- Header Template -->
     <ng-template #header>
       <tr>
-        <th
-          *ngFor="let column of columns; let index = index"
-          [pSortableColumn]="column.sortable ? column.field : undefined"
-          [ngStyle]="column.headerStyle"
-          [ngClass]="getHeaderClass(column, index)"
-        >
-          <div
-            [class]="'flex items-center gap-2 cursor-pointer justify-' + this.headerAlign"
+        @for(column of columns; let index = $index; track column.field){
+          <th
+            [pSortableColumn]="column.sortable ? column.field : undefined"
+            [ngStyle]="column.headerStyle"
+            [ngClass]="getHeaderClass(column, index)"
           >
-            {{ column.header }}
-            <p-sortIcon
-              *ngIf="column.sortable"
-              [field]="column.field"
-            ></p-sortIcon>
-          </div>
-        </th>
-        <th
-          *ngIf="actionButtonsConfiguration.length > 0"
-          [ngClass]="
-            getHeaderClass(
-              { header: 'Acciones', field: 'actions' },
-              columns.length
-            )
-          "
-          [class]="'justify-' + headerAlign"
-        >
-          <div
+            <div
               [class]="'flex items-center gap-2 cursor-pointer justify-' + this.headerAlign"
             >
-            Acciones
-          </div>
-        </th>
+              {{ column.header }}
+              <p-sortIcon
+                *ngIf="column.sortable"
+                [field]="column.field"
+              ></p-sortIcon>
+            </div>
+          </th>
+        }
+        @if(actionButtonsConfiguration.length > 0){
+          <th
+            [ngClass]="
+              getHeaderClass(
+                { header: 'Acciones', field: 'actions' },
+                columns.length
+              )
+            "
+            class="flex justify-{{ actionsAlign }}"
+          >
+            <div
+                class="flex items-center gap-2 cursor-pointer justify-center"
+              >
+              Acciones
+            </div>
+          </th>
+        }
       </tr>
     </ng-template>
 
     <!-- Body Template -->
     <ng-template #body let-rowData>
       <tr>
-        <td
-          *ngFor="let column of columns"
-          [ngStyle]="column.bodyStyle"
-          [ngClass]="getBodyClass(column)"
-        >
-          <!-- Use custom template if available -->
-          <ng-container *ngIf="columnTemplates[column.field]; else defaultCell">
-            <ng-container
-              *ngTemplateOutlet="
-                columnTemplates[column.field];
-                context: { $implicit: rowData, data: rowData }
-              "
-            ></ng-container>
-          </ng-container>
-
-          <!-- Default cell template -->
-          <ng-template #defaultCell>
-            <div [ngClass]="column.class">
-            {{ rowData[column.field] }}
-            </div>
-          </ng-template>
-        </td>
+        @for(column of columns; let index = $index; track column.field){
+          <td
+            [ngStyle]="column.bodyStyle"
+            [ngClass]="getBodyClass(column)"
+          >
+            <!-- Use custom template if available -->
+            @if(columnTemplates[column.field]){
+              <ng-container>
+                <ng-container
+                  *ngTemplateOutlet="
+                    columnTemplates[column.field];
+                    context: { $implicit: rowData, data: rowData }
+                  "
+                ></ng-container>
+              </ng-container>
+            } @else {
+              <!-- Default cell template -->
+              <div [ngClass]="column.class">
+                {{ rowData[column.field] }}
+              </div>
+            }
+          </td>
+        }
 
         <!-- Actions column -->
-        <td
-          *ngIf="actionButtonsConfiguration.length > 0"
-          [ngClass]="'flex justify-' + actionsAlign + ' items-center gap-2'"
-        >
-          <!-- Use custom actions template if available -->
-          <ng-container *ngIf="actionsTemplate; else defaultActions">
-            <ng-container
-              *ngTemplateOutlet="
-                actionsTemplate;
-                context: { $implicit: rowData, data: rowData }
-              "
-            ></ng-container>
-          </ng-container>
-
-          <!-- Default actions template -->
-          <ng-template #defaultActions>
-            <span
-              *ngFor="
-                let actionButton of actionButtonsConfiguration;
-                let i = index
-              "
-              class="material-symbols-outlined p-1 w-auto transition-all duration-300 ease-in-out flex justify-center items-center cursor-pointer"
-              [ngClass]="actionButton.class"
-              [pTooltip]="actionButton.label"
-              tooltipPosition="top"
-              (click)="actionButton.onClick(rowData)"
-            >
-              {{ actionButton.icon }}
-            </span>
-          </ng-template>
-        </td>
+         @if(actionButtonsConfiguration.length > 0){
+           <td>
+              @if(columnTemplates['actions']){
+                <!-- Use custom actions template if available -->
+                <ng-container>
+                  <ng-container
+                    *ngTemplateOutlet="
+                      columnTemplates['actions'];
+                      context: { $implicit: rowData, rowData, actions: actionButtonsConfiguration }
+                    "
+                  ></ng-container>
+                </ng-container>
+              } @else {
+                <div class="flex justify-{{ actionsAlign }} gap-2">
+                  @for(actionButton of actionButtonsConfiguration; track actionButton){
+                    <span
+                      class="material-symbols-outlined p-1 w-auto transition-all duration-300 ease-in-out flex justify-center items-center cursor-pointer"
+                      [ngClass]="actionButton.class"
+                      [pTooltip]="actionButton.label"
+                      tooltipPosition="top"
+                      (click)="actionButton.onClick(rowData)"
+                    >
+                      {{ actionButton.icon }}
+                    </span>
+                  }
+                </div>
+              }
+           </td>
+         }
       </tr>
     </ng-template>
   </p-table>
@@ -160,9 +161,9 @@
   >
     <p-paginator
       styleClass="py-5 bg-transparent"
-      [rows]="pagination.perPage"
+      [rows]="pagination.limit"
       [first]="pagination.from - 1"
-      [totalRecords]="pagination.total"
+      [totalRecords]="pagination.totalItems"
       [rowsPerPageOptions]="rowsPerPageOptions"
       (onPageChange)="handlePageChange($event)"
     >

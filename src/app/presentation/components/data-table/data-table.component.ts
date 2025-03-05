@@ -6,66 +6,25 @@ import {
   TemplateRef,
   AfterContentInit,
   ChangeDetectionStrategy,
-  inject,
-  ChangeDetectorRef,
-  ContentChild,
   Directive,
+  Output,
+  EventEmitter,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { TableModule } from 'primeng/table';
-import { PaginatorModule } from 'primeng/paginator';
+import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { TooltipModule } from 'primeng/tooltip';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { CardModule } from 'primeng/card';
-import { PrimeTemplate } from 'primeng/api';
 
-export interface PaginationInterface {
-  from: number;
-  page: number;
-  perPage: number;
-  to: number;
-  total: number;
-}
-
-export interface ActionButtonConfiguration {
-  icon: string;
-  label: string;
-  class: string;
-  onClick: (data: any) => void;
-}
-
-export interface ColumnDefinition {
-  field: string;
-  header: string;
-  sortable?: boolean;
-  style?: any;
-  class?: string;
-  headerStyle?: any;
-  headerClass?: string;
-  bodyStyle?: any;
-  bodyClass?: string;
-  footer?: string;
-  footerStyle?: any;
-  footerClass?: string;
-}
-
-export interface PaginationCustomDesignProperties {
-  pageSelectedBackgroundColor: string;
-  pageSelectedColor: string;
-  pageBackgroundColor: string;
-  pageColor: string;
-  pageBorderColor: string;
-  pageBorderRadius: number;
-  paginationPrevNextBackgroundColor: string;
-  paginationPrevNextColor: string;
-  paginationPrevNextBorderColor: string;
-  paginationPrevNextBorderRadius: number;
-  paginationFirstLastBackgroundColor: string;
-  paginationFirstLastColor: string;
-  paginationFirstLastBorderColor: string;
-  paginationFirstLastBorderRadius: number;
-}
+import {
+  PageEvent,
+  ColumnDefinition,
+  ActionButtonConfiguration,
+  PaginationCustomDesignProperties,
+} from '@interfaces/common/data-table.interface';
+import { Pagination } from '@interfaces/common/pagination.interface';
 
 // Create custom directives for our templates
 @Directive({
@@ -74,14 +33,6 @@ export interface PaginationCustomDesignProperties {
 })
 export class DataTableColumnDirective {
   @Input('dataTableColumn') columnName!: string;
-  constructor(public template: TemplateRef<any>) {}
-}
-
-@Directive({
-  selector: '[dataTableActions]',
-  standalone: true,
-})
-export class DataTableActionsDirective {
   constructor(public template: TemplateRef<any>) {}
 }
 
@@ -95,8 +46,6 @@ export class DataTableActionsDirective {
     ProgressSpinnerModule,
     TooltipModule,
     CardModule,
-    DataTableColumnDirective,
-    DataTableActionsDirective,
   ],
   templateUrl: './data-table.component.html',
   styleUrls: ['./data-table.component.css'],
@@ -115,21 +64,21 @@ export class DataTableComponent implements AfterContentInit {
   @Input() tableStyle: Record<string, string> = {};
   @Input() tableClass: string = '';
   @Input() scrollable: boolean = true;
-  @Input() scrollHeight: string = '400px';
+  @Input() scrollHeight: string = 'flex';
   @Input() showPagination: boolean = true;
   @Input() showPerPageOptionsDropdown: boolean = true;
   @Input() showPrevNextLinks: boolean = false;
   @Input() showFirstLastLinks: boolean = false;
   @Input() headerAlign: string = 'start';
-  @Input() actionsAlign: string = 'start';
+  @Input() actionsAlign: string = 'center';
   @Input() rowsPerPageOptions: number[] = [2, 5, 10, 15];
   @Input() actionButtonsConfiguration: ActionButtonConfiguration[] = [];
-  @Input() pagination: PaginationInterface = {
+  @Input() pagination: Pagination = {
     from: 0,
     page: 1,
-    perPage: 2,
+    limit: 2,
     to: 0,
-    total: 0,
+    totalItems: 0,
   };
   @Input() paginationCustomDesign: boolean = false;
   @Input() paginationCustomDesignProperties: PaginationCustomDesignProperties =
@@ -150,37 +99,25 @@ export class DataTableComponent implements AfterContentInit {
       paginationFirstLastBorderRadius: 0,
     };
 
-    @ContentChildren(DataTableColumnDirective) columnTemplateList!: QueryList<DataTableColumnDirective>;
-    @ContentChild(DataTableActionsDirective) actionsTemplateDirective?: DataTableActionsDirective;
+  @Output() onPageChange = new EventEmitter<PageEvent>();
 
-    columnTemplates: { [key: string]: TemplateRef<any> } = {};
-    actionsTemplate: TemplateRef<any> | null = null;
+  @ContentChildren(DataTableColumnDirective)
+  columnTemplateList!: QueryList<DataTableColumnDirective>;
+
+  columnTemplates: { [key: string]: TemplateRef<any> } = {};
+  actionsTemplate: TemplateRef<any> | null = null;
 
   ngAfterContentInit() {
-    // Process column templates
     if (this.columnTemplateList) {
       this.columnTemplateList.forEach((item) => {
         if (item.columnName) {
           this.columnTemplates[item.columnName] = item.template;
-          console.log(`Template for column ${item.columnName} loaded`);
+          if (item.columnName === 'actions') {
+            this.actionsTemplate = item.template;
+          }
         }
       });
-
-      console.log(
-        'Loaded column templates:',
-        Object.keys(this.columnTemplates)
-      );
     }
-
-    // Process actions template
-    if (this.actionsTemplateDirective) {
-      this.actionsTemplate = this.actionsTemplateDirective.template;
-      console.log('Actions template loaded');
-    }
-  }
-
-  hasColumnTemplate(columnField: string): boolean {
-    return !!this.columnTemplates[columnField];
   }
 
   getCustomStyles() {
@@ -234,23 +171,23 @@ export class DataTableComponent implements AfterContentInit {
     return styles;
   }
 
-  handlePageChange(event: any) {
+  handlePageChange(event: PaginatorState) {
     // Emit the page change event to parent component
-    const pageEvent = {
-      page: event.page + 1,
-      first: event.first,
-      rows: event.rows,
-      pageCount: Math.ceil(this.pagination.total / event.rows),
+    const pageEvent: PageEvent = {
+      page: event.page! + 1,
+      first: event.first ?? 0,
+      limit: event.rows ?? 0,
+      pageCount: Math.ceil(this.pagination.totalItems / (event.rows ?? 1)),
     };
 
     // You would typically emit this event to the parent component
     // This is a placeholder for the actual implementation
-    console.log('Page changed:', pageEvent);
+    this.onPageChange.emit(pageEvent);
   }
 
   getHeaderClass(column: ColumnDefinition, index: number) {
     return {
-      'bg-primary-100': true,
+      'bg-primary-100 dark:bg-primary-950/60': true,
       'dark:bg-black': true,
       'text-gray-600': true,
       'dark:text-white': true,
@@ -262,10 +199,6 @@ export class DataTableComponent implements AfterContentInit {
 
   getBodyClass(column: ColumnDefinition) {
     return column.bodyClass ? this.parseClassString(column.bodyClass) : {};
-  }
-
-  getFooterClass(column: ColumnDefinition) {
-    return column.footerClass ? this.parseClassString(column.footerClass) : {};
   }
 
   // Helper method to parse class strings into objects for [ngClass]

@@ -341,7 +341,9 @@
   </div>
 </div>
 
-<div class="flex flex-col w-full p-5 rounded-lg border dark:border-gray-500 mb-10">
+<div
+  class="flex flex-col w-full p-5 rounded-lg border dark:border-gray-500 mb-10"
+>
   <div class="flex items-center justify-start mb-4 ms-5">
     <span class="text-2xl font-bold text-primary-500 dark:text-primary-300">
       Tabs Component
@@ -364,7 +366,9 @@
       <ng-template #tabContent let-data="data">
         <div class="p-5">
           <span class="text-xl font-bold text-pretty">Básico</span><br />
-          <p class="text-gray-500 dark:text-gray-500 mb-10">{{ data.content }}</p>
+          <p class="text-gray-500 dark:text-gray-500 mb-10">
+            {{ data.content }}
+          </p>
         </div>
       </ng-template>
     </c-tabs>
@@ -387,10 +391,16 @@
       <!-- Tab Content Slot -->
       <ng-template #tabContent let-data="data" let-index="index">
         <div class="p-5 mb-16 border border-[#54d6d08f]">
-          <span class="text-xl font-bold text-pretty text-[#54d6d0]">Contenido personalizado</span><br>
-          <span class="text-2xl font-bold text-gray-500 dark:text-gray-500">{{ data.label }}</span>
+          <span class="text-xl font-bold text-pretty text-[#54d6d0]"
+            >Contenido personalizado</span
+          ><br />
+          <span class="text-2xl font-bold text-gray-500 dark:text-gray-500">{{
+            data.label
+          }}</span>
           <p class="text-gray-500 dark:text-gray-500">{{ data.content }}</p>
-          <p (click)="test2(data)" class="text-red-500 dark:text-red-300">index: {{ index }}</p>
+          <p (click)="test2(data)" class="text-red-500 dark:text-red-300">
+            index: {{ index }}
+          </p>
         </div>
       </ng-template>
     </c-tabs>
@@ -406,12 +416,14 @@
       <!-- Custom Label Slot -->
       <ng-template #customLabel let-data="data" let-index="index">
         <div class="">
-          <span class="uppercase"
+          <span
+            class="uppercase"
             [ngClass]="[
               index === activeTabItem3
                 ? 'underline text-purple-500 font-bold transition-all ease-in-out duration-300'
                 : 'text-yellow-500'
-            ]">
+            ]"
+          >
             {{ data.label }}
           </span>
         </div>
@@ -420,7 +432,9 @@
       <!-- Tab Content Slot -->
       <ng-template #tabContent let-data="data">
         <div class="p-5 mb-10">
-          <span class="text-xl font-bold text-pretty text-[#eb9e65]">Label personalizado</span><br>
+          <span class="text-xl font-bold text-pretty text-[#eb9e65]"
+            >Label personalizado</span
+          ><br />
           <p class="text-gray-500 dark:text-gray-500">{{ data.content }}</p>
         </div>
       </ng-template>
@@ -438,13 +452,19 @@
       <!-- Tab Content Slot -->
       <ng-template #tabContent>
         <div class="w-full text-left bg-auto overflow-hidden relative">
-          <div class="transition-transform duration-500 ease-in-out whitespace-nowrap flex"
-            [style]="{ transform: 'translateX(-' + (activeTabItem4() * 100) + '%)' }">
+          <div
+            class="transition-transform duration-500 ease-in-out whitespace-nowrap flex"
+            [style]="{
+              transform: 'translateX(-' + activeTabItem4() * 100 + '%)'
+            }"
+          >
             @for(tab of tabsItems4; let index = $index; track index) {
-              <div class="w-full shrink-0 rounded-2xl p-5">
-                <span class="text-xl font-bold text-pretty">Contenido animado</span><br>
-                <p class="text-gray-500 dark:text-gray-500">{{ tab.content }}</p>
-              </div>
+            <div class="w-full shrink-0 rounded-2xl p-5">
+              <span class="text-xl font-bold text-pretty"
+                >Contenido animado</span
+              ><br />
+              <p class="text-gray-500 dark:text-gray-500">{{ tab.content }}</p>
+            </div>
             }
           </div>
         </div>
@@ -456,7 +476,7 @@
 <div
   class="flex flex-col w-full p-5 rounded-lg border dark:border-gray-500 mb-10"
 >
-  <div class="flex items-center justify-start mb-[300px] ms-5">
+  <div class="flex items-center justify-start mb-6 ms-5">
     <span class="text-2xl font-bold text-primary-500 dark:text-primary-300">
       Table Component
     </span>
@@ -467,7 +487,7 @@
       [columns]="columns"
       [isLoading]="isLoading()"
       [actionButtonsConfiguration]="actionButtons"
-      [pagination]="pagination"
+      [pagination]="pagination()"
       [paginationCustomDesign]="false"
       [showPagination]="true"
       [showPerPageOptionsDropdown]="true"
@@ -475,20 +495,50 @@
       [showFirstLastLinks]="true"
       headerAlign="start"
       actionsAlign="center"
+      (onPageChange)="handlePagination($event)"
     >
+      <!-- For custom templates you need to import daitaTableColumn directive in your component -->
+
       <!-- Custom template for a specific column -->
+      <!-- Use this, just if its necessaty to show data in a specific style -->
       <ng-template dataTableColumn="email" let-rowData>
-        <a href="mailto:{{rowData.email}}">{{ rowData.email }}</a>
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-blue-500">mail</span>
+          <a class="text-blue-500" href="mailto:{{ rowData.email }}">{{
+            rowData.email
+          }}</a>
+        </div>
+      </ng-template>
+
+      <ng-template dataTableColumn="status" let-rowData>
+        <p-tag
+          [value]="rowData.status"
+          rounded="full"
+          styleClass="w-full gap-2 capitalize"
+          [icon]="
+            rowData.status === 'active' ? 'pi pi-check-circle' : 'pi pi-ban'
+          "
+          [severity]="rowData.status === 'active' ? 'success' : 'danger'"
+        />
       </ng-template>
 
       <!-- Custom template for actions -->
-      <ng-template dataTableActions let-data>
-        <button class="p-button p-button-success mr-2" (click)="editItem(data)">
-          <span class="material-symbols-outlined">edit</span>
-        </button>
-        <button class="p-button p-button-danger" (click)="deleteItem(data)">
-          <span class="material-symbols-outlined">delete</span>
-        </button>
+      <!-- If we don't really need this we can use the default actions template -->
+      <ng-template dataTableColumn="actions" let-rowData="rowData" let-actions="actions">
+        <div class="flex justify-center items-center gap-2">
+          @for(action of actions; let index = $index; track action.label) {
+            <c-button
+              [iconOnly]="true"
+              [icon]="action.icon"
+              variant="outlined"
+              [class]="action.class"
+              [severity]="action.severity"
+              rounded="full"
+              [label]="action.label"
+              (onClick)="action.onClick(rowData)"
+            />
+          }
+        </div>
       </ng-template>
     </data-table>
   </div>

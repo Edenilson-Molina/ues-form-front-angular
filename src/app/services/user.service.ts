@@ -18,9 +18,9 @@ export class UserService {
 
   private axiosAdapter = getAxiosAdapter();
 
-  getAllUsers(params: PaginationParams): Observable<UserResponse[] | PaginatedResponse<UserResponse[]>> {
+  getAllUsers(params: PaginationParams): Observable<UserResponse[] | PaginatedResponse<UserResponse>> {
     return from(
-      this.axiosAdapter.get<UserResponse[] | PaginatedResponse<UserResponse[]>>(
+      this.axiosAdapter.get<UserResponse[] | PaginatedResponse<UserResponse>>(
       '/users', { params }
       )
       .then((response) => response)
