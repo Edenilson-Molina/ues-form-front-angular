@@ -4,6 +4,7 @@
   [closable]="false"
   position="left"
   styleClass="w-[300px]"
+  (onHide)="setVisible(false)"
 >
     <ng-template #headless class="flex flex-col h-[95vh] lg:h-screen bg-white dark:bg-zinc-700">
       <div class="w-full flex justify-end">

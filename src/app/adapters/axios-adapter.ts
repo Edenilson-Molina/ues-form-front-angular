@@ -4,21 +4,24 @@ import axios, {
   type AxiosResponse,
   type AxiosError,
 } from 'axios';
-import type { HttpAdapter } from '@interfaces/index';
 
 import { environment } from '@environments/environment';
 
-import { sendNotification, ToastType } from './sonner-adapter';
 import { Session } from '@interfaces/store';
 import { inject } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { isLoading } from '@app/store/auth.actions';
-import { LOCAL_STORAGE } from '@app/utils/constants.utils';
+import { Router } from '@angular/router';
+
+import { sendNotification, ToastType } from '@adapters/sonner-adapter';
+import { isLoading, login, resetState } from '@store/auth.actions';
+
+import type { HttpAdapter } from '@interfaces/index';
 
 export class AxiosAdapter implements HttpAdapter<AxiosRequestConfig> {
   private axios: AxiosInstance;
   private store = inject(Store);
-  private sessionStore!: Session
+  private router = inject(Router);
+  private sessionStore!: Session;
 
   constructor() {
     this.store.select('session').subscribe((session) => {
@@ -26,7 +29,9 @@ export class AxiosAdapter implements HttpAdapter<AxiosRequestConfig> {
     });
 
     this.axios = axios.create({
-      baseURL: `${environment.api}/${environment.apiVersion}` || 'http://localhost:4000/api/v1',
+      baseURL:
+        `${environment.api}/${environment.apiVersion}` ||
+        'http://localhost:4000/api/v1',
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
@@ -105,7 +110,6 @@ export class AxiosAdapter implements HttpAdapter<AxiosRequestConfig> {
   private async handleRequest<TResponse>(
     request: Promise<AxiosResponse<TResponse>>
   ): Promise<TResponse> {
-
     try {
       const response = await request;
       this.store.dispatch(isLoading(false));
@@ -117,7 +121,7 @@ export class AxiosAdapter implements HttpAdapter<AxiosRequestConfig> {
       let type: ToastType = 'error';
       let details: string[] = [];
 
-      if(error.code === 'ERR_NETWORK') {
+      if (error.code === 'ERR_NETWORK') {
         summary = 'Error de conexión';
         message = 'No se pudo conectar con el servidor';
       }
@@ -130,36 +134,31 @@ export class AxiosAdapter implements HttpAdapter<AxiosRequestConfig> {
           message = 'Error';
           break;
         case 401:
-          if (!localStorage.getItem(LOCAL_STORAGE.REFRESH_TOKEN)) {
-            summary = 'Advertencia';
-            message = error.response.data.message ?? 'Acceso no autorizado';
-          } else {
+          summary = 'Advertencia';
+          message = error.response.data.message ?? 'Acceso no autorizado';
+          if (this.sessionStore?.refreshToken) {
             try {
               const response = await axios.post(
                 `${environment.api}/v1/auth/refresh-token`,
                 {
-                  refreshToken: localStorage.getItem(
-                    LOCAL_STORAGE.REFRESH_TOKEN
-                  ),
+                  refreshToken: this.sessionStore.refreshToken,
                 }
               );
-              localStorage.setItem(
-                LOCAL_STORAGE.ACCESS_TOKEN,
-                response.data.accesToken
-              );
-              localStorage.setItem(
-                LOCAL_STORAGE.REFRESH_TOKEN,
-                response.data.refreshToken
+              this.store.dispatch(
+                login(response.data.accessToken, response.data.refreshToken)
               );
 
               const config = error.config;
               config.headers.Authorization = `Bearer ${response.data.accessToken}`;
-              return axios.request(config);
-            } catch (error) {
-              localStorage.removeItem(LOCAL_STORAGE.ACCESS_TOKEN);
-              localStorage.removeItem(LOCAL_STORAGE.REFRESH_TOKEN);
-              window.location.href = '/auth/login';
-              return Promise.reject(error);
+              return (await axios.request(config)).data;
+            } catch (error: any) {
+              this.store.dispatch(resetState());
+              this.router.navigate(['login']);
+              if (error.response?.data?.message && ((error.response?.status >= 400 && error.response?.status < 500))) {
+                if (error.response?.data?.details) {
+                  details = error.response?.data?.details;
+                }
+              }
             }
           }
           break;
@@ -167,14 +166,13 @@ export class AxiosAdapter implements HttpAdapter<AxiosRequestConfig> {
           if (error.response?.status >= 400 && error.response?.status < 500) {
             if (error.response?.data?.message) {
               message = error.response?.data?.message;
-              details = error.response?.data?.details;
-            } else if (error.response?.data?.error) {
-              message = error.response?.data?.error;
-              details = error.response?.data?.details;
+              if (error.response?.data?.details) {
+                details = error.response?.data?.details;
+              }
             }
             summary = 'Advertencia';
           } else {
-            if(!message) message = error.response.statusText;
+            if (!message) message = error.response.statusText;
           }
           break;
       }
@@ -186,7 +184,7 @@ export class AxiosAdapter implements HttpAdapter<AxiosRequestConfig> {
         message: message,
       });
 
-      if(details.length > 0) {
+      if (details.length > 0) {
         details.forEach((detail) => {
           sendNotification({
             type: type,
