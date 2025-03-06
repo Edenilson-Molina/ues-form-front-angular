@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 
 import { Session } from '@interfaces/store';
 
-import { primaryColors, secondaryColors, successColors, infoColors, warningColors, dangerColors } from '@utils/useColorPalette';
+import { primaryColors, secondaryColors, successColors, infoColors, warningColors, dangerColors } from '@utils/color-palette';
 
 @Component({
   selector: 'c-button',
@@ -70,7 +70,7 @@ export class ButtonComponent {
       case 'solid':
         return this.darMode() ? '300' : '600';
       case 'outlined':
-        return this.darMode() ? '950' : '50';
+        return this.darMode() ? '950' : '100';
       case 'text':
         return this.darMode() ? '950' : '100';
       default:

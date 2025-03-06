@@ -3,7 +3,7 @@ import { RouterOutlet } from '@angular/router';
 
 import { NgxSonnerToaster } from 'ngx-sonner';
 
-import { changeHookColors } from '@utils/useColorPalette';
+import { changeAppColors } from '@utils/color-palette';
 import { colorPaletteMap } from '@utils/color-palette-map';
 
 @Component({
@@ -29,7 +29,7 @@ export class AppComponent {
     const colorPaletteFromLocalStorage = JSON.parse((localStorage.getItem('color-palette') as string));
     if (colorPaletteFromLocalStorage) {
       // Asignar los colores de la aplicación (hook que exporta el uso de los hexadecimales)
-      changeHookColors(colorPaletteFromLocalStorage);
+      changeAppColors(colorPaletteFromLocalStorage);
 
       // Asignar los colores de la aplicación a las variables CSS de tailwindcss
       Object.keys(colorPaletteMap).forEach((palette) => {

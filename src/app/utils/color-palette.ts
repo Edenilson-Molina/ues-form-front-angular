@@ -12,7 +12,7 @@ export let warningColors: Colors = {};
 export let dangerColors: Colors = {};
 
 // Función para cambiar los colores que hacen referencia a este archivo
-export const changeHookColors = (
+export const changeAppColors = (
   colors: {
     primary: Colors,
     secondary: Colors,

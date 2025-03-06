@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, ContentChild, EventEmitter, Input, Output, TemplateRef, WritableSignal } from '@angular/core';
 
-import { primaryColors } from '@utils/useColorPalette';
+import { primaryColors } from '@utils/color-palette';
 
 @Component({
   selector: 'c-tabs',
