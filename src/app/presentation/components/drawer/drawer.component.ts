@@ -44,19 +44,19 @@ export class DrawerComponent {
 
   menu: Route[] = [
     {
-      name: 'Perfil',
-      path: '/dashboard/perfil',
+      name: 'Usuarios',
+      path: '/dashboard/users',
       icon: 'person',
     },
     {
-      name: 'Experiencia Laboral',
-      path: '/dashboard/experiencia-laboral',
-      icon: 'business_center',
+      name: 'Tareas',
+      path: '/dashboard/educacion',
+      icon: 'editor_choice',
     },
     {
-      name: 'Educación',
-      path: '/dashboard/educacion',
-      icon: 'school',
+      name: 'Pruebas de componentes',
+      path: '/dashboard/test',
+      icon: 'experiment',
     },
   ];
 

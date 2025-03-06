@@ -20,6 +20,10 @@ export const routes: Routes = [
       {
         path: 'test',
         loadComponent: () => import('./presentation/modules/test/test.component')
+      },
+      {
+        path: 'users',
+        loadComponent: () => import('./presentation/modules/users/views/user-page/user-page.component')
       }
     ]
   }

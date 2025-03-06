@@ -9,6 +9,7 @@ import {
   PaginationParams,
 } from '@interfaces/common/pagination.interface';
 import { UserResponse } from '@interfaces/responses/user.dto';
+import { UserParams } from '@app/interfaces/request/user.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +19,7 @@ export class UserService {
 
   private axiosAdapter = getAxiosAdapter();
 
-  getAllUsers(params: PaginationParams): Observable<UserResponse[] | PaginatedResponse<UserResponse>> {
+  getAllUsers(params: PaginationParams & UserParams): Observable<UserResponse[] | PaginatedResponse<UserResponse>> {
     return from(
       this.axiosAdapter.get<UserResponse[] | PaginatedResponse<UserResponse>>(
       '/users', { params }

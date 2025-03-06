@@ -259,19 +259,6 @@ export default class TestComponent implements OnInit {
     },
   ];
 
-  getStatusClass(status: string) {
-    switch (status) {
-      case 'active':
-        return 'bg-green-100 dark:bg-green-400 text-green-800 dark:text-green-950';
-      case 'inactive':
-        return 'bg-red-100 dark:bg-red-400 text-red-800 dark:text-red-950';
-      case 'pending':
-        return 'bg-yellow-100 darl:bg-yellow-300 text-yellow-800 dark:text-yellow-950';
-      default:
-        return '';
-    }
-  }
-
   editItem(item: any) {
     console.log('Edit item:', item);
   }
