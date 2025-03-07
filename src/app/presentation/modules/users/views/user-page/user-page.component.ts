@@ -71,10 +71,6 @@ export default class UserPageComponent {
           } else {
             this.users.set(response);
           }
-
-          this.users().forEach((user, index) => {
-            user.status = index % 2 === 0 ? 'active' : 'inactive';
-          });
         });
     });
   }
@@ -99,26 +95,25 @@ export default class UserPageComponent {
     { field: 'id', header: 'ID', sortable: true },
     { field: 'name', header: 'Nombre', sortable: true },
     { field: 'email', header: 'Correo electrónico', sortable: true },
-    { field: 'status', header: 'Status', sortable: true },
   ];
 
   actionButtons: ActionButtonConfiguration[] = [
     {
       icon: 'visibility',
       label: 'Ver usuario',
-      class: 'text-blue-500 hover:text-blue-600 bg-transparent',
+      class: 'text-blue-500 dark:text-blue-400 bg-transparent',
       onClick: (data: any) => console.log('View item:', data),
     },
     {
       icon: 'edit',
       label: 'Editar usuario',
-      class: 'text-orange-500 hover:text-orange-600 bg-transparent',
+      class: 'text-orange-500 dark:text-orange-400 bg-transparent',
       onClick: (data: any) => console.log('Edit item:', data),
     },
     {
       icon: 'delete',
       label: 'Eliminar usuario',
-      class: 'text-red-500 hover:text-red-600 bg-transparent',
+      class: 'text-red-500 dark:text-red-400 bg-transparent',
       onClick: (data: any) => console.log('Delete item:', data),
     },
   ];
