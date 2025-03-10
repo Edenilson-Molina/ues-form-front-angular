@@ -1,34 +1,21 @@
-<p class="text-3xl text-red-500 font-bold">home works!</p>
-<p-button label="Click me" icon="pi pi-check" (onClick)="click()"></p-button>
-<p-button label="Save" icon="pi pi-check" iconPos="right" />
-<p-colorpicker [(ngModel)]="color" />
-<p-datepicker [(ngModel)]="date" />
-<div class="flex justify-center px-4 lg:px-10 pb-6 w-full">
-  <form [formGroup]="userForm" (ngSubmit)="submit()" class="w-full max-w-2xl">
-    <app-custom-input
-      [parentForm]="userForm"
-      label="Nombre de usuario"
-      fieldName="username"
-      formControlName="username"
-    />
-
-    <app-custom-input
-      [parentForm]="userForm"
-      label="Correo electrónico"
-      placeholder="example@gmail.com"
-      fieldName="email"
-      formControlName="email"
-      [type]="'email'"
-    />
-
-    <app-custom-input
-      [parentForm]="userForm"
-      label="Edad"
-      type="number"
-      fieldName="age"
-      formControlName="age"
-    />
-
-    <button type="submit" class="!bg-blue-500">Submit</button>
-  </form>
+<div class="flex-col justify-center items-center">
+  <div class="h-full w-full flex justify-center items-center mt-10 md:mt-0">
+    <div class="flex-col mt:10 md:mt-10 lg:mt-48">
+      <div class="flex w-full justify-center">
+        <div class="flex-col">
+          <span class="py-3 px-4 text-ellipsis text-4xl font-bold cursor-default border-none border-b-4 bg-clip-text text-transparent bg-gradient-to-r from-fuchsia-500 via-[#c038ff] to-violet-800">
+            Plantilla Angular
+          </span>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 items-center justify-center gap-x-14 gap-y-10 sm:gap-y-6 mt-10 md:mt-10 lg:mt-10 mb-20 md:mb-0">
+        <div class="flex justify-center w-full"><img src="assets/images/angular-icon.png" class="w-28 h-28 animation-for-vue text-center" /></div>
+        <div class="flex justify-center w-full"><img src="assets/images/ngrx-logo.svg" class="object-contain w-28 h-28 flash-light-animation" /></div>
+        <div class="flex justify-center w-full"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Typescript_logo_2020.svg/2048px-Typescript_logo_2020.svg.png " class="object-contain w-28 h-28 pulse-animation" /></div>
+        <div class="flex justify-center w-full"><img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg" class="object-contain w-28 h-28 shadow-color-animation" /></div>
+        <div class="flex justify-center w-full"><img src="assets/images/luxon.png" class="object-cover w-28 h-28 floating-animation" /></div>
+        <div class="flex justify-center w-full"><img src="https://i0.wp.com/www.primefaces.org/wp-content/uploads/2018/05/primeng-logo.png?ssl=1" class="object-contain w-28 h-28 glitch-animation invert-0 dark:invert-0" /></div>
+      </div>
+    </div>
+  </div>
 </div>
