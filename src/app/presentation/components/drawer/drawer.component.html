@@ -37,6 +37,7 @@
                       [routerLink]="[route.path]"
                       (click)="setVisible(false)"
                       routerLinkActive="bg-slate-200 dark:bg-neutral-800"
+                      [routerLinkActiveOptions]="{ exact: true }"
                       class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-slate-200 dark:text-surface-0 dark:hover:bg-slate-800 duration-150 transition-colors"
                     >
                       <span class="material-symbols-outlined mr-1">{{

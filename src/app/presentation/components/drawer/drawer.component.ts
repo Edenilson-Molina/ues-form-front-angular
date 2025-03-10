@@ -44,6 +44,11 @@ export class DrawerComponent {
 
   menu: Route[] = [
     {
+      name: 'Inicio',
+      path: '/dashboard',
+      icon: 'home',
+    },
+    {
       name: 'Usuarios',
       path: '/dashboard/users',
       icon: 'person',
