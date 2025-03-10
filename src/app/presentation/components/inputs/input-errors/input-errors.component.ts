@@ -13,7 +13,7 @@ export class InputErrorsComponent {
   @Input({ required: true }) label: string = '';
   @Input() errorMessageClass: string = 'text-red-500';
 
-  errorStyles = computed(() => `text-red-500 dark:text-red-400 pl-1 -mt-3 ${this.errorMessageClass}`);
+  errorStyles = computed(() => `block text-red-500 dark:text-red-400 pl-1 mt-1 leading-[15px] ${this.errorMessageClass}`);
 
   getJoiErrorMessage(error: string): string {
     return error ? error.replace(/"([^]+)"/, this.label) : '';

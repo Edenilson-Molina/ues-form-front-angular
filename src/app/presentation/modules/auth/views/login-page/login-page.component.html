@@ -43,12 +43,13 @@
               class="w-full"
             />
           </p-iconfield>
-          <input-errors
-            [formField]="getFormField('email')"
-            label="correo electrónico"
-            propertyName="email"
-            color="text-red-400"
-          />
+          @if(getFormField('email').invalid && (getFormField('email').dirty || getFormField('email').touched)) {
+            <input-errors
+              [errors]="getFormField('email').errors"
+              label="correo electrónico"
+              errorMessageClass="!text-red-400"
+            />
+          }
         </div>
         <div class="text-start">
           <p-iconfield>
@@ -64,12 +65,13 @@
               [fluid]="true"
             ></p-password>
           </p-iconfield>
-          <input-errors
-            [formField]="getFormField('password')"
-            label="Contraseña"
-            propertyName="password"
-            color="text-red-400"
-          />
+          @if(getFormField('password').invalid && (getFormField('password').dirty || getFormField('password').touched)) {
+            <input-errors
+              [errors]="getFormField('password').errors"
+              label="contraseña"
+              errorMessageClass="!text-red-400"
+            />
+          }
         </div>
       </ng-template>
       <ng-template #footer>
