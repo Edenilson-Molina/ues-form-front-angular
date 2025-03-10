@@ -1,0 +1,138 @@
+<div
+  [class]="containerClass"
+  [style]="containerStyle"
+  [ngClass]="
+    typeLabel === 'floatLabel' && floatLabelVariant === 'over' ? 'pt-5' : 'pt-3'
+  "
+>
+  @if(typeLabel === 'floatLabel') {
+
+    <p-floatlabel [variant]="floatLabelVariant">
+      <p-icon-field>
+        @if(iconPosition === 'left'){
+        <p-inputicon>
+          <span
+            class="material-symbols-outlined -mt-1 -ml-0.5 mr-0.5"
+            [ngClass]="{
+              iconClass: true,
+              'text-red-500 dark:text-red-400': hasErrors,
+              'text-surface-500': !hasErrors
+            }"
+            [ngStyle]="{ color: iconColor }"
+          >
+            {{ icon }}
+          </span>
+        </p-inputicon>
+        }
+
+        <input
+          pInputText
+          #inputControl="ngModel"
+          [id]="id"
+          [(ngModel)]="value"
+          [type]="type"
+          (input)="onInputChange($event)"
+          [fluid]="true"
+          [placeholder]="placeholder"
+          [ngClass]="{
+            inputClass: true,
+            'ng-dirty ng-invalid': hasErrors
+          }"
+          [ngStyle]="inputStyle"
+          (blur)="onTouched()"
+          [disabled]="disabled"
+          [readonly]="readonly"
+          [variant]="variant"
+          [pSize]="size!"
+        />
+        @if(iconPosition === 'right'){
+        <p-inputicon>
+          <span
+            class="material-symbols-outlined -mt-1"
+            [ngClass]="{
+              iconClass: true,
+              'text-red-500 dark:text-red-400 ': hasErrors,
+              'text-surface-500': !hasErrors
+            }"
+            [ngStyle]="{ color: iconColor }"
+          >
+            {{ icon }}
+          </span>
+        </p-inputicon>
+        }
+      </p-icon-field>
+      <label [for]="id">{{ label }}{{ required() ? " *" : "" }}</label>
+    </p-floatlabel>
+  } @else {
+    <label
+      [for]="id"
+      [ngClass]="{
+        'text-red-500 dark:text-red-400 ': hasErrors,
+        'text-surface-500': !hasErrors
+      }"
+      class="text-primary-700  font-bold mb-2 dark:text-primary-200"
+    >
+        {{ label }}{{ required() ? " *" : "" }}
+    </label>
+    <p-icon-field>
+      @if(iconPosition === 'left'){
+      <p-inputicon>
+        <span
+          class="material-symbols-outlined -mt-1 -ml-0.5 mr-0.5"
+          [ngClass]="{
+            iconClass: true,
+            'text-red-500 dark:text-red-400 ': hasErrors,
+            'text-surface-500': !hasErrors
+          }"
+          [ngStyle]="{ color: iconColor }"
+        >
+          {{ icon }}
+        </span>
+      </p-inputicon>
+      }
+
+      <input
+        pInputText
+        #inputControl="ngModel"
+        [id]="id"
+        [(ngModel)]="value"
+        [type]="type"
+        (input)="onInputChange($event)"
+        [fluid]="true"
+        [placeholder]="placeholder"
+        [ngClass]="{
+          inputClass: true,
+          'ng-dirty ng-invalid': hasErrors
+        }"
+        [ngStyle]="inputStyle"
+        (blur)="onTouched()"
+        [disabled]="disabled"
+        [readonly]="readonly"
+        [variant]="variant"
+        [pSize]="size!"
+      />
+      @if(iconPosition === 'right'){
+      <p-inputicon>
+        <span
+          class="material-symbols-outlined -mt-1"
+          [ngClass]="{
+            iconClass: true,
+            'text-red-500 dark:text-red-400 ': hasErrors,
+            'text-surface-500': !hasErrors
+          }"
+          [ngStyle]="{ color: iconColor }"
+        >
+          {{ icon }}
+        </span>
+      </p-inputicon>
+      }
+    </p-icon-field>
+  }
+  @if(hasErrors){
+    <input-errors
+      [errors]="formControl.errors"
+      [label]="label.toLocaleLowerCase()"
+      [errorMessageClass]="errorMessageClass"
+    />
+  }
+</div>

@@ -1,23 +1,67 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, Input } from '@angular/core';
-import { ReactiveFormsModule, FormControl, AbstractControl } from '@angular/forms';
 
 @Component({
   selector: 'input-errors',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule],
   templateUrl: './input-errors.component.html',
   styles: ``,
 })
 export class InputErrorsComponent {
-  @Input({ required: true }) formField!: FormControl | AbstractControl;
-  @Input({ required: true }) propertyName!: string;
+  @Input({ required: true }) errors!: { [key: string]: any } | null | undefined;
   @Input({ required: true }) label: string = '';
-  @Input() color = 'text-red-600'
+  @Input() errorMessageClass: string = 'text-red-500';
 
-  errorStyles = computed(() => `${this.color} text-[0.7rem] pl-1 -mt-0.5`);
+  errorStyles = computed(() => `text-red-500 dark:text-red-400 pl-1 -mt-3 ${this.errorMessageClass}`);
 
   getJoiErrorMessage(error: string): string {
     return error ? error.replace(/"([^]+)"/, this.label) : '';
+  }
+
+  getErrorMessage(): string {
+    console.log(this.errors);
+    if(this.errors){
+      if (this.errors['required']) {
+        return `El campo ${this.label} es requerido.`;
+      }
+
+      if (this.errors['noEmptyString']) {
+        return 'Ingresa un valor válido';
+      }
+
+      if (this.errors['email']) {
+        return 'Formato inválido del email';
+      }
+
+      if (this.errors['noWhitespaceRequired']) {
+        return 'No se permiten espacios';
+      }
+
+      if (this.errors['minlength']) {
+        return `Campo ${this.label} debe tener al menos ${this.errors?.['minlength'].requiredLength} caracteres.`;
+      }
+
+      if (this.errors['maxlength']) {
+        return `Campo ${this.label} debe tener máximo ${this.errors?.['maxlength'].requiredLength} caracteres.`;
+      }
+
+      if (this.errors['pattern']) {
+        return `Campo ${this.label} debe respetar el formato ${this.errors?.['pattern'].requiredPattern}.`;
+      }
+
+      if (this.errors['min']) {
+        return `Campo ${this.label} debe disponer de un valor mínimo de ${this.errors?.['min'].min}.`;
+      }
+
+      if (this.errors['max']) {
+        return `Campo ${this.label} debe disponer de un valor máximo de ${this.errors?.['max'].max}.`;
+      }
+
+      if (this.errors['joiError']) {
+        return this.getJoiErrorMessage(this.errors?.['joiError']);
+      }
+    }
+    return '';
   }
 }
