@@ -1,0 +1,60 @@
+<modal
+    [visible]="visible"
+    [closable]="true"
+    (onClose)="onCloseModal()"
+    styleClass="w-[95%] sm:w-[80%] md:w-[80%] lg:w-[55%] xl:w-[40%] bg-auto"
+    [style]="{ 'border-radius': '20px' }"
+  >
+    <header class="w-full flex justify-center items-center">
+      <h1 class="text-xl font-bold text-gray-800 dark:text-gray-200 ms-10">
+        Crear usuario
+      </h1>
+    </header>
+    <content>
+      <div class="flex w-full justify-center items-center">
+        <form [formGroup]="form" class="flex flex-col w-full gap-3">
+          <c-float-input
+            id="email"
+            [formControl]="getControlForm('email')"
+            formControlName="email"
+            type="email"
+            label="Email"
+            containerClass="w-full"
+            required
+          />
+          <c-float-input
+            id="name"
+            [formControl]="getControlForm('name')"
+            formControlName="name"
+            label="Nombre"
+            containerClass="w-full"
+            required
+          />
+          <c-float-password
+            id="password"
+            icon="lock"
+            [formControl]="getControlForm('password')"
+            formControlName="password"
+            label="Contraseña"
+            containerClass="w-full"
+            required
+          />
+        </form>
+      </div>
+    </content>
+    <footer class="flex w-full justify-center items-center gap-2 mt-4">
+      <c-button
+        severity="primary"
+        variant="solid"
+        label="Aceptar"
+        (onClick)="submit()"
+        [loading]="isLoading()"
+      />
+      <c-button
+        severity="danger"
+        variant="solid"
+        label="Cancelar"
+        (onClick)="onCloseModal()"
+      />
+    </footer>
+  </modal>
