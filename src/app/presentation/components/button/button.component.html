@@ -24,7 +24,7 @@
 
      <!-- Icono a la izquierda -->
     @if(icon && iconPosition === 'left'){
-      <span class="material-symbols-outlined !text-2xl order-2" [ngClass]="iconOnly ? 'me-0' : 'me-1'">
+      <span class="material-symbols-outlined !text-xl order-2 -m-0.5" [ngClass]="iconOnly ? 'me-0' : 'me-1'">
         <span [ngClass]="loading ? 'opacity-0' : ''">
           {{ icon }}
         </span>
@@ -43,7 +43,7 @@
     <!-- Icono a la derecha -->
 
     @if(icon && iconPosition === 'right'){
-      <span class="material-symbols-outlined !text-2xl ms-1 order-1" [ngClass]="iconOnly ? 'me-0' : 'me-1'">
+      <span class="material-symbols-outlined !text-xl order-1 -m-0.5" [ngClass]="iconOnly ? 'me-0' : 'me-1'">
         <span [ngClass]="loading ?
           'opacity-0' : ''">
           {{ icon }}

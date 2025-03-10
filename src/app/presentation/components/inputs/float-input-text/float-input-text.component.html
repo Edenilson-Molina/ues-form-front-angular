@@ -1,8 +1,6 @@
 <div
-  [class]="containerClass"
-  [style]="containerStyle"
   [ngClass]="
-    typeLabel === 'floatLabel' && floatLabelVariant === 'over' ? 'pt-5' : 'pt-3'
+    typeLabel === 'floatLabel' && floatLabelVariant === 'over' ? 'pt-3' : 'pt-1.5'
   "
 >
   @if(typeLabel === 'floatLabel') {
@@ -12,7 +10,7 @@
         @if(iconPosition === 'left'){
         <p-inputicon>
           <span
-            class="material-symbols-outlined -mt-1 -ml-0.5 mr-0.5"
+            class="material-symbols-outlined -mt-1 -ml-0.5 mr-0.5 !z-50"
             [ngClass]="{
               iconClass: true,
               'text-red-500 dark:text-red-400': hasErrors,
@@ -78,7 +76,7 @@
       @if(iconPosition === 'left'){
       <p-inputicon>
         <span
-          class="material-symbols-outlined -mt-1 -ml-0.5 mr-0.5"
+          class="material-symbols-outlined -mt-1 -ml-0.5 mr-0.5 !z-50"
           [ngClass]="{
             iconClass: true,
             'text-red-500 dark:text-red-400 ': hasErrors,

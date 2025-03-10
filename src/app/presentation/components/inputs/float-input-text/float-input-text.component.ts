@@ -1,25 +1,11 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  forwardRef,
-  inject,
-  input,
-  Input,
-  Optional,
-  Self,
-} from '@angular/core';
+import { Component, forwardRef, input, Input } from '@angular/core';
 import {
   FormsModule,
   ReactiveFormsModule,
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
-  ValidationErrors,
-  AbstractControl,
-  Form,
   FormControl,
-  NgControl,
 } from '@angular/forms';
 
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -27,8 +13,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { FluidModule } from 'primeng/fluid';
-import { InputErrorsComponent } from '../input-errors/input-errors.component';
-import { Valid } from 'luxon/src/_util';
+
+import { InputErrorsComponent } from '@components/inputs/input-errors/input-errors.component';
 
 @Component({
   selector: 'c-float-input',
@@ -53,6 +39,10 @@ import { Valid } from 'luxon/src/_util';
       multi: true,
     },
   ],
+  host: {
+    '[class]': 'containerClass',
+    '[style]': 'containerStyle',
+  },
 })
 export class FloatInputTextComponent implements ControlValueAccessor {
   value: string | null = '';

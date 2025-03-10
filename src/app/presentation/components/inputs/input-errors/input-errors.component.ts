@@ -20,7 +20,6 @@ export class InputErrorsComponent {
   }
 
   getErrorMessage(): string {
-    console.log(this.errors);
     if(this.errors){
       if (this.errors['required']) {
         return `El campo ${this.label} es requerido.`;
