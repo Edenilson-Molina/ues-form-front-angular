@@ -1,85 +1,119 @@
-import { Component, Input, forwardRef } from '@angular/core';
-import { DropdownModule } from 'primeng/dropdown';
-import {
-  FormControl,
-  FormGroup,
-  NG_VALUE_ACCESSOR,
-  ReactiveFormsModule,
-  FormsModule,
-  FormArray,
-} from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { InputErrorsComponent } from '../input-errors/input-errors.component';
+import { Component, ContentChild, forwardRef, input, Input, TemplateRef } from '@angular/core';
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  ControlValueAccessor,
+  NG_VALUE_ACCESSOR,
+  FormControl,
+} from '@angular/forms';
+
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { SelectModule } from 'primeng/select';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { FluidModule } from 'primeng/fluid';
+
+import { InputErrorsComponent } from '@components/inputs/input-errors/input-errors.component';
 
 @Component({
-  selector: 'app-select',
+  selector: 'c-select',
   standalone: true,
-  imports: [DropdownModule, ReactiveFormsModule, CommonModule, FormsModule, InputErrorsComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    SelectModule,
+    FloatLabelModule,
+    IconFieldModule,
+    InputIconModule,
+    FluidModule,
+    InputErrorsComponent,
+  ],
   templateUrl: './select.component.html',
-  styles: `
-    ::ng-deep .p-dropdown-panel .p-dropdown-header .p-dropdown-filter {
-      border-color: white;
-      color: #1a202c;
-      placeholder-color: #cbd5e0;
-      padding-left: 12px;
-      padding-right: 36px;
-      padding-top: 12px;
-      padding-bottom: 12px;
-      font-size: 0.875rem;
-      border-radius: 0.25rem;
-      box-shadow:
-        0 1px 3px rgba(0, 0, 0, 0.1),
-        0 1px 2px rgba(0, 0, 0, 0.06);
-      width: 100%;
-    }
-  `,
+  styles: ``,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => SelectComponent),
+      useExisting: forwardRef(() => FloatSelectComponent),
       multi: true,
     },
   ],
+  host: {
+    '[class]': 'containerClass',
+    '[style]': 'containerStyle',
+  },
 })
-export class SelectComponent {
-  public value: string | number = '';
-  public changed: (value: string | number) => void = () => {};
-  public touched: () => void = () => {};
+export class FloatSelectComponent implements ControlValueAccessor {
+  value: string | null = '';
+  onChange: (value: string | null) => void = () => {};
+  onTouched: () => void = () => {};
 
-  @Input() parentForm: FormGroup | null = null;
-  @Input() arrayField: FormArray | null = null;
-  @Input() position: number = 0;
-  @Input() fieldName: string = '';
-  @Input() selectOptions: Array<any> = [];
-  @Input() isDisabled: boolean = false;
-  @Input() rounded: string = 'lg';
-  @Input() label: string = '';
-  @Input() required: boolean = false;
-  @Input() filter: boolean = false;
-  @Input() filterBy: string = 'label';
+  // Input properties
+  @Input() id: string = '';
+  @Input() containerClass: string = '';
+  @Input() containerStyle?: Record<string, string>;
+  @Input() icon?: string;
+  @Input() iconColor?: string;
+  @Input() iconClass?: string;
   @Input() loading: boolean = false;
+  @Input() options: any[] = [];
+  @Input() emptyMessage: string = 'No se encuentran resultados';
+  @Input() emptyFilterMessage: string = 'No se encuentran resultados';
+  @Input() filter: boolean = false;
+  @Input() filterMatchMode: 'startsWith' | 'contains' | 'endsWith' | 'equals' | 'notEquals' | 'in' | 'lt' | 'lte' | 'gt' | 'gte' = 'contains';
+  @Input() checkmark: boolean = true;
+  @Input() optionLabel?: string;
+  @Input() optionValue?: string;
+  @Input() label: string = '';
+  @Input() typeLabel: 'label' | 'floatLabel' = 'floatLabel';
+  @Input() floatLabelVariant: 'in' | 'on' | 'over' = 'on';
+  @Input() labelClass: string = '';
+  @Input() placeholder: string = '';
+  @Input() panelClass?: string;
+  @Input() panelStyle?: Record<string, string>;
+  @Input() inputClass?: string;
+  @Input() inputStyle?: Record<string, string>;
+  @Input() errorMessageClass: string = '';
+  @Input() disabled: boolean = false;
+  @Input() readonly: boolean = false;
+  @Input() variant: 'filled' | 'outlined' = 'filled';
+  @Input() size?: 'small' | 'large';
+  @Input() formControl!: FormControl
 
-  public writeValue(value: string): void {
-    this.value = value;
+  required = input(false, {
+    transform: (value: boolean | string) =>
+      typeof value === 'string' ? value === '' : value,
+  });
+
+  @ContentChild('item') itemTemplate!: TemplateRef<any>;
+  @ContentChild('selectedItem') selectedItemTemplate!: TemplateRef<any>;
+  @ContentChild('header') headerTemplate!: TemplateRef<any>;
+  @ContentChild('footer') footerTemplate!: TemplateRef<any>;
+
+  get hasErrors() {
+    return this.formControl?.invalid && (this.formControl?.dirty || this.formControl?.touched);
+  };
+
+  public writeValue(value: string | null): void {
+    this.value = value || '';
   }
 
-  get formField(): FormControl {
-    if (this.arrayField) {
-      return this.arrayField.controls[this.position].get(this.fieldName ?? '') as FormControl;
-    }
-    return this.parentForm?.get(this.fieldName ?? '') as FormControl;
+  public registerOnChange(fn: (value: string | null) => void): void {
+    this.onChange = fn;
   }
 
-  public onChange(event: any): void {
-    const value: string | number = event.value;
-    this.changed(value);
+  public registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
   }
 
-  public registerOnChange(fn: any): void {
-    this.changed = fn;
+  public onInputChange(event: Event): void {
+    const newValue = (event.target as HTMLInputElement).value;
+    this.value = newValue;
+    this.onChange(newValue);
   }
 
-  public registerOnTouched(fn: any): void {
-    this.touched = fn;
+  public onInputBlur(): void {
+    this.onTouched();
   }
 }

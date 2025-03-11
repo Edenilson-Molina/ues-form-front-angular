@@ -473,6 +473,105 @@
   </div>
 </div>
 
+<div class="grid grid-cols-1 xl:grid-cols-2 w-full">
+  <section class="flex flex-col p-5 rounded-lg border dark:border-gray-500 mb-10">
+    <div class="flex justify-start flex-wrap gap-3 md:gap-0 mb-4">
+      <div class="flex items-center justify-start mb-4 ms-5">
+        <span class="text-2xl font-bold text-primary-500 dark:text-primary-300 text-left">
+          SelectComponent
+        </span>
+      </div>
+      <div class="flex flex-col w-full gap-5">
+        <c-select
+          id="cities"
+          [(ngModel)]="selection1"
+          [options]="cities"
+          [filter]="false"
+          [checkmark]="true"
+          [loading]="true"
+          floatLabelVariant="over"
+          typeLabel="floatLabel"
+          label="Seleccione una ciudad"
+          optionLabel="name"
+          optionValue="code"
+          [disabled]="false"
+          size="small"
+        />
+
+        <c-select
+          id="cities2"
+          [(ngModel)]="selection2"
+          [options]="cities"
+          [filter]="true"
+          icon="map"
+          iconColor="white"
+          inputClass="bg-primary-200 bg-primary-400"
+          labelClass="text-primary-700 font-bold dark:text-white"
+          [checkmark]="true"
+          [loading]="false"
+          typeLabel="floatLabel"
+          floatLabelVariant="in"
+          label="Seleccione una ciudad"
+          optionLabel="name"
+          optionValue="code"
+          [disabled]="false"
+        />
+
+        <c-select
+          id="cities3"
+          [(ngModel)]="selection3"
+          [options]="countries"
+          [filter]="true"
+          [checkmark]="true"
+          [loading]="false"
+          typeLabel="floatLabel"
+          label="Seleccione una ciudad"
+          optionLabel="name"
+          optionValue="code"
+          [disabled]="false"
+          panelClass="bg-primary-100 dark:bg-primary-950"
+        >
+          <ng-template #selectedItem let-selectedItem>
+            <div class="flex items-center gap-2" *ngIf="selectedItem">
+              <img
+                  [src]="'https://flagsapi.com/' + selectedItem.code  + '/flat/64.png'"
+                  [class]="'flag flag-' + selectedItem.code.toLowerCase()"
+                  style="width: 18px"
+              />
+              <div>{{ selectedItem.name }}</div>
+            </div>
+          </ng-template>
+
+          <ng-template #item let-item>
+            <div class="flex items-center gap-2">
+              <img
+                  [src]="'https://flagsapi.com/' + item.code  + '/flat/64.png'"
+                  [class]="'flag flag-' + item.code.toLowerCase()"
+                  style="width: 18px"
+              />
+              <div>{{ item.name }}</div>
+            </div>
+          </ng-template>
+        </c-select>
+
+      </div>
+    </div>
+  </section>
+  <section class="flex-col mx-5 p-5 rounded-lg border dark:border-gray-500 mb-10">
+    <div class="flex items-center justify-start mb-6 ms-5">
+      <span class="text-2xl font-bold text-primary-500 dark:text-primary-300">
+        DatePickerComponent
+      </span>
+    </div>
+    <div class="grid grid-cols-1 md:grid-flow-col gap-x-5 lg:gap-x-10 w-full">
+      <div class="flex flex-col justify-start w-full mb-4 ">
+      </div>
+      <div class="flex justify-center flex-wrap w-full">
+      </div>
+    </div>
+  </section>
+</div>
+
 <div
   class="flex flex-col w-full p-5 rounded-lg border dark:border-gray-500 mb-10"
 >

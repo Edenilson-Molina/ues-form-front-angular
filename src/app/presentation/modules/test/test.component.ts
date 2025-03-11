@@ -18,6 +18,7 @@ import { UserService } from '@services/user.service';
 import { ButtonComponent } from '@components/button/button.component';
 import { ModalComponent } from '@components/modal/modal.component';
 import { TabsComponent } from '@components/tabs/tabs.component';
+import { FloatSelectComponent } from '@components/inputs/select/select.component';
 import {
   DataTableColumnDirective,
   DataTableComponent,
@@ -30,6 +31,7 @@ import {
   PaginationParams,
 } from '@interfaces/common/pagination.interface';
 import { ActionButtonConfiguration, ColumnDefinition, PageEvent } from '@interfaces/common/data-table.interface';
+import { FormsModule } from '@angular/forms';
 
 type Severity =
   | 'primary'
@@ -48,11 +50,13 @@ interface ButtonCustom {
   selector: 'app-test',
   imports: [
     CommonModule,
+    FormsModule,
     DividerModule,
     TagModule,
     ButtonComponent,
     ModalComponent,
     TabsComponent,
+    FloatSelectComponent,
     DataTableComponent,
     DataTableColumnDirective,
   ],
@@ -195,6 +199,34 @@ export default class TestComponent implements OnInit {
     { label: 'Label 5', content: 'Contenido del Tab 5' },
   ];
 
+  //////////////////////////////////////////////////////////////////
+  //                      SelectComponent                         //
+  //////////////////////////////////////////////////////////////////
+
+  selection1 = undefined;
+  selection2 = undefined;
+  selection3 = undefined;
+
+  cities = [
+    { name: 'New York', code: 'NY' },
+    { name: 'Rome', code: 'RM' },
+    { name: 'London', code: 'LDN' },
+    { name: 'Istanbul', code: 'IST' },
+    { name: 'Paris', code: 'PRS' }
+  ];
+
+  countries = [
+    { name: 'Australia', code: 'AU' },
+    { name: 'Brazil', code: 'BR' },
+    { name: 'China', code: 'CN' },
+    { name: 'Egypt', code: 'EG' },
+    { name: 'France', code: 'FR' },
+    { name: 'Germany', code: 'DE' },
+    { name: 'India', code: 'IN' },
+    { name: 'Japan', code: 'JP' },
+    { name: 'Spain', code: 'ES' },
+    { name: 'United States', code: 'US' }
+  ];
   //////////////////////////////////////////////////////////////////
   //                      TableComponent                          //
   //////////////////////////////////////////////////////////////////

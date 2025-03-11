@@ -1,33 +1,200 @@
-<div class="w-full">
-  <label
-    [for]="fieldName"
-    class="block uppercase text-slate-600 text-xs font-bold mb-2 dark:text-white"
-    >{{ label }}{{ required ? ' *' : '' }}</label
-  >
-  <p-dropdown
-    [id]="fieldName"
-    [name]="fieldName"
-    [(ngModel)]="value"
-    [filter]="filter"
-    [filterBy]="filterBy"
-    [loading]="loading"
-    optionLabel="label"
-    optionValue="value"
-    appendTo="body"
-    [disabled]="isDisabled"
-    [options]="selectOptions"
-    [styleClass]="
-      formField.errors !== null && formField.touched
-        ? 'w-full !border-red-500  placeholder-slate-300 text-sm rounded shadow focus:ring-red-500 dark:bg-gray-700 focus:border-red-500'
-        : '!w-full !border-white text-gray-900 placeholder-slate-300 text-sm rounded shadow focus:ring-blue-500 focus:border-blue-500 w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
-    "
-    [placeholder]="'Seleccione una opción'"
-    (onChange)="onChange($event)"
-    (blur)="touched()"
-  />
-  <app-input-errors
-    [formField]="formField"
-    [fieldName]="label.toLocaleLowerCase()"
-    [propertyName]="fieldName"
-  ></app-input-errors>
+<div
+  [ngClass]="
+    typeLabel === 'floatLabel' && floatLabelVariant === 'over' ? 'pt-3' : 'pt-1.5'
+  "
+>
+  @if(typeLabel === 'floatLabel') {
+
+    <p-floatlabel [variant]="floatLabelVariant">
+      <p-select
+        appendTo="body"
+        #inputControl="ngModel"
+        [id]="id"
+        [(ngModel)]="value"
+        [options]="options"
+        [filter]="filter"
+        [filterMatchMode]="filterMatchMode"
+        [emptyMessage]="emptyMessage"
+        [emptyFilterMessage]="emptyFilterMessage"
+        [checkmark]="checkmark"
+        [optionLabel]="optionLabel"
+        [optionValue]="optionValue"
+        [loading]="loading"
+        [fluid]="true"
+        [placeholder]="placeholder"
+        [styleClass]="inputClass"
+        [style]="inputStyle"
+        [panelStyle]="panelStyle"
+        [panelStyleClass]="panelClass"
+        [ngClass]="{
+          'ng-dirty ng-invalid': hasErrors
+        }"
+        [ngStyle]="inputStyle"
+        [disabled]="disabled"
+        [readonly]="readonly"
+        [variant]="variant"
+        [size]="size!"
+        (input)="onInputChange($event)"
+        (blur)="onTouched()"
+      >
+        @if(selectedItemTemplate){
+          <ng-template #selectedItem let-selectedItem>
+            <ng-container
+            *ngTemplateOutlet="
+              selectedItemTemplate;
+              context: { $implicit: selectedItem, selection: selectedItem }
+            "
+          ></ng-container>
+        </ng-template>
+        }
+
+        @if(itemTemplate){
+          <ng-template let-item #item>
+            <ng-container
+              *ngTemplateOutlet="
+                itemTemplate;
+                context: { $implicit: item, data: item }
+              "
+            ></ng-container>
+          </ng-template>
+        }
+
+        @if(icon){
+          <ng-template #dropdownicon>
+            <span
+              class="material-symbols-outlined"
+              [ngClass]="iconClass"
+              [ngStyle]="{ color: iconColor }"
+            >
+              {{ icon }}
+            </span>
+          </ng-template>
+        }
+
+        @if(headerTemplate){
+          <ng-template #header>
+            <ng-container
+              *ngTemplateOutlet="
+                headerTemplate;
+              "
+            ></ng-container>
+          </ng-template>
+        }
+
+        @if(footerTemplate){
+          <ng-template #footer>
+            <ng-container
+              *ngTemplateOutlet="
+                footerTemplate;
+              "
+            ></ng-container>
+          </ng-template>
+        }
+      </p-select>
+      <label [for]="id" [class]="labelClass">{{ label }}{{ required() ? " *" : "" }}</label>
+    </p-floatlabel>
+  } @else {
+    <label
+      [for]="id"
+      [ngClass]="{
+        'text-red-500 dark:text-red-400 ': hasErrors,
+        'text-surface-500': !hasErrors
+      }"
+      class="text-primary-700  font-bold mb-2 dark:text-primary-200 {{ labelClass }}"
+    >
+        {{ label }}{{ required() ? " *" : "" }}
+    </label>
+    <p-select
+      appendTo="body"
+      #inputControl="ngModel"
+      [id]="id"
+      [(ngModel)]="value"
+      [options]="options"
+      [filter]="filter"
+      [filterMatchMode]="filterMatchMode"
+      [checkmark]="checkmark"
+      [optionLabel]="optionLabel"
+      [optionValue]="optionValue"
+      [emptyMessage]="emptyMessage"
+      [emptyFilterMessage]="emptyFilterMessage"
+      [loading]="loading"
+      [fluid]="true"
+      [placeholder]="placeholder"
+      [styleClass]="inputClass"
+      [style]="inputStyle"
+      [panelStyle]="panelStyle"
+      [panelStyleClass]="panelClass"
+      [ngClass]="{
+        'ng-dirty ng-invalid': hasErrors
+      }"
+      [ngStyle]="inputStyle"
+      [disabled]="disabled"
+      [readonly]="readonly"
+      [variant]="variant"
+      [size]="size!"
+      (input)="onInputChange($event)"
+      (blur)="onTouched()"
+    >
+      @if(selectedItemTemplate){
+        <ng-template #selectedItem let-selectedItem>
+          <ng-container
+          *ngTemplateOutlet="
+            selectedItemTemplate;
+            context: { $implicit: selectedItem, selection: selectedItem }
+          "
+        ></ng-container>
+      </ng-template>
+      }
+
+      @if(itemTemplate){
+        <ng-template let-item #item>
+          <ng-container
+            *ngTemplateOutlet="
+              itemTemplate;
+              context: { $implicit: item, data: item }
+            "
+          ></ng-container>
+        </ng-template>
+      }
+
+      @if(icon){
+        <ng-template #dropdownicon>
+          <span
+            class="material-symbols-outlined"
+            [ngClass]="iconClass"
+            [ngStyle]="{ color: iconColor }"
+          >
+            {{ icon }}
+          </span>
+        </ng-template>
+      }
+
+      @if(headerTemplate){
+        <ng-template #header>
+          <ng-container
+            *ngTemplateOutlet="
+              headerTemplate;
+            "
+          ></ng-container>
+        </ng-template>
+      }
+
+      @if(footerTemplate){
+        <ng-template #footer>
+          <ng-container
+            *ngTemplateOutlet="
+              footerTemplate;
+            "
+          ></ng-container>
+        </ng-template>
+      }
+    </p-select>
+  }
+  @if(hasErrors){
+    <input-errors
+      [errors]="formControl.errors"
+      [label]="label.toLocaleLowerCase()"
+      [errorMessageClass]="errorMessageClass"
+    />
+  }
 </div>
