@@ -563,24 +563,50 @@
         DatePickerComponent
       </span>
     </div>
-    <div class="flex flex-col w-full gap-5">
-      <c-datepicker
-        id="date1"
-        [(ngModel)]="date1"
-        [minDate]="minDate"
-        [maxDate]="maxDate"
-        label="Seleccione una fecha"
-      ></c-datepicker>
-      <c-datepicker
-        id="date2"
-        [(ngModel)]="date2"
-        label="Seleccione una fecha"
-        floatLabelVariant="in"
-        [showTime]="true"
-        hourFormat="12"
-        icon="event_available"
-        iconClass="text-primary-500 dark:text-primary-300"
-       ></c-datepicker>
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2 gap-5">
+      <div class="flex flex-col w-full gap-5">
+        <c-datepicker
+          id="date1"
+          [(ngModel)]="date1"
+          [minDate]="minDate"
+          [maxDate]="maxDate"
+          label="Seleccione una fecha"
+        ></c-datepicker>
+        <!-- Note: IconTemplate does not work well, whe should wait for an update-->
+        <c-datepicker
+          id="date2"
+          [(ngModel)]="date2"
+          label="Seleccione una fecha"
+          floatLabelVariant="in"
+          [showTime]="true"
+          hourFormat="12"
+          icon="event_available"
+          iconClass="text-primary-500 dark:text-primary-300"
+         ></c-datepicker>
+        <c-datepicker
+          id="date3"
+          [(ngModel)]="date3"
+          label="Seleccione una fecha"
+          floatLabelVariant="over"
+          [showTime]="true"
+          hourFormat="12"
+          [showIcon]="false"
+        >
+        </c-datepicker>
+      </div>
+      <div class="flex flex-col w-full gap-5 px-0 md:px-4">
+        <c-datepicker
+          id="date4"
+          [(ngModel)]="date4"
+          label="Seleccione una fecha"
+          typeLabel="label"
+          [showTime]="true"
+          hourFormat="24"
+          icon="event_available"
+          iconClass="text-primary-500 dark:text-primary-300"
+          [inline]="true"
+         ></c-datepicker>
+      </div>
     </div>
   </section>
 </div>

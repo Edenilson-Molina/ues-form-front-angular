@@ -239,6 +239,7 @@ export default class TestComponent implements OnInit {
   date1 = undefined;
   date2 = undefined;
   date3 = undefined;
+  date4 = undefined;
 
   maxDate = this.luxonAdapter.addDays(new Date(), 10);
   minDate = this.luxonAdapter.subtractDays(new Date(), 10);

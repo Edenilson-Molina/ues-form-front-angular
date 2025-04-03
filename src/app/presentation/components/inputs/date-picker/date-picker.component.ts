@@ -66,6 +66,7 @@ export class DatePickerComponent {
   @Input() hourFormat: '12' | '24' = '24';
   @Input() timeOnly: boolean = false;
   @Input() showTime: boolean = false;
+  @Input() inline: boolean = false;
   @Input() selectionMode: 'single' | 'multiple' | 'range' = 'single';
   @Input() maxDateCount?: number;
   @Input() maxDate: Date | null = null;
