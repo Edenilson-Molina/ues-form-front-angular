@@ -1,99 +1,89 @@
 import { CommonModule } from '@angular/common';
-import { Component, ContentChild, forwardRef, input, Input, TemplateRef } from '@angular/core';
+import { Component, forwardRef, input, Input } from '@angular/core';
 import {
   FormsModule,
   ReactiveFormsModule,
-  ControlValueAccessor,
   NG_VALUE_ACCESSOR,
   FormControl,
 } from '@angular/forms';
 
 import { FloatLabelModule } from 'primeng/floatlabel';
-import { SelectModule } from 'primeng/select';
-import { IconFieldModule } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
+import { DatePickerModule } from 'primeng/datepicker';
 import { FluidModule } from 'primeng/fluid';
 
 import { InputErrorsComponent } from '@components/inputs/input-errors/input-errors.component';
 
 @Component({
-  selector: 'c-select',
+  selector: 'c-datepicker',
   standalone: true,
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    SelectModule,
+    DatePickerModule,
     FloatLabelModule,
-    IconFieldModule,
-    InputIconModule,
     FluidModule,
     InputErrorsComponent,
   ],
-  templateUrl: './select.component.html',
+  templateUrl: './date-picker.component.html',
   styles: ``,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => SelectComponent),
+      useExisting: forwardRef(() => DatePickerComponent),
       multi: true,
     },
   ],
-  host: {
-    '[class]': 'containerClass',
-    '[style]': 'containerStyle',
-  },
 })
-export class SelectComponent implements ControlValueAccessor {
+export class DatePickerComponent {
   value: string | null = '';
   onChange: (value: string | null) => void = () => {};
   onTouched: () => void = () => {};
 
   // Input properties
   @Input() id: string = '';
-  @Input() containerClass: string = '';
-  @Input() containerStyle?: Record<string, string>;
+  @Input() type: 'text' | 'email' | 'url' | 'tel' | 'search' = 'text';
   @Input() icon?: string;
   @Input() iconColor?: string;
   @Input() iconClass?: string;
-  @Input() loading: boolean = false;
-  @Input() options: any[] = [];
-  @Input() emptyMessage: string = 'No se encuentran resultados';
-  @Input() emptyFilterMessage: string = 'No se encuentran resultados';
-  @Input() filter: boolean = false;
-  @Input() filterMatchMode: 'startsWith' | 'contains' | 'endsWith' | 'equals' | 'notEquals' | 'in' | 'lt' | 'lte' | 'gt' | 'gte' = 'contains';
-  @Input() checkmark: boolean = true;
-  @Input() optionLabel?: string;
-  @Input() optionValue?: string;
+  @Input() showIcon: boolean = true;
+  @Input() containerClass: string = '';
+  @Input() containerStyle?: Record<string, string>;
   @Input() label: string = '';
   @Input() typeLabel: 'label' | 'floatLabel' = 'floatLabel';
+  @Input() placeholder: string = '';
   @Input() floatLabelVariant: 'in' | 'on' | 'over' = 'on';
   @Input() labelClass: string = '';
-  @Input() placeholder: string = '';
-  @Input() panelClass?: string;
-  @Input() panelStyle?: Record<string, string>;
   @Input() inputClass?: string;
   @Input() inputStyle?: Record<string, string>;
+  @Input() panelClass?: string;
+  @Input() panelStyle?: Record<string, string>;
   @Input() errorMessageClass: string = '';
   @Input() disabled: boolean = false;
   @Input() readonly: boolean = false;
   @Input() variant: 'filled' | 'outlined' = 'filled';
+  @Input() dateFormat?: string;
+  @Input() hourFormat: '12' | '24' = '24';
+  @Input() timeOnly: boolean = false;
+  @Input() showTime: boolean = false;
+  @Input() selectionMode: 'single' | 'multiple' | 'range' = 'single';
+  @Input() maxDateCount?: number;
+  @Input() maxDate: Date | null = null;
+  @Input() minDate: Date | null = null;
   @Input() size?: 'small' | 'large';
-  @Input() formControl!: FormControl
+  @Input() formControl!: FormControl;
 
   required = input(false, {
     transform: (value: boolean | string) =>
       typeof value === 'string' ? value === '' : value,
   });
 
-  @ContentChild('item') itemTemplate!: TemplateRef<any>;
-  @ContentChild('selectedItem') selectedItemTemplate!: TemplateRef<any>;
-  @ContentChild('header') headerTemplate!: TemplateRef<any>;
-  @ContentChild('footer') footerTemplate!: TemplateRef<any>;
-
   get hasErrors() {
-    return this.formControl?.invalid && (this.formControl?.dirty || this.formControl?.touched);
-  };
+    return (
+      this.formControl?.invalid &&
+      (this.formControl?.dirty || this.formControl?.touched)
+    );
+  }
 
   public writeValue(value: string | null): void {
     this.value = value || '';
@@ -115,5 +105,9 @@ export class SelectComponent implements ControlValueAccessor {
 
   public onInputBlur(): void {
     this.onTouched();
+  }
+
+  public onDateChange(event: any): void {
+    console.log('onDateChange', event);
   }
 }

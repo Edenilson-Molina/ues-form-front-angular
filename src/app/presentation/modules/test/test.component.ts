@@ -13,12 +13,13 @@ import { Store } from '@ngrx/store';
 import { DividerModule } from 'primeng/divider';
 import { TagModule } from 'primeng/tag';
 
+import { getLuxonDateAdapter } from '@app/services/common/luxon-date.service';
 import { UserService } from '@services/user.service';
 
 import { ButtonComponent } from '@components/button/button.component';
 import { ModalComponent } from '@components/modal/modal.component';
 import { TabsComponent } from '@components/tabs/tabs.component';
-import { FloatSelectComponent } from '@components/inputs/select/select.component';
+import { SelectComponent } from '@components/inputs/select/select.component';
 import {
   DataTableColumnDirective,
   DataTableComponent,
@@ -32,6 +33,7 @@ import {
 } from '@interfaces/common/pagination.interface';
 import { ActionButtonConfiguration, ColumnDefinition, PageEvent } from '@interfaces/common/data-table.interface';
 import { FormsModule } from '@angular/forms';
+import { DatePickerComponent } from '@app/presentation/components/inputs/date-picker/date-picker.component';
 
 type Severity =
   | 'primary'
@@ -56,7 +58,8 @@ interface ButtonCustom {
     ButtonComponent,
     ModalComponent,
     TabsComponent,
-    FloatSelectComponent,
+    DatePickerComponent,
+    SelectComponent,
     DataTableComponent,
     DataTableColumnDirective,
   ],
@@ -71,6 +74,7 @@ export default class TestComponent implements OnInit {
   private store = inject(Store);
   sessionValue!: Session;
   isLoading = signal(false);
+  luxonAdapter = getLuxonDateAdapter();
 
   ngOnInit() {
     // NgOnInit
@@ -227,6 +231,18 @@ export default class TestComponent implements OnInit {
     { name: 'Spain', code: 'ES' },
     { name: 'United States', code: 'US' }
   ];
+
+  //////////////////////////////////////////////////////////////////
+  //                      SelectComponent                         //
+  //////////////////////////////////////////////////////////////////
+
+  date1 = undefined;
+  date2 = undefined;
+  date3 = undefined;
+
+  maxDate = this.luxonAdapter.addDays(new Date(), 10);
+  minDate = this.luxonAdapter.subtractDays(new Date(), 10);
+
   //////////////////////////////////////////////////////////////////
   //                      TableComponent                          //
   //////////////////////////////////////////////////////////////////

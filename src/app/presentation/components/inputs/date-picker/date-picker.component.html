@@ -1,0 +1,119 @@
+<div
+  [ngClass]="
+    typeLabel === 'floatLabel' && floatLabelVariant === 'over'
+      ? 'pt-3'
+      : 'pt-1.5'
+  "
+>
+  @if(typeLabel === 'floatLabel') {
+
+    <p-floatlabel [variant]="floatLabelVariant">
+      <p-date-picker
+        appendTo="body"
+        #inputControl="ngModel"
+        [inputId]="id"
+        [(ngModel)]="value"
+        [maxDateCount]="maxDateCount"
+        [minDate]="minDate"
+        [maxDate]="maxDate"
+        [dateFormat]="dateFormat"
+        [hourFormat]="hourFormat"
+        [showTime]="showTime"
+        [timeOnly]="timeOnly"
+        [selectionMode]="selectionMode"
+        [fluid]="true"
+        [placeholder]="placeholder"
+        [styleClass]="inputClass"
+        [style]="inputStyle"
+        [inputStyle]="inputStyle"
+        [inputStyleClass]="inputClass"
+        [panelStyle]="panelStyle"
+        [panelStyleClass]="panelClass"
+        [ngClass]="{
+          'ng-dirty ng-invalid': hasErrors
+        }"
+        [ngStyle]="inputStyle"
+        [disabled]="disabled"
+        [readonlyInput]="readonly"
+        [variant]="variant"
+        [size]="size!"
+        [showIcon]="showIcon"
+        (onInput)="onInputChange($event)"
+        (onBlur)="onTouched()"
+      >
+        <ng-template #inputIconTemplate let-callback="callback">
+          <span
+            class="material-symbols-outlined"
+            [ngClass]="iconClass"
+            [ngStyle]="{ color: iconColor }"
+            (click)="callback()"
+          >
+            {{ icon }}
+          </span>
+        </ng-template>
+      </p-date-picker>
+      <label [for]="id" [class]="labelClass"
+        >{{ label }}{{ required() ? " *" : "" }}</label
+      >
+    </p-floatlabel>
+  } @else {
+    <label
+      [for]="id"
+      [ngClass]="{
+        'text-red-500 dark:text-red-400 ': hasErrors,
+        'text-surface-500': !hasErrors
+      }"
+      class="text-primary-700  font-bold mb-2 dark:text-primary-200 {{
+        labelClass
+      }}"
+    >
+      {{ label }}{{ required() ? " *" : "" }}
+    </label>
+    <p-date-picker
+      appendTo="body"
+      #inputControl="ngModel"
+      [inputId]="id"
+      [(ngModel)]="value"
+      [maxDateCount]="maxDateCount"
+      [minDate]="minDate"
+      [maxDate]="maxDate"
+      [dateFormat]="dateFormat"
+      [hourFormat]="hourFormat"
+      [showTime]="showTime"
+      [timeOnly]="timeOnly"
+      [selectionMode]="selectionMode"
+      [fluid]="true"
+      [placeholder]="placeholder"
+      [styleClass]="inputClass"
+      [style]="inputStyle"
+      [panelStyle]="panelStyle"
+      [panelStyleClass]="panelClass"
+      [ngClass]="{
+        'ng-dirty ng-invalid': hasErrors
+      }"
+      [ngStyle]="inputStyle"
+      [disabled]="disabled"
+      [readonlyInput]="readonly"
+      [variant]="variant"
+      [size]="size!"
+      (onInput)="onInputChange($event)"
+      (onBlur)="onTouched()"
+    >
+      <ng-template #inputIconTemplate>
+        <span
+          class="material-symbols-outlined"
+          [ngClass]="iconClass"
+          [ngStyle]="{ color: iconColor }"
+        >
+          {{ icon }}
+        </span>
+      </ng-template>
+    </p-date-picker>
+    } @if(hasErrors){
+    <input-errors
+      [errors]="formControl.errors"
+      [label]="label.toLocaleLowerCase()"
+      [errorMessageClass]="errorMessageClass"
+    />
+  }
+</div>

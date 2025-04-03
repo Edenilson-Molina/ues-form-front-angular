@@ -563,11 +563,24 @@
         DatePickerComponent
       </span>
     </div>
-    <div class="grid grid-cols-1 md:grid-flow-col gap-x-5 lg:gap-x-10 w-full">
-      <div class="flex flex-col justify-start w-full mb-4 ">
-      </div>
-      <div class="flex justify-center flex-wrap w-full">
-      </div>
+    <div class="flex flex-col w-full gap-5">
+      <c-datepicker
+        id="date1"
+        [(ngModel)]="date1"
+        [minDate]="minDate"
+        [maxDate]="maxDate"
+        label="Seleccione una fecha"
+      ></c-datepicker>
+      <c-datepicker
+        id="date2"
+        [(ngModel)]="date2"
+        label="Seleccione una fecha"
+        floatLabelVariant="in"
+        [showTime]="true"
+        hourFormat="12"
+        icon="event_available"
+        iconClass="text-primary-500 dark:text-primary-300"
+       ></c-datepicker>
     </div>
   </section>
 </div>
