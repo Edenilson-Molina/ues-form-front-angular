@@ -20,6 +20,8 @@ import { ButtonComponent } from '@components/button/button.component';
 import { ModalComponent } from '@components/modal/modal.component';
 import { TabsComponent } from '@components/tabs/tabs.component';
 import { SelectComponent } from '@components/inputs/select/select.component';
+import { DatePickerComponent } from '@components/inputs/date-picker/date-picker.component';
+import { TextareaComponent } from '@components/inputs/textarea/textarea.component';
 import {
   DataTableColumnDirective,
   DataTableComponent,
@@ -33,7 +35,6 @@ import {
 } from '@interfaces/common/pagination.interface';
 import { ActionButtonConfiguration, ColumnDefinition, PageEvent } from '@interfaces/common/data-table.interface';
 import { FormsModule } from '@angular/forms';
-import { DatePickerComponent } from '@app/presentation/components/inputs/date-picker/date-picker.component';
 
 type Severity =
   | 'primary'
@@ -60,6 +61,7 @@ interface ButtonCustom {
     TabsComponent,
     DatePickerComponent,
     SelectComponent,
+    TextareaComponent,
     DataTableComponent,
     DataTableColumnDirective,
   ],
@@ -233,7 +235,7 @@ export default class TestComponent implements OnInit {
   ];
 
   //////////////////////////////////////////////////////////////////
-  //                      SelectComponent                         //
+  //                    DatePickerComponent                       //
   //////////////////////////////////////////////////////////////////
 
   date1 = undefined;
@@ -243,6 +245,22 @@ export default class TestComponent implements OnInit {
 
   maxDate = this.luxonAdapter.addDays(new Date(), 10);
   minDate = this.luxonAdapter.subtractDays(new Date(), 10);
+
+  //////////////////////////////////////////////////////////////////
+  //                     TextareaComponent                        //
+  //////////////////////////////////////////////////////////////////
+
+  textarea1 = undefined;
+  textarea2 = undefined;
+  textarea3 = `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.`;
+
+  //////////////////////////////////////////////////////////////////
+  //                     FileInputComponent                       //
+  //////////////////////////////////////////////////////////////////
+
+  file1 = undefined;
+  file2 = undefined;
+  file3 = undefined;
 
   //////////////////////////////////////////////////////////////////
   //                      TableComponent                          //

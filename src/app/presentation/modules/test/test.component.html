@@ -553,17 +553,16 @@
             </div>
           </ng-template>
         </c-select>
-
       </div>
     </div>
   </section>
-  <section class="flex-col mx-5 p-5 rounded-lg border dark:border-gray-500 mb-10">
+  <section class="flex-col ml-5 p-5 rounded-lg border dark:border-gray-500 mb-10">
     <div class="flex items-center justify-start mb-6 ms-5">
       <span class="text-2xl font-bold text-primary-500 dark:text-primary-300">
         DatePickerComponent
       </span>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2 gap-5">
+    <div class="flex flex-col md:flex-row gap-5">
       <div class="flex flex-col w-full gap-5">
         <c-datepicker
           id="date1"
@@ -594,19 +593,67 @@
         >
         </c-datepicker>
       </div>
-      <div class="flex flex-col w-full gap-5 px-0 md:px-4">
+      <div class="flex flex-col w-full">
         <c-datepicker
           id="date4"
           [(ngModel)]="date4"
-          label="Seleccione una fecha"
           typeLabel="label"
-          [showTime]="true"
-          hourFormat="24"
           icon="event_available"
           iconClass="text-primary-500 dark:text-primary-300"
           [inline]="true"
          ></c-datepicker>
       </div>
+    </div>
+  </section>
+</div>
+
+<div class="grid grid-cols-1 xl:grid-cols-2 w-full">
+  <section class="flex flex-col p-5 rounded-lg border dark:border-gray-500 mb-10">
+    <div class="flex justify-start flex-wrap gap-3 md:gap-0 mb-4">
+      <div class="flex items-center justify-start mb-4 ms-5">
+        <span class="text-2xl font-bold text-primary-500 dark:text-primary-300 text-left">
+          TextareaComponent
+        </span>
+      </div>
+      <div class="flex flex-col w-full gap-5">
+
+        <c-textarea
+          id="textarea"
+          [(ngModel)]="textarea1"
+          label="Textarea"
+          [autoResize]="true"
+        />
+
+        <c-textarea
+          id="textarea2"
+          [(ngModel)]="textarea2"
+          [rows]="2"
+          label="Textarea"
+          typeLabel="label"
+          [autoResize]="true"
+          [spellcheck]="true"
+        />
+        <c-textarea
+          id="textarea3"
+          [(ngModel)]="textarea3"
+          label="Textarea"
+          [autoResize]="true"
+          [spellcheck]="true"
+          [readonly]="true"
+          typeLabel="floatLabel"
+          floatLabelVariant="in"
+        />
+      </div>
+    </div>
+  </section>
+  <section class="flex-col ml-5 p-5 rounded-lg border dark:border-gray-500 mb-10">
+    <div class="flex items-center justify-start mb-6 ms-5">
+      <span class="text-2xl font-bold text-primary-500 dark:text-primary-300">
+        FileInputComponent
+      </span>
+    </div>
+    <div class="flex flex-col md:flex-row gap-5">
+
     </div>
   </section>
 </div>
