@@ -9,6 +9,19 @@
 @layer tailwind-utilities {
   @tailwind components;
   @tailwind utilities;
+
+  .scrollbar-rounded {
+    &::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    &::-webkit-scrollbar-track {
+      @apply bg-primary-100 rounded-lg dark:bg-primary-950;
+    }
+    &::-webkit-scrollbar-thumb {
+      @apply bg-primary-500 rounded-lg hover:bg-primary-600 dark:bg-primary-400 dark:hover:bg-primary-600;
+    }
+  }
 }
 
 

@@ -652,8 +652,34 @@
         FileInputComponent
       </span>
     </div>
-    <div class="flex flex-col md:flex-row gap-5">
+    <div class="flex flex-col gap-5">
+      <c-file-input
+        [(ngModel)]="fileMultiple"
+        [multiple]="true"
+        [allowedFileTypes]="[FileType.GIF, FileType.JPG, FileType.PNG, FileType.PDF, FileType.MP3, FileType.POWERPOINT, FileType.EXCEL]"
+        [maxFileSize]="5 * 1024 * 1024"
+        [fileLimit]="3"
+        [imagePreview]="true"
+        emptyMessage="Seleccione un archivo, 4.00 MB como máximo, formato GIF, JPG, PNG, PDF o MP4"
+        containerClass="w-full"
+      />
 
+      <c-file-input
+      [(ngModel)]="fileSingle"
+      [multiple]="false"
+      [allowedFileTypes]="[FileType.GIF, FileType.JPG, FileType.PNG, FileType.PDF, FileType.MP3, FileType.POWERPOINT, FileType.EXCEL]"
+      [maxFileSize]="5 * 1024 * 1024"
+      [imagePreview]="true"
+      emptyMessage="Seleccione un archivo, 4.00 MB como máximo, formato GIF, JPG, PNG, PDF o MP4"
+      containerClass="w-full"
+    />
+
+      <c-button
+        severity="primary"
+        variant="solid"
+        label="Limpiar archivo"
+        (onClick)="value()"
+      />
     </div>
   </section>
 </div>

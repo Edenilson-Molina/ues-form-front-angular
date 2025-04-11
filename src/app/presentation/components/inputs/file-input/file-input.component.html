@@ -1,0 +1,255 @@
+@if(multiple) {
+  <p-fileupload
+    #fileUploadRef
+    name="file"
+    [multiple]="true"
+    [accept]="allowedFileTypes.join(',')"
+    [maxFileSize]="maxFileSize"
+    [auto]="true"
+    (onSelect)="onSelectedFiles($event)"
+    [ngClass]="{
+      inputClass: true,
+      'ng-dirty ng-invalid': hasErrors
+    }"
+    styleClass="border-4 border-dashed dark:border-gray-700 rounded-lg"
+    mode="advanced"
+    (blur)="onTouched()"
+  >
+    <ng-template #header let-filesUploaded="files" let-chooseCallback="chooseCallback">
+      <div class="flex flex-col gap-3 w-full">
+        <div class="flex flex-col gap-1 justify-center sm:flex-row w-full sm:justify-between items-center">
+          <div class="text-center">
+            <span class="text-primary-500 font-bold">{{ title }}</span>
+          </div>
+          <div class="flex flex-col gap-2 sm:flex-row md:gap-2 items-center">
+            <div class="flex justify-start items-center">
+              <span class="material-symbols-outlined text-primary-500 " :style="{ 'font-size': '1.7rem' }">
+                {{ iconFileSize }}
+              </span>
+              <span class="text-primary-500 font-bold">{{ formatSize(maxFileSize) }}</span>
+            </div>
+            <div class="flex justify-start items-center">
+              <span class="material-symbols-outlined text-primary-500" :style="{ 'font-size': '1.7rem' }">
+                {{ iconFileNumber }}
+              </span>
+              <span class="text-primary-500 font-bold">{{ filesList.length + '/' + fileLimit }}</span>
+            </div>
+          </div>
+        </div>
+        <p-progressbar [value]="totalPercentage" [showValue]="false" class="w-full" styleClass="flex h-2 w-full"/>
+      </div>
+    </ng-template>
+
+    <ng-template #file></ng-template>
+    <ng-template #filelabel></ng-template>
+    <ng-template #toolbar></ng-template>
+
+    <ng-template #content
+      let-files
+      let-chooseCallback="chooseCallback"
+      let-clearCallback="clearCallback"
+      let-uploadCallback="uploadCallback"
+      let-removeFileCallback="removeFileCallback"
+    >
+      @if(isArray(filesList) && filesList.length ){
+        <div class="flex flex-col md:flex-row gap-2 md:gap-8 md:px-4 md:py-2">
+          @if(filesList.length < fileLimit && !disabled) {
+            <div class="flex flex-col items-center justify-center border-2 border-dotted border-primary-500 bg-primary-50 dark:bg-[--vt-c-divider-light-1] w-full md:w-[35%] py-3 md:py-0 rounded-lg h-[13rem]">
+              <div class="flex flex-col items-center justify-center cursor-pointer">
+                <span class="text-center text-gray-500 font-semibold">Arrastrar y soltar archivos</span>
+                <span class="text-center text-gray-500 font-semibold md:mb-2">ó</span>
+              </div>
+              <c-button
+                label="Agregar"
+                severity="primary"
+                variant="solid"
+                iconPosition="right"
+                (onClick)="chooseCallback()"
+                icon="add"
+                class="text-[12px] h-[35px]"
+              />
+            </div>
+          }
+          <div class="flex flex-col w-full overflow-y-auto max-h-[13rem] scrollbar-rounded border-2 border-dotted border-primary-500 p-1 gap-1">
+            @for(file of filesList; track $index) {
+              <div class="flex justify-start items-center h-20 gap-2 p-2 sm:p-4 border rounded-lg min-w-60">
+                <div class="flex justify-center items-center">
+                  @if(file.type.startsWith('image/')){
+                    <div class="relative">
+                      <img
+                        class="blur -z-1 absolute flex w-[90%] opacity-70 h-[75%] top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 rounded-md"
+                        [src]="getFilePreview(file)"
+                      />
+                      <p-image
+                        [src]="getFilePreview(file)"
+                        [preview]="true"
+                        alt="Image"
+                        styleClass="h-full mt-1.5"
+                        imageClass="h-12 w-auto max-w-14 object-contain rounded-md"
+                      >
+                        <ng-template #indicator>
+                          <i class="pi pi-eye"></i>
+                        </ng-template>
+                      </p-image>
+                    </div>
+                  } @else {
+                    <span class="material-symbols-outlined text-primary-500" style="font-size: 2.7rem">
+                      {{ getIcon(file.type) }}
+                    </span>
+                  }
+                </div>
+                <div class="flex w-full justify-between ml-2 whitespace-nowrap overflow-hidden text-ellipsis">
+                  <div class="text-gray-700 font-semibold whitespace-nowrap overflow-hidden text-ellipsis">
+                    <h1 class="text-sm whitespace-nowrap overflow-hidden text-ellipsis">{{ file.name }}</h1>
+                    <span class="bg-primary-100 text-primary-800 text-xs font-medium me-2 px-2 py-0.5 rounded-xl dark:bg-primary-900 dark:text-primary-300">{{ formatSize(file.size) }}</span>
+                  </div>
+                  <c-button
+                    [disabled]="disabled"
+                    severity="danger"
+                    class="size-10"
+                    variant="text"
+                    (click)="onRemoveTemplatingFile($index, removeFileCallback)"
+                    [iconOnly]="true"
+                    icon="close"
+                    rounded="full"
+                  />
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+      @for(message of messages; track $index) {
+        <div
+          class="flex justify-between w-full border border-danger-500 rounded-md bg-danger-50 items-center py-1 px-3 m-1"
+        >
+          <span class="font-semibold text-sm break-all sm:break-normal text-danger-500">{{ message }}</span>
+          <span
+            class="material-symbols-outlined text-danger-500 cursor-pointer hover:bg-danger-200 p-0.5 rounded-full"
+            style="font-size: 0.9rem"
+            (click)="deletedError($index)"
+          >
+            close
+          </span>
+        </div>
+      }
+
+      @if(filesList.length == 0) {
+        <div class="flex flex-col items-center gap-2">
+          <div class="flex flex-col md:flex-row items-center justify-center gap-3">
+            <span class="material-symbols-outlined text-primary-400" style="font-size: 2.7rem">
+              {{ iconFileUpload }}
+            </span>
+            <span class="text-gray-400 w-full md:w-[50%] text-center">{{ emptyMessage }}</span>
+          </div>
+        </div>
+      }
+    </ng-template>
+
+
+
+  </p-fileupload>
+} @else {
+  <div
+    class="flex w-full border-4 border-dashed dark:border-gray-700 rounded-lg"
+    [ngClass]="{ 'border-red-400': hasErrors }"
+  >
+    <div class="flex min-h-full">
+      <c-button
+        variant="text"
+        [iconOnly]="true"
+        class="bg-[#f1f5f9] dark:bg-[#18181b] text-gray-400 rounded-l-lg rounded-r-none h-full"
+        [disabled]="disabled"
+        [icon]="iconAddFile"
+        (click)="fileInput.click()"
+      />
+    </div>
+    @if(messages.length > 0) {
+      <div class="flex w-full">
+        @for(message of messages; track $index) {
+          <div
+            class="flex justify-between w-full border border-danger-500 rounded-md bg-danger-50 items-center py-1 px-3 m-1"
+          >
+            <span class="font-semibold text-sm break-all sm:break-normal text-danger-500">{{ message }}</span>
+            <span
+              class="material-symbols-outlined text-danger-500 cursor-pointer hover:bg-danger-200 p-0.5 rounded-full"
+              style="font-size: 0.9rem"
+              (click)="deletedError($index)"
+            >
+              close
+            </span>
+          </div>
+        }
+      </div>
+    } @else {
+      @if(singleFile) {
+        <div class="flex flex-col items-center sm:flex-row w-full">
+          <div class="flex flex-col sm:flex-row justify-center items-center gap-2 w-full">
+            <div class="flex flex-row justify-center items-center ml-1.5">
+              @if(singleFile.type.startsWith('image/') && imagePreview) {
+                <p-image
+                  [src]="getFilePreview(singleFile)"
+                  [preview]="true"
+                  alt="Image"
+                  styleClass="h-full mt-1.5"
+                  imageClass="h-12 w-auto max-w-14 object-contain"
+                  #imagePreview
+                >
+                  <ng-template #indicator>
+                    <i class="pi pi-eye"></i>
+                  </ng-template>
+                </p-image>
+              }
+              @else {
+                <span
+                  class="material-symbols-outlined text-primary-500 !text-4xl my-1"
+                >
+                  {{ getIcon(singleFile.type) }}
+                </span>
+              }
+            </div>
+            <div
+              class="flex flex-col sm:flex-row gap-x-6 items-center text-gray-500 font-semibold flex-1 max-w-full min-w-0"
+            >
+              <h1 class="truncate max-w-[10rem] md:max-w-[20rem]">{{ singleFile.name }}</h1>
+              <span>{{ formatSize(singleFile.size) }}</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-center">
+            <c-button
+              severity="danger"
+              class="size-10"
+              [disabled]="disabled"
+              variant="text"
+              (click)="removeSingleFile()"
+              [iconOnly]="true"
+              icon="close"
+              rounded="full"
+            />
+          </div>
+        </div>
+      } @else {
+        <div class="flex w-full text-center">
+          <span class="m-1.5 text-gray-400">{{ emptyMessage }}</span>
+        </div>
+      }
+    }
+  </div>
+  <input
+    #fileInput
+    type="file"
+    [accept]="allowedFileTypes.join(',')"
+    [multiple]="multiple"
+    (change)="handleFileSelection($event)"
+    class="hidden"
+    (blur)="onTouched()"
+  />
+}
+
+@if(hasErrors) {
+  <input-errors
+    [errors]="formControl.errors"
+    [label]="label ? label.toLocaleLowerCase() : 'archivo'"
+    [errorMessageClass]="errorMessageClass"
+  />
+}

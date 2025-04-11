@@ -22,6 +22,7 @@ import { TabsComponent } from '@components/tabs/tabs.component';
 import { SelectComponent } from '@components/inputs/select/select.component';
 import { DatePickerComponent } from '@components/inputs/date-picker/date-picker.component';
 import { TextareaComponent } from '@components/inputs/textarea/textarea.component';
+import { FileInputComponent } from '@components/inputs/file-input/file-input.component';
 import {
   DataTableColumnDirective,
   DataTableComponent,
@@ -33,6 +34,7 @@ import {
   Pagination,
   PaginationParams,
 } from '@interfaces/common/pagination.interface';
+import { FileType } from '@app/interfaces/common/file-input.interface';
 import { ActionButtonConfiguration, ColumnDefinition, PageEvent } from '@interfaces/common/data-table.interface';
 import { FormsModule } from '@angular/forms';
 
@@ -62,6 +64,7 @@ interface ButtonCustom {
     DatePickerComponent,
     SelectComponent,
     TextareaComponent,
+    FileInputComponent,
     DataTableComponent,
     DataTableColumnDirective,
   ],
@@ -258,9 +261,18 @@ export default class TestComponent implements OnInit {
   //                     FileInputComponent                       //
   //////////////////////////////////////////////////////////////////
 
-  file1 = undefined;
-  file2 = undefined;
+  fileMultiple = null;
+  fileSingle = null;
   file3 = undefined;
+
+  get FileType() {
+    return FileType;
+  }
+
+  value() {
+    console.log('Single ', this.fileSingle);
+    console.log('Multple ', this.fileMultiple);
+  }
 
   //////////////////////////////////////////////////////////////////
   //                      TableComponent                          //
