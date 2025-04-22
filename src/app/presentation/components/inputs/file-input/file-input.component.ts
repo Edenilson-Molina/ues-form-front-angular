@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,7 +9,7 @@ import {
   input,
   Input,
   OnInit,
-  ViewChild,
+  ChangeDetectorRef,
 } from '@angular/core';
 import {
   ControlValueAccessor,
@@ -18,6 +19,9 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 
+import { toast } from 'ngx-sonner';
+
+import { PrimeNG } from 'primeng/config';
 import { FileUploadModule, type FileSelectEvent } from 'primeng/fileupload';
 import { ImageModule } from 'primeng/image';
 import { ProgressBarModule } from 'primeng/progressbar';
@@ -27,7 +31,13 @@ import { ButtonComponent } from '@components/button/button.component';
 import { InputErrorsComponent } from '@components/inputs/input-errors/input-errors.component';
 
 import { FileType, fileTypeMap } from '@interfaces/common/file-input.interface';
-import { PrimeNG } from 'primeng/config';
+
+@Component({
+  template: '<span class="material-symbols-outlined !text-[18px]">{{ icon }}</span>',
+})
+class IconComponent {
+  @Input() icon: string = '';
+}
 
 @Component({
   selector: 'c-file-input',
@@ -44,7 +54,9 @@ import { PrimeNG } from 'primeng/config';
   ],
   templateUrl: './file-input.component.html',
   styles: `
-
+    :host ::ng-deep .p-message {
+      display: none;
+    }
   `,
   providers: [
     {
@@ -57,23 +69,37 @@ import { PrimeNG } from 'primeng/config';
     '[class]': 'containerClass',
     '[style]': 'containerStyle',
   },
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [
+    trigger('fadeOut', [
+      transition(':leave', [
+        animate('300ms ease', style({ opacity: 0, transform: 'translateY(-5px)' })),
+      ]),
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(5px)' }),
+        animate('300ms ease', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+    ]),
+  ],
 })
 export class FileInputComponent implements ControlValueAccessor, OnInit {
   value: File | File[] | null = null;
   filesList: File[] = []; // Almacena el archivo seleccionado
   singleFile: File | null = null; // Almacena un solo archivo seleccionado
+  messageIdCounter = 0; // Contador para los mensajes temporales
+  errorTimeout: ReturnType<typeof setTimeout> | null = null; // Tiempo de espera para eliminar el error
   totalPercentage: number = 0; // Porcentaje de carga del archivo
-  messages: string[] = [];
+  messages: { id: number; text: string }[] = [];
   filePreviews = new Map<File, string>(); // Almacena las URL de los archivos
   onChange: (files: File | File[] | null) => void = () => {};
   onTouched: () => void = () => {};
 
   config = inject(PrimeNG); // Configuración de PrimeNG
+  cdr = inject(ChangeDetectorRef); // Referencia al ChangeDetectorRef
 
   // Input properties
   @Input() id: string = '';
   @Input() label: string = '';
+  @Input() labelClass: string = '';
   @Input() containerClass: string = '';
   @Input() containerStyle?: Record<string, string>;
   @Input() inputClass?: string;
@@ -94,19 +120,15 @@ export class FileInputComponent implements ControlValueAccessor, OnInit {
   ];
   @Input() imagePreview: boolean = false;
   @Input() disabled: boolean = false;
-  @Input() invalid?: boolean;
   @Input() iconFileSize: string = 'file_open';
   @Input() iconFileNumber: string = 'files';
-  @Input() iconFileUpload: string = 'cloud_upload';
+  @Input() iconFileUpload: string = 'upload';
   @Input() iconAddFile: string = 'attachment';
   @Input() title: string = 'Carga de archivos';
-  @Input() emptyMessage: string = 'Seleccione o arrastre un archivo';
+  @Input() emptyMessage: string = '';
   @Input() errorMessageClass: string = '';
 
   @Input() formControl!: FormControl;
-
-  @ViewChild('fileUploadRef', { static: true }) fileUploadRef!: any;
-  @ViewChild('fileInput', { static: true }) fileInput!: HTMLInputElement;
 
   required = input(false, {
     transform: (files: boolean | string) =>
@@ -121,11 +143,11 @@ export class FileInputComponent implements ControlValueAccessor, OnInit {
   }
 
   ngOnInit(): void {
-    // Inicializa el valor del componente con el valor del FormControl
-    if (this.formControl) {
-      this.formControl.valueChanges.subscribe((value: File | File[] | null) => {
-        this.writeValue(value);
-      });
+    if (!this.emptyMessage) {
+      this.emptyMessage =
+        this.multiple
+          ? `Seleccione o arrastre un máximo de ${this.fileLimit} archivos con un peso máximo de ${this.formatSize(this.maxFileSize)}`
+          : `Seleccione un archivo de su dispositivo con un peso máximo de ${this.formatSize(this.maxFileSize)}`;
     }
   }
 
@@ -156,11 +178,6 @@ export class FileInputComponent implements ControlValueAccessor, OnInit {
   }
 
   onSelectedFiles = (event: FileSelectEvent): void => {
-    if (this.disabled) {
-      this.fileUploadRef?.clear();
-      return;
-    }
-
     const newFiles: File[] = [];
     const newMessages: string[] = [];
     let limitReached = false; // Flag para evitar mensajes repetidos
@@ -176,8 +193,17 @@ export class FileInputComponent implements ControlValueAccessor, OnInit {
         break; // Detiene el bucle cuando se alcanza el límite
       }
 
-      // Validación de tipo de archivo
-      if (!this.allowedFileTypes.includes(file.type as FileType)) {
+      const validType = this.allowedFileTypes.some(type => {
+        if (type.includes('/*')) {
+          // Aceptar tipo general: ej. "image/*"
+          const baseType = type.split('/')[0];
+          return file.type.startsWith(baseType + '/');
+        } else {
+          // Validación exacta
+          return this.allowedFileTypes.includes(file.type as FileType);
+        }
+      });
+      if (!validType) {
         newMessages.push(
           `El archivo ${file.name} no es un tipo de archivo permitido.`
         );
@@ -205,25 +231,17 @@ export class FileInputComponent implements ControlValueAccessor, OnInit {
     // Agregar archivos
     this.filesList = [...this.filesList, ...newFiles];
     this.totalPercentage = (this.filesList.length / this.fileLimit) * 100; // Actualiza el porcentaje de carga
-    console.log(this.fileUploadRef);
     this.onChange(this.filesList); // Actualiza el valor del archivo
 
     // Agregar mensajes
     if (newMessages.length > 0) {
-      this.messages = [...this.messages, ...newMessages];
-    }
-  };
-
-  // Función para abrir el selector de archivos manualmente
-  openFileChooser = () => {
-    if (this.fileUploadRef?.value) {
-      this.fileUploadRef.choose();
+      for (const message of newMessages) {
+        this.addTimedMessage(message);
+      }
     }
   };
 
   formatSize = (size: number): string => {
-    // (1024 base, sistema binario)
-    // (1000 base, sistema decimal)
     const k = 1024;
     const dm = 2;
     const sizes = this.config.translation.fileSizeTypes;
@@ -244,33 +262,47 @@ export class FileInputComponent implements ControlValueAccessor, OnInit {
       this.revokeFilePreview(fileToRemove);
     }
     this.filesList.splice(index, 1);
+    toast.info('Archivo removido', {
+      description: `El archivo ${fileToRemove.name} ha sido removido`,
+      duration: 4000,
+      icon: IconComponent,
+      componentProps: {
+        icon: 'file_copy_off',
+      },
+      action: {
+        label: 'Deshacer',
+        onClick: () => {
+          this.filesList.splice(index, 0, fileToRemove); // Reagrega el archivo a la lista
+          this.totalPercentage = (this.filesList.length / this.fileLimit) * 100; // Actualiza el porcentaje de carga
+          this.onChange(this.filesList); // Actualiza el valor del archivo
+          toast.success('Archivo restaurado', {
+            description: `El archivo ${fileToRemove.name} ha sido restaurado`,
+            duration: 3000,
+            icon: IconComponent,
+            componentProps: {
+              icon: 'file_export',
+            },
+          });
+          this.cdr.markForCheck(); // Marca para verificación
+        }
+      },
+    });
     this.totalPercentage = (this.filesList.length / this.fileLimit) * 100; // Actualiza el porcentaje de carga
     this.onChange(this.filesList); // Actualiza el valor del archivo
-    removeCb(); // Llama al callback de eliminación
+    removeCb(); // Llama al callback de eliminación propio de PrimeNG
   };
 
   // Permite al usuario eliminar manualmente los errores
-  deletedError = (indexError: number): void => {
-    this.messages.splice(indexError, 1);
-
-    // Si el usuario elimina manualmente todos los errores, cancela el temporizador
-    // if (this.messages.length === 0 && errorTimeout) {
-    //   clearTimeout(errorTimeout);
-    //   errorTimeout = null;
-    // }
+  deletedErrorById = (id: number): void => {
+    const index = this.messages.findIndex(m => m.id === id);
+    if (index !== -1) {
+      this.messages.splice(index, 1);
+    }
   };
 
   // Computed que retorna una función lookup rápida O(1)
   getIcon(type: string): string {
     return fileTypeMap.get(type) || 'error'; // Si no encuentra, devuelve 'error'
-  };
-
-
-  openInputFileChooser = () => {
-    console.log('openInputFileChooser', this.fileInput);
-    if (this.fileInput?.value) {
-      this.fileInput.click();
-    }
   };
 
   handleFileSelection = (event: Event) => {
@@ -292,7 +324,9 @@ export class FileInputComponent implements ControlValueAccessor, OnInit {
 
       // Agregar mensajes
       if (newMessages.length > 0) {
-        this.messages = [...this.messages, ...newMessages];
+        for (const message of newMessages) {
+          this.addTimedMessage(message);
+        }
       } else {
         this.singleFile = file; // Asignar el archivo seleccionado
         this.onChange(file); // Actualiza el valor del archivo
@@ -300,22 +334,44 @@ export class FileInputComponent implements ControlValueAccessor, OnInit {
     }
   };
 
-  removeSingleFile = () => {
+  removeSingleFile = (fileInput: HTMLInputElement) => {
     if (this.singleFile) {
+      const temp = this.singleFile; // Almacena el archivo temporalmente
+      toast.info('Archivo removido', {
+        description: `El archivo ${this.singleFile.name} ha sido removido`,
+        duration: 3000,
+        icon: IconComponent,
+        componentProps: {
+          icon: 'file_copy_off',
+        },
+        action: {
+          label: 'Deshacer',
+          onClick: () => {
+            this.singleFile = fileInput.files![0]; // Reasigna el archivo
+            this.onChange(this.singleFile); // Actualiza el valor del archivo
+            toast.success('Archivo restaurado', {
+              description: `El archivo ${temp.name} ha sido restaurado`,
+              duration: 3000,
+              icon: IconComponent,
+              componentProps: {
+                icon: 'file_export',
+              },
+            });
+            this.cdr.markForCheck(); // Marca para verificación
+          }
+        },
+      });
+
       // Revoca la URL solo si el archivo es una imagen
       if (this.singleFile.type.startsWith('image/')) {
         this.revokeFilePreview(this.singleFile);
       }
       this.singleFile = null;
+      fileInput.value = ''; // Limpia el input
     }
-    this.resetFileInput();
+    this.onChange(this.singleFile); // Actualiza el valor del archivo
   };
 
-  resetFileInput = () => {
-    if (this.fileInput) {
-      this.fileInput.value = '';
-    }
-  };
 
   revokeFilePreview = (file: File) => {
     const url = this.filePreviews.get(file);
@@ -325,8 +381,7 @@ export class FileInputComponent implements ControlValueAccessor, OnInit {
     }
   };
 
-  getFilePreview = (file: File | File[]): string => {
-    if (!file || Array.isArray(file)) return '';
+  getFilePreview = (file: File): string => {
     // Solo generar una URL si es un archivo de imagen
     if (!file.type.startsWith('image/')) {
       return ''; // Evitar URL.createObjectURL para archivos no compatibles con <img>
@@ -340,4 +395,35 @@ export class FileInputComponent implements ControlValueAccessor, OnInit {
     this.filePreviews.set(file, url);
     return url;
   };
+
+  addTimedMessage(message: string): void {
+    const id = this.messageIdCounter++;
+    const msg = { id, text: message };
+
+    this.messages.push(msg);
+
+    setTimeout(() => {
+      const index = this.messages.findIndex((m) => m.id === id);
+      if (index !== -1) {
+        this.messages.splice(index, 1);
+        this.cdr.markForCheck();
+        this.cdr.detectChanges(); // Asegúrate de que el cambio se detecte
+        if (this.errorTimeout) {
+          clearTimeout(this.errorTimeout); // Limpia el timeout anterior
+        }
+      }
+    }, 5000); // 5 segundos
+  }
+
+  showAlert() {
+    if(this.disabled)
+    toast.warning('Advertencia', {
+      description: 'El archivo se encuentra deshabilitado',
+      duration: 3000,
+      icon: IconComponent,
+      componentProps: {
+        icon: 'error',
+      },
+    });
+  }
 }

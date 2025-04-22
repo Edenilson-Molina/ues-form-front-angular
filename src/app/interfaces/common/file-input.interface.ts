@@ -15,8 +15,10 @@ export enum FileType {
   JPG = 'image/jpeg',
   PNG = 'image/png',
   SVG = 'image/svg+xml',
+  WEBP = 'image/webp',
   MP4 = 'video/mp4',
   PDF = 'application/pdf',
+  IMAGE = 'image/*',
 }
 
 // Definir el Mapa una vez para evitar recalcular
