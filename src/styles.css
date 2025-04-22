@@ -16,7 +16,7 @@
       height: 8px;
     }
     &::-webkit-scrollbar-track {
-      @apply bg-primary-100 rounded-lg dark:bg-primary-950;
+      @apply bg-primary-100 rounded-lg dark:bg-primary-950/50;
     }
     &::-webkit-scrollbar-thumb {
       @apply bg-primary-500 rounded-lg hover:bg-primary-600 dark:bg-primary-400 dark:hover:bg-primary-600;
