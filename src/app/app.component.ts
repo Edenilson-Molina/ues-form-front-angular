@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+
+import { Store } from '@ngrx/store';
 
 import { NgxSonnerToaster } from 'ngx-sonner';
 
@@ -14,8 +16,20 @@ import { colorPaletteMap } from '@utils/color-palette-map';
 })
 export class AppComponent {
   title = 'plantilla-angular';
+  store = inject(Store);
+
+  toastTheme: 'light' | 'dark' = 'light';
+
   constructor() {
     this.setColors();
+    this.store.select('session').subscribe((session) => {
+      if (session.darkMode) {
+        this.toastTheme = 'dark';
+      }
+      else {
+        this.toastTheme = 'light';
+      }
+    });
   }
 
   setColors() {
