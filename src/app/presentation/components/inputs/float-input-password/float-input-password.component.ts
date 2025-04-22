@@ -9,13 +9,12 @@ import {
 } from '@angular/forms';
 
 import { FloatLabelModule } from 'primeng/floatlabel';
-import { InputTextModule } from 'primeng/inputtext';
+import { PasswordModule } from 'primeng/password';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { FluidModule } from 'primeng/fluid';
 
 import { InputErrorsComponent } from '@components/inputs/input-errors/input-errors.component';
-import { PasswordModule } from 'primeng/password';
 
 @Component({
   selector: 'c-float-password',
