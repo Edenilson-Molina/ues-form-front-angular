@@ -1,11 +1,10 @@
 <div
-  class="w-full flex min-h-screen overflow-y-auto items-center justify-center px-4 bg-black/50"
+  class="w-full flex min-h-screen overflow-y-auto items-center justify-center px-4"
 >
   <img
     class="lg:mr-36 lg:ml-20 xl:mr-40 hidden lg:flex w-[50%] lg:w-[40%]"
-    src="assets/images/angular.png"
-    alt="angular-logo"
-    style="filter: brightness(200)"
+    src="assets/images/logo-system.png"
+    alt="UES Forms"
   />
   <form
     [formGroup]="form"
@@ -14,21 +13,20 @@
     class="flex w-full md:w-3/5 lg:w-3/6 xl:w-2/4 2xl:w-1/4 lg:mr-14"
   >
     <p-card
-      styleClass="p-10 md:px-16 text-center shadow-lg bg-white/10 backdrop-blur-md rounded-2xl"
+      styleClass="p-10 md:px-16 text-center shadow-xl bg-white/40 backdrop-blur-md rounded-2xl"
       class="w-full"
     >
       <ng-template #header>
         <div class="flex justify-center">
           <img
-            class="w-20 mx-auto mt-4"
+            class="w-24 mx-auto mt-4"
             alt=""
-            src="assets/images/angular-icon.png"
-            style="filter: brightness(200)"
+            src="assets/images/logo.png"
           />
         </div>
       </ng-template>
       <ng-template #title>
-        <span class="text-gray-50">Incio de sesión</span>
+        <span class="text-gray-600">Inicio de sesión</span>
       </ng-template>
       <ng-template #content>
         <div class="mb-4 text-start">
@@ -76,9 +74,9 @@
       </ng-template>
       <ng-template #footer>
         <p-button
-          label="Submit"
+          label="Iniciar sesión"
           type="submit"
-          styleClass="w-full mt-4 bg-purple-500 border-purple-500 text-white"
+          styleClass="w-full mt-4 text-white"
         />
         <!-- <ButtonComponent
           :label="t('login.submit')"

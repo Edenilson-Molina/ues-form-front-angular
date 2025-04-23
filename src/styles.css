@@ -24,6 +24,61 @@
   }
 }
 
+@layer base{
+
+  @font-face {
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 300;
+    font-display: swap;
+    src: url(/fonts/Manrope-ExtraLight.ttf) format('truetype');
+  }
+
+  @font-face {
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 300;
+    font-display: swap;
+    src: url(/fonts/Manrope-Light.ttf) format('truetype');
+  }
+
+  @font-face {
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(/fonts/Manrope-Regular.ttf) format('truetype');
+  }
+
+  @font-face {
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url(/fonts/Manrope-Medium.ttf) format('truetype');
+  }
+
+  @font-face {
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url(/fonts/Manrope-SemiBold.ttf) format('truetype');
+  }
+
+  @font-face {
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url(/fonts/Manrope-Bold.ttf) format('truetype');
+  }
+
+  html{
+    font-family: 'Manrope', sans-serif;
+  }
+}
+
 
 /* Funcionalidad del sidebar menu */
 @keyframes fadein {
@@ -100,7 +155,7 @@
 
 /* Background Gradiente */
 .bg-login {
-  background: linear-gradient(120deg, #d4002f, #ff0080, #e040fb, #6200ea);
+  background: #E3E3DE;
 }
 
 

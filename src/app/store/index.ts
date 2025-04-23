@@ -5,7 +5,6 @@ import { localStorageSync } from 'ngrx-store-localstorage';
 import CryptoJS from 'crypto-js';
 
 import { sessionReducer } from './session.reducer';
-import { Session } from '@app/interfaces/store';
 
 export const reducers = {
   session: sessionReducer,

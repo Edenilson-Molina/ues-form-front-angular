@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, EventEmitter, inject, Input, Output, signal } from '@angular/core';
 
+import { Ripple } from 'primeng/ripple';
+
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
@@ -10,7 +12,7 @@ import { primaryColors, secondaryColors, successColors, infoColors, warningColor
 
 @Component({
   selector: 'c-button',
-  imports: [CommonModule],
+  imports: [CommonModule, Ripple],
   templateUrl: './button.component.html',
   styles: ``
 })

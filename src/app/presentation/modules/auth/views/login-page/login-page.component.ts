@@ -26,7 +26,6 @@ import { InputErrorsComponent } from '@components/inputs/input-errors/input-erro
 import { AuthService } from '@services/auth.service';
 
 import { login } from '@store/auth.actions';
-import { LOCAL_STORAGE } from '@utils/constants.utils';
 import { Session } from '@app/interfaces/store';
 
 @Component({
@@ -53,15 +52,13 @@ export default class LoginPageComponent {
   private router = inject(Router);
   private store = inject(Store);
   private authService = inject(AuthService);
+
   session$!: Observable<Session>;
   sessionValue!: Session;
   form!: FormGroup;
   redirect: string = '';
 
-  constructor(
-    private fb: FormBuilder,
-    private route: ActivatedRoute,
-  ) {
+  constructor( private fb: FormBuilder, private route: ActivatedRoute,) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
