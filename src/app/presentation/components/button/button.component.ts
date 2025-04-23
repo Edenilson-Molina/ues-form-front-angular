@@ -45,8 +45,7 @@ export class ButtonComponent {
 
   executeCallback(event: MouseEvent) {
     if (!this.loading && !this.disabled) {
-      console.log('Button clicked:', event);
-      // this.onClick.emit(event);
+      this.onClick.emit(event);
     }
   }
 

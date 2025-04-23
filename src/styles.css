@@ -31,7 +31,7 @@
     font-style: normal;
     font-weight: 300;
     font-display: swap;
-    src: url(/fonts/Manrope-ExtraLight.ttf) format('truetype');
+    src: url(/assets/fonts/Manrope-ExtraLight.ttf) format('truetype');
   }
 
   @font-face {
@@ -39,7 +39,7 @@
     font-style: normal;
     font-weight: 300;
     font-display: swap;
-    src: url(/fonts/Manrope-Light.ttf) format('truetype');
+    src: url(/assets/fonts/Manrope-Light.ttf) format('truetype');
   }
 
   @font-face {
@@ -47,7 +47,7 @@
     font-style: normal;
     font-weight: 400;
     font-display: swap;
-    src: url(/fonts/Manrope-Regular.ttf) format('truetype');
+    src: url(/assets/fonts/Manrope-Regular.ttf) format('truetype');
   }
 
   @font-face {
@@ -55,7 +55,7 @@
     font-style: normal;
     font-weight: 500;
     font-display: swap;
-    src: url(/fonts/Manrope-Medium.ttf) format('truetype');
+    src: url(/assets/fonts/Manrope-Medium.ttf) format('truetype');
   }
 
   @font-face {
@@ -63,7 +63,7 @@
     font-style: normal;
     font-weight: 600;
     font-display: swap;
-    src: url(/fonts/Manrope-SemiBold.ttf) format('truetype');
+    src: url(/assets/fonts/Manrope-SemiBold.ttf) format('truetype');
   }
 
   @font-face {
@@ -71,7 +71,7 @@
     font-style: normal;
     font-weight: 700;
     font-display: swap;
-    src: url(/fonts/Manrope-Bold.ttf) format('truetype');
+    src: url(/assets/fonts/Manrope-Bold.ttf) format('truetype');
   }
 
   html{
