@@ -1,0 +1,16 @@
+<p-card
+  [ngClass]="[
+    'flex flex-col gap-4 p-4 shadow-md rounded-3xl',
+    getBgColor()
+  ]"
+>
+  <section class="flex items-center gap-4 {{ getTextColor() }}">
+    <span class="material-symbols-outlined" style="font-size:60px;">
+      {{ icon }}
+    </span>
+    <section class="flex flex-col gap-1 w-full">
+      <h1 class="font-bold text-3xl">{{ title }}</h1>
+      <p>{{ description }}</p>
+    </section>
+  </section>
+</p-card>
