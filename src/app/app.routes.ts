@@ -18,6 +18,10 @@ export const routes: Routes = [
         loadComponent: () => import('./presentation/modules/home/home.component')
       },
       {
+        path: 'survy',
+        loadComponent: () => import('./presentation/modules/survy/home-survy/home-survy.component')
+      },
+      {
         path: 'test',
         loadComponent: () => import('./presentation/modules/test/test.component')
       },
