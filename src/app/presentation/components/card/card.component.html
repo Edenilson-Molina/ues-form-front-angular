@@ -1,22 +1,24 @@
 <p-card class="flex flex-col gap-2 p-4 bg-white dark:bg-black/5 shadow-md rounded-sm">
-  <header class="flex justify-between">
-    <div class="flex flex-col justify-center gap-2">
-      <div class="flex items-center gap-2">
-        @if (icon) {
-          <span class="material-symbols-outlined text-primary-500">
-            {{ icon }}
-          </span>
-        }
-        <h2 class="text-lg font-semibold text-gray-800 dark:text-white">
-          {{ titleCard }}
-        </h2>
+  @if (titleCard || subtitleCard) {
+    <header class="flex justify-between">
+      <div class="flex flex-col justify-center gap-2">
+        <div class="flex items-center gap-2">
+          @if (icon) {
+            <span class="material-symbols-outlined text-primary-500">
+              {{ icon }}
+            </span>
+          }
+          <h2 class="text-lg font-semibold text-gray-800 dark:text-white">
+            {{ titleCard }}
+          </h2>
+        </div>
+        <h3 class="text-gray-500 dark:text-gray-400">
+          {{ subtitleCard }}
+        </h3>
       </div>
-      <h3 class="text-gray-500 dark:text-gray-400">
-        {{ subtitleCard }}
-      </h3>
-    </div>
-    <span class="text-sm text-gray-500 dark:text-gray-400"> {{ chip }}</span>
-  </header>
+      <span class="text-sm text-gray-500 dark:text-gray-400"> {{ chip }}</span>
+    </header>
+  }
   <section class="flex flex-col gap-4 mt-4">
     <ng-content></ng-content>
   </section>

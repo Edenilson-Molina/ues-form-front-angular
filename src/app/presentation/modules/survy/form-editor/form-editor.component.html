@@ -1,0 +1,102 @@
+<header class="flex flex-wrap justify-between items-center my-16 gap-4">
+  <div class="flex flex-col gap-2">
+    <h1 class="text-primary-500 text-3xl font-bold">FormDV - Editor</h1>
+    <p class="text-gray-500">Editor de encuestas</p>
+  </div>
+  <div class="flex flex-wrap gap-4">
+    <c-button label="Mis encuestas" [severity]="'primary'" [variant]="'outlined'" [icon]="'login'" routerLink="/dashboard"/>
+  </div>
+  <div class="flex flex-wrap justify-end gap-4 w-full">
+    <c-button label="Respuestas" [severity]="'primary'" [variant]="'outlined'" [icon]="'monitoring'" routerLink="/dashboard"/>
+    <c-button label="Ver encuesta" [severity]="'primary'" [variant]="'outlined'" [icon]="'visibility'" routerLink="/dashboard"/>
+    <c-button label="Publicar" [severity]="'primary'" [icon]="'publish'" routerLink="/dashboard"/>
+  </div>
+</header>
+<section class="flex flex-col gap-4">
+  <article class="flex flex-col gap-4">
+    <c-panel class="w-full" title="Datos internos" subTitle="No es visible para los encuestados">
+      <section class="flex flex-col gap-4">
+        <div>
+          <label class="block font-semibold text-gray-800 dark:text-white">Grupo meta <span class="text-primary-500">*</span></label>
+          <span class="text-gray-500 dark:text-gray-400">Clasifica las encuestas para una mejor gestión</span>
+          <div class="w-full sm:w-72">
+            <c-select placeholder="Seleccione grupo meta"/>
+          </div>
+        </div>
+        <div>
+          <label class="block font-semibold text-gray-800 dark:text-white">Grupo <span class="text-primary-500">*</span></label>
+          <span class="text-gray-500 dark:text-gray-400">Lo que buscas conseguir realizando esta encuesta</span>
+          <c-textarea placeholder="Conocer..."/>
+        </div>
+        <div>
+          <label class="block font-semibold text-gray-800 dark:text-white">Identificador <span class="text-primary-500">*</span></label>
+          <span class="text-gray-500 dark:text-gray-400">Identifica el enlace de tu encuesta de forma única</span>
+          <div class="flex flex-wrap items-center gap-4">
+            <div class="w-full sm:w-72">
+              <c-float-input placeholder="Código de la encuesta" icon="refresh" iconPosition="left"/>
+            </div>
+            <span class="text-gray-500 dark:text-gray-400">URL: https://ues-forms.wood-agent.site/surveys/encuesta-chida-1</span>
+          </div>
+        </div>
+        <div class="flex justify-end">
+          <c-button label="Guardar" [severity]="'primary'" [icon]="'save'"/>
+        </div>
+      </section>
+    </c-panel>
+    <c-panel class="w-full" title="Información general" subTitle="Datos generales de la encuesta. Este apartado será lo primero que verán los encuestados">
+      <section class="flex flex-col gap-4">
+        <div>
+          <label class="block font-semibold text-gray-800 dark:text-white">Título<span class="text-primary-500">*</span></label>
+          <span class="text-gray-500 dark:text-gray-400">Escribe un nombre corto e identificativo para tu encuesta</span>
+          <div class="w-full sm:w-72">
+            <c-float-input placeholder="" icon="title" iconPosition="left"/>
+          </div>
+        </div>
+        <div>
+          <label class="block font-semibold text-gray-800 dark:text-white">Descripción <span class="text-primary-500">*</span></label>
+          <span class="text-gray-500 dark:text-gray-400">Describe, explica, da instrucciones, etc.</span>
+          <c-textarea placeholder="Conocer..."/>
+        </div>
+        <div>
+          <p class="text-gray-500 dark:text-gray-400">Además de mostrar esta información, por defecto, cada encuesta posee los siguientes campos para recolectar datos sobre los encuestados:</p>
+          <ul class="list-disc pl-5">
+            <li>
+              <span class="text-gray-500 dark:text-gray-400">Nombres</span>
+            </li>
+            <li>
+              <span class="text-gray-500 dark:text-gray-400">Apellidos</span>
+            </li>
+            <li>
+              <span class="text-gray-500 dark:text-gray-400">Correo electrónico</span>
+            </li>
+            <li>
+              <span class="text-gray-500 dark:text-gray-400">Fecha de nacimiento</span>
+            </li>
+            <li>
+              <span class="text-gray-500 dark:text-gray-400">Teléfono</span>
+            </li>
+            <li>
+              <span class="text-gray-500 dark:text-gray-400">Edad</span>
+            </li>
+          </ul>
+        </div>
+        <div class="flex justify-end">
+          <c-button label="Guardar" severity="primary" icon="save" [iconPosition]="'left'"/>
+        </div>
+      </section>
+    </c-panel>
+    <c-panel class="w-full" title="Formulario" subTitle="Crea y edita las preguntas de tu encuesta">
+      <section class="border p-4 rounded-sm">
+        <h3 class="block font-semibold text-gray-800 dark:text-white">Agregar nueva pregunta</h3>
+        <label class="text-gray-500 dark:text-gray-400">Tipo de pregunta</label>
+        <div class="flex flex-wrap items-end gap-4">
+          <div class="w-full sm:w-72">
+            <c-select placeholder="Seleccione tipo de pregunta"/>
+          </div>
+          <c-button label="Agregar" severity="primary" variant="outlined" icon="add" iconPosition="left"/>
+        </div>
+      </section>
+      <p-divider />
+    </c-panel>
+  </article>
+</section>
