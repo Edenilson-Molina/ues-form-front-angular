@@ -6,6 +6,8 @@ import { getAxiosAdapter } from './common/axios.service';
 import { map, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { Session } from '@app/interfaces/store';
+import { environment } from '@environments/environment';
+import { AxiosRequestConfig } from 'axios';
 
 
 @Injectable({
@@ -17,7 +19,10 @@ export class AuthService {
   constructor(private store: Store<{session: Session}>) {}
 
   async login(loginDto: LoginDto) {
-    return await this.axiosService.post<LoginDto, LoginResponse>('/auth/login', loginDto);
+    const config: AxiosRequestConfig = {
+      baseURL: `${environment.apiPublic}` || 'http://localhost:8321/public'
+    }
+    return await this.axiosService.post<LoginDto, LoginResponse>('/auth/login', loginDto, config);
   }
 
   async logout() {
