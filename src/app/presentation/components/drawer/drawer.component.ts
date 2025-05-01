@@ -20,6 +20,8 @@ import { Session } from '@interfaces/store';
 import { Route } from '@interfaces/common/route.interface';
 import { logout, showMenu } from '@app/store/auth.actions';
 
+import { AuthService } from '@services/auth.service';
+
 @Component({
   selector: 'drawer',
   imports: [
@@ -39,6 +41,7 @@ export class DrawerComponent {
   private store = inject(Store);
   protected router = inject(Router);
   protected route = inject(ActivatedRoute);
+  private authService = inject(AuthService);
 
   @ViewChild('drawerRef') drawerRef!: Drawer;
 
@@ -88,10 +91,10 @@ export class DrawerComponent {
     this.setVisible(false);
   }
 
-
-  handleLogout(): void {
+  async handleLogout() {
     try {
       this.loading.set(true);
+      await this.authService.logout();
       this.store.dispatch(logout());
       this.router.navigate(['/login']);
     } catch (error) {

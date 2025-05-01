@@ -20,7 +20,7 @@
             <img
               class="w-full dark:brightness-75"
               alt="Logo"
-              src="assets/images/angular.png"
+              src="assets/images/logo-system.png"
             />
           </span>
         </span>
@@ -28,7 +28,7 @@
       <div class="overflow-y-auto">
         <ul class="list-none p-4 m-0">
           <li>
-            <ul class="list-none p-0 m-0 overflow-hidden">
+            <ul class="flex flex-col gap-1 list-none p-0 m-0 overflow-hidden">
               @for(route of menu; track route.path){
                 <li>
                   @if(!route.children){
@@ -36,9 +36,9 @@
                       pRipple
                       [routerLink]="[route.path]"
                       (click)="setVisible(false)"
-                      routerLinkActive="bg-slate-200 dark:bg-neutral-800"
+                      routerLinkActive="bg-red-800 text-white"
                       [routerLinkActiveOptions]="{ exact: true }"
-                      class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-slate-200 dark:text-surface-0 dark:hover:bg-slate-800 duration-150 transition-colors"
+                      class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-red-800 hover:text-white dark:text-surface-0 dark:hover:bg-red-800 duration-150 transition-colors"
                     >
                       <span class="material-symbols-outlined mr-1">{{
                         route.icon
@@ -50,8 +50,8 @@
                     <a
                       pRipple
                       [routerLink]="[route.path]"
-                      routerLinkActive="bg-slate-200 dark:bg-neutral-800"
-                      class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-slate-200 dark:text-surface-0 dark:hover:bg-slate-800 duration-150 transition-colors p-ripple"
+                      routerLinkActive="bg-red-800 text-white"
+                      class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-red-800 hover:text-white dark:text-surface-0 dark:hover:bg-red-800 duration-150 transition-colors p-ripple"
                     >
                       <span class="material-symbols-outlined mr-1">{{
                         route.icon
@@ -66,7 +66,7 @@
                         @for(subroute of route.children; track subroute.path){
                           <a
                             pRipple
-                            class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-slate-200 dark:text-surface-0 dark:hover:bg-slate-800 duration-150 transition-colors p-ripple"
+                            class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-red-200 dark:text-surface-0 dark:hover:bg-red-800 duration-150 transition-colors p-ripple"
                           >
                             <span class="material-symbols-outlined mr-1">{{
                               subroute.icon
@@ -84,22 +84,7 @@
         </ul>
       </div>
       <div class="mt-auto mb-2">
-        <hr
-          class="mb-3 mx-4 border-t border-0 border-slate-300 dark:border-slate-200"
-        />
-        <a
-          pRipple
-          class="mx-3 my-1.5 flex items-center p-3 gap-2 rounded-md text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-neutral-800 duration-150 transition-colors cursor-pointer"
-          (click)="router.navigate(['/perfil'])"
-        >
-          <p-avatar
-            image="https://i.ibb.co/Yt6XZrc/DALL-E-2025-01-17-08-30-30-A-highly-realistic-portrait-of-a-young-woman-with-long-wavy-hair-in-a-ric.webp"
-            shape="circle"
-            size="normal"
-            class="bg-slate-100 dark:bg-slate-700"
-          />
-          <span class="font-bold capitalize">{{ username }}</span>
-        </a>
+        <hr class="mb-3 mx-4 border-t border-0 border-slate-300 dark:border-slate-200"/>
         <a
           pRipple
           class="mx-3 my-1.5 flex items-center cursor-pointer p-3 gap-2 rounded text-slate-700 hover:bg-slate-200 dark:text-slate-200 dark:hover:bg-neutral-800 duration-150 transition-colors"
@@ -111,17 +96,15 @@
             size="normal"
             class="bg-slate-100 dark:bg-gray-600"
           />
-          <span class="font-bold capitalize">Cerrar sesión</span>
+          <span class="capitalize">Cerrar sesión</span>
         </a>
       </div>
     </ng-template>
 </p-drawer>
-<div
-  class="mt-4 m-2 md:m-0 p-2 md:py-4 rounded-xl md:rounded-l-none bg-slate-200 dark:bg-zinc-700 fixed md:h-full left-0 top-0 z-10"
->
+<div class="flex items-center mt-4 m-2 md:m-0 p-4 md:py-4 rounded-xl md:rounded-l-none fixed md:h-full left-0 top-0 z-10">
   <p-button
     icon="pi pi-bars"
-    styleClass="bg-slate-200 dark:bg-transparent border-none z-50"
+    styleClass="bg-transparent border-none z-50"
     severity="secondary"
     (click)="setVisible(true)"
   />

@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -22,6 +23,7 @@ import { TabsComponent } from '@components/tabs/tabs.component';
 import { SelectComponent } from '@components/inputs/select/select.component';
 import { DatePickerComponent } from '@components/inputs/date-picker/date-picker.component';
 import { TextareaComponent } from '@components/inputs/textarea/textarea.component';
+import { FileInputComponent } from '@components/inputs/file-input/file-input.component';
 import {
   DataTableColumnDirective,
   DataTableComponent,
@@ -33,8 +35,8 @@ import {
   Pagination,
   PaginationParams,
 } from '@interfaces/common/pagination.interface';
+import { FileType } from '@app/interfaces/common/file-input.interface';
 import { ActionButtonConfiguration, ColumnDefinition, PageEvent } from '@interfaces/common/data-table.interface';
-import { FormsModule } from '@angular/forms';
 
 type Severity =
   | 'primary'
@@ -54,6 +56,7 @@ interface ButtonCustom {
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     DividerModule,
     TagModule,
     ButtonComponent,
@@ -62,6 +65,7 @@ interface ButtonCustom {
     DatePickerComponent,
     SelectComponent,
     TextareaComponent,
+    FileInputComponent,
     DataTableComponent,
     DataTableColumnDirective,
   ],
@@ -258,10 +262,39 @@ export default class TestComponent implements OnInit {
   //                     FileInputComponent                       //
   //////////////////////////////////////////////////////////////////
 
-  file1 = undefined;
-  file2 = undefined;
+  fileMultiple = null;
+  fileSingle = null;
   file3 = undefined;
 
+  get FileType() {
+    return FileType;
+  }
+
+  value() {
+    console.log('Single ', this.fileSingle);
+    console.log('Multple ', this.fileMultiple);
+  }
+
+  fb = inject(FormBuilder);
+  form = this.fb.group({
+    fileMultiple: [null, [Validators.required]],
+    fileUnique: [null, [Validators.required]],
+  });
+
+  submit() {
+    this.form.markAllAsTouched();
+    console.log(this.form);
+    if (this.form.valid) {
+      console.log('Form is valid');
+      console.log(this.form.value);
+    } else {
+      console.log('Form is invalid');
+    }
+  }
+
+  getControlForm(formControlName: string) {
+    return this.form.get(formControlName) as FormControl;
+  }
   //////////////////////////////////////////////////////////////////
   //                      TableComponent                          //
   //////////////////////////////////////////////////////////////////

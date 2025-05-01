@@ -30,8 +30,8 @@ export class AxiosAdapter implements HttpAdapter<AxiosRequestConfig> {
 
     this.axios = axios.create({
       baseURL:
-        `${environment.api}/${environment.apiVersion}` ||
-        'http://localhost:4000/api/v1',
+        //`${environment.api}/${environment.apiVersion}` ||
+        'http://localhost:8000/api',
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
