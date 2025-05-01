@@ -11,7 +11,47 @@
 <section class="flex flex-col gap-4">
   <article class="flex flex-col md:flex-row gap-4">
     <c-card class="w-full">
-
+      <section>
+        <header class="flex flex-col lg:flex-row items-center justify-center gap-4">
+          <article class="grid grid-cols-1 lg:grid-cols-3 gap-x-4 gap-y-2 w-full">
+            <c-float-input type="text" label="Título" icon="filter_alt" iconPosition="left"/>
+            <c-float-input type="text" label="Grupo meta" icon="account_tree" iconPosition="left"/>
+            <c-select
+              label="Estado"
+              [options]="[
+                { label: 'Activo', value: 'active' },
+                { label: 'Inactivo', value: 'inactive' }
+              ]"
+              [placeholder]="'Selecciona una opción'"
+              />
+          </article>
+          <article class="flex flex-row gap-4 mt-4">
+            <c-button label="" [severity]="'primary'" [iconOnly]="true" [icon]="'search'" rounded="full"/>
+            <c-button label="" [severity]="'secondary'" variant="outlined" [iconOnly]="true" [icon]="'replay'" rounded="full"/>
+          </article>
+        </header>
+        <section class="flex flex-col gap-4 mt-4">
+          <data-table
+            [data]="encuestas()"
+            [columns]="columns"
+            [isLoading]="isLoading()"
+            [actionButtonsConfiguration]="actionButtons"
+            [pagination]="pagination()"
+            [paginationCustomDesign]="false"
+            [showPagination]="true"
+            [showPerPageOptionsDropdown]="true"
+            [showPrevNextLinks]="true"
+            [showFirstLastLinks]="true"
+            headerAlign="start"
+            actionsAlign="start"
+            (onPageChange)="handlePagination($event)"
+          >
+            <ng-template dataTableColumn="estado" let-data>
+              <p-tag [value]="data.estado" [severity]="data.estado === 'Activa' ? 'success' : undefined"/>
+            </ng-template>
+          </data-table>
+        </section>
+      </section>
     </c-card>
   </article>
 </section>

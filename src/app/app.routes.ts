@@ -22,6 +22,10 @@ export const routes: Routes = [
         loadComponent: () => import('./presentation/modules/survy/home-survy/home-survy.component')
       },
       {
+        path: 'survy/form-editor/:formId',
+        loadComponent: () => import('./presentation/modules/survy/form-editor/form-editor.component')
+      },
+      {
         path: 'test',
         loadComponent: () => import('./presentation/modules/test/test.component')
       },
