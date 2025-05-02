@@ -76,7 +76,7 @@ export class DataTableComponent implements AfterContentInit {
   @Input() pagination: Pagination = {
     from: 0,
     page: 1,
-    limit: 2,
+    per_page: 2,
     to: 0,
     totalItems: 0,
   };
@@ -176,7 +176,7 @@ export class DataTableComponent implements AfterContentInit {
     const pageEvent: PageEvent = {
       page: event.page! + 1,
       first: event.first ?? 0,
-      limit: event.rows ?? 0,
+      per_page: event.rows ?? 0,
       pageCount: Math.ceil(this.pagination.totalItems / (event.rows ?? 1)),
     };
 

@@ -139,7 +139,7 @@ export class AxiosAdapter implements HttpAdapter<AxiosRequestConfig> {
           if (this.sessionStore?.refreshToken) {
             try {
               const response = await axios.post(
-                `${environment.api}/v1/auth/refresh-token`,
+                `${environment.api}/auth/refresh`,
                 {
                   refreshToken: this.sessionStore.refreshToken,
                 }
@@ -172,7 +172,8 @@ export class AxiosAdapter implements HttpAdapter<AxiosRequestConfig> {
             }
             summary = 'Advertencia';
           } else {
-            if (!message) message = error.response.statusText;
+            console.error(error);
+            if (!message) message = error?.response?.statusText || 'Error';
           }
           break;
       }
