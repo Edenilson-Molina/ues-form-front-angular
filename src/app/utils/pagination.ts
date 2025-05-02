@@ -19,14 +19,14 @@ export const usePagination = <TData, TParams = null, TDataTransform = any>(
   const pagination = signal<Pagination>({
     from: 0,
     page: 1,
-    limit: defaultPerPage,
+    per_page: defaultPerPage,
     to: 0,
     totalItems: 0,
   });
 
   const paginationParams = signal<PaginationParams>({
     page: 1,
-    limit: 10,
+    per_page: 10,
     paginate: true,
   });
 
@@ -65,7 +65,7 @@ export const usePagination = <TData, TParams = null, TDataTransform = any>(
     data.set([]);
     paginationParams.set({
       page: event.page,
-      limit: event.limit,
+      per_page: event.per_page,
       paginate: true,
     });
     loadData();

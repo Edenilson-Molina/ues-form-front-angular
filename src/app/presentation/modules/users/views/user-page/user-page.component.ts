@@ -47,13 +47,13 @@ export default class UserPageComponent {
 
   paginationParams = signal<PaginationParams>({
     page: 1,
-    limit: 10,
+    per_page: 10,
     paginate: true,
   });
   pagination = signal<Pagination>({
     from: 0,
     page: 1,
-    limit: 10,
+    per_page: 10,
     to: 0,
     totalItems: 0,
   });
@@ -105,14 +105,14 @@ export default class UserPageComponent {
     this.users.set([]);
     this.paginationParams.set({
       page: event.page,
-      limit: event.limit,
+      per_page: event.per_page,
       paginate: true,
     });
   }
 
   columns: ColumnDefinition[] = [
     { field: 'id', header: 'ID', sortable: true },
-    { field: 'name', header: 'Nombre', sortable: true },
+    { field: 'username', header: 'Usuario', sortable: true },
     { field: 'email', header: 'Correo electrónico', sortable: true },
   ];
 

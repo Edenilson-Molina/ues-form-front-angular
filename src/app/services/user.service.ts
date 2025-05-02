@@ -22,7 +22,7 @@ export class UserService {
   getAllUsers(params: PaginationParams & UserParams): Observable<UserResponse[] | PaginatedResponse<UserResponse>> {
     return from(
       this.axiosAdapter.get<UserResponse[] | PaginatedResponse<UserResponse>>(
-      '/users', { params }
+      '/auth/users', { params }
       )
     );
   }
