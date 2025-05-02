@@ -172,7 +172,8 @@ export class AxiosAdapter implements HttpAdapter<AxiosRequestConfig> {
             }
             summary = 'Advertencia';
           } else {
-            if (!message) message = error.response.statusText;
+            console.error(error);
+            if (!message) message = error?.response?.statusText || 'Error';
           }
           break;
       }
