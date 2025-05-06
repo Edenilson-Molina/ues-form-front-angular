@@ -139,6 +139,38 @@
 
               <!-- Campo según el tipo de pregunta -->
               <ng-container [ngSwitch]="question.type">
+                <!-- Pregunta Abierta Corta -->
+                <div *ngSwitchCase="'short'">
+                  <div class="flex items-center gap-3 mb-2">
+                    <div class="group-input relative w-full">
+                      <input
+                        type="text"
+                        class="w-full p-1 border-none dark:bg-transparent focus:outline-none input"
+                        [(ngModel)]="question.answer" 
+                        placeholder="Respuesta corta"
+                        [name]="'answer_' + i"
+                        disabled
+                      />
+                      <span class="hover-input"></span>
+                    </div>
+                  </div>
+                </div>
+                <!-- Pregunta Abierta Larga -->
+                <div *ngSwitchCase="'long'">
+                  <div class="flex items-center gap-3 mb-2">
+                    <div class="group-input relative w-full">
+                      <textarea
+                        class="w-full p-1 border-none dark:bg-transparent focus:outline-none input resize-none"
+                        [(ngModel)]="question.answer" 
+                        placeholder="Respuesta larga"
+                        [name]="'answer_' + i"
+                        disabled
+                      ></textarea>
+                      <span class="hover-input"></span>
+                    </div>
+                  </div>
+                </div>
+
                 <!-- Selección Múltiple -->
                 <div *ngSwitchCase="'multiple'">
                   <div class="flex items-center gap-3 mb-2"
@@ -174,19 +206,29 @@
                 </div>
 
                 <!-- Selección Única -->
-                <div *ngSwitchCase="'single'" class="options-group">
-                  <div class="option-row" 
+                <div *ngSwitchCase="'single'" >
+                  <div class="flex items-center gap-3 mb-2" 
                     *ngFor="let option of question.options; let optIndex = index; trackBy: trackByOption">
                     <input type="radio" [value]="option" disabled />
-                    <c-float-input 
-                      [(ngModel)]="question.options[optIndex]" 
-                      placeholder="Opción"
-                      [name]="'option_' + i + '_' + optIndex"
-                      [disabled]="question.options[optIndex] === 'Otros'">
-                    </c-float-input>
-                    <i class="pi pi-times" (click)="removeOption(i, optIndex)" title="Eliminar opción"></i>
+                    <div class="group-input relative w-full">
+                      <input
+                        type="text"
+                        class="w-full p-1 border-none dark:bg-transparent focus:outline-none input"
+                        [(ngModel)]="question.options[optIndex]" 
+                        placeholder="Opción"
+                        [name]="'option_' + i + '_' + optIndex"
+                        [disabled]="question.options[optIndex] === 'Otros'"
+                      />
+                      <span class="hover-input"></span>
+                    </div>
+                    <i 
+                      class="pi pi-times cursor-pointer hover:text-gray-950 dark:hover:text-gray-400 transition-opacity" 
+                      (click)="removeOption(i, optIndex)" 
+                      title="Eliminar opción"
+                      *ngIf="question.options.length > 1">
+                    </i>
                   </div>
-                  <div class="flex gap-4">
+                  <div class="flex flex-wrap gap-4 mt-2">
                     <c-button label="Agregar opción" (onClick)="addOption(i)" styleClass="p-button-warning"></c-button>
                     <c-button 
                       label='Agregar opción de "Otros"' 
@@ -198,55 +240,112 @@
                 </div>
 
                 <!-- Falso / Verdadero -->
-                <div *ngSwitchCase="'truefalse'" class="options-group">
-                  <div class="option-row">
+                <div *ngSwitchCase="'truefalse'" class="flex flex-col gap-2">
+                  <div class="flex items-center gap-3 mb-2">
                     <input type="radio" value="yes" disabled />
                     <span>Sí</span>
                   </div>
-                  <div class="option-row">
+                  <div class="flex items-center gap-3 mb-2">
                     <input type="radio" value="no" disabled />
                     <span>No</span>
                   </div>
                 </div>
 
                 <!-- Escala Numérica -->
-                <div *ngSwitchCase="'numeric'" class="range-group">
-                  <c-float-input label="Desde" [(ngModel)]="question.rangeFrom" placeholder="1"
-                    [name]="'rangeFrom_' + i"></c-float-input>
-                  <c-float-input label="Hasta" [(ngModel)]="question.rangeTo" placeholder="5"
-                    [name]="'rangeTo_' + i"></c-float-input>
-                  <p-slider [min]="question.rangeFrom || 1" [max]="question.rangeTo || 5"
-                    [(ngModel)]="question.rangeValue" [name]="'rangeValue_' + i"></p-slider>
+                <div *ngSwitchCase="'numeric'" class="flex flex-col gap-6">
+                  <div class="flex items-start gap-3">
+                    <!-- Input "Desde" -->
+                    <div class="relative">
+                      <c-float-input
+                        label="Desde"
+                        [(ngModel)]="question.rangeFrom"
+                        [name]="'rangeFrom_' + i"
+                        required
+                        #rangeFrom="ngModel"
+                      ></c-float-input>
+                      <div *ngIf="rangeFrom.invalid && (rangeFrom.dirty || rangeFrom.touched)" class="text-red-500 text-xs mt-1">
+                        <div *ngIf="rangeFrom.errors?.['required']">El valor es requerido.</div>
+                      </div>
+                    </div>
+
+                    <!-- Input "Hasta" -->
+                    <div class="relative">
+                      <c-float-input
+                        label="Hasta"
+                        [(ngModel)]="question.rangeTo"
+                        [name]="'rangeTo_' + i"
+                        required
+                        #rangeTo="ngModel"
+                      ></c-float-input>
+                      <div *ngIf="rangeTo.invalid && (rangeTo.dirty || rangeTo.touched)" class="text-red-500 text-xs mt-1">
+                        <div *ngIf="rangeTo.errors?.['required']">El valor es requerido.</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="flex flex-col justify-center items-center relative">
+                    <div class="w-full sm:w-60">
+                      <div class="flex justify-between items-center mb-2">
+                        <span
+                          *ngFor="let value of getRangeLabels(getSafeRangeFrom(question.rangeFrom), getSafeRangeTo(question.rangeTo))"
+                          class="text-sm text-gray-700 dark:text-gray-300"
+                        >
+                          {{ value }}
+                        </span>
+                      </div>
+                      <p-slider
+                        [step]="1"
+                        [min]="getSafeRangeFrom(question.rangeFrom)"
+                        [max]="getSafeRangeTo(question.rangeTo)"
+                        [(ngModel)]="question.rangeValue"
+                        [name]="'rangeValue_' + i"
+                      ></p-slider>
+                    </div>
+                  </div>
                 </div>
 
                 <!-- Escala / Escala Likert -->
-                <div *ngSwitchCase="'likert'" class="options-group">
-                  <div class="option-row"
-                    *ngFor="let option of question.options; let optIndex = index; trackBy: trackByOption">
-                    <input type="radio" [value]="option" disabled />
-                    <c-float-input 
-                      [(ngModel)]="question.options[optIndex]" 
-                      placeholder="Opción"
-                      [name]="'likertOption_' + i + '_' + optIndex"
-                      [disabled]="question.options[optIndex] === 'Otros'">
-                    </c-float-input>
-                    <i class="pi pi-times" (click)="removeOption(i, optIndex)" title="Eliminar opción"></i>
+                <div *ngSwitchCase="'likert'" class="flex flex-col gap-6">
+                  <div class="flex flex-wrap items-center justify-center gap-x-12 gap-y-6 w-full">
+                    <div class="flex flex-col items-center gap-3"
+                      *ngFor="let option of question.options; let optIndex = index; trackBy: trackByOption">
+                      <input type="radio" [value]="option" disabled />
+                      <div class="flex items-center gap-2">
+                        <div class="group-input relative w-full">
+                          <input
+                            type="text"
+                            class="w-full p-1 border-none dark:bg-transparent focus:outline-none input"
+                            [(ngModel)]="question.options[optIndex]" 
+                            placeholder="Opción"
+                            [name]="'option_' + i + '_' + optIndex"
+                          />
+                          <span class="hover-input"></span>
+                        </div>
+                        <i class="pi pi-times cursor-pointer hover:text-gray-950 dark:hover:text-gray-400 transition-opacity" (click)="removeOption(i, optIndex)" title="Eliminar opción"></i>
+                      </div>
+                    </div>
                   </div>
                   <c-button label="Agregar opción" (onClick)="addOption(i)" styleClass="p-button-warning"></c-button>
                 </div>
 
                 <!-- Ordenamiento -->
-                <div *ngSwitchCase="'order'" class="options-group">
-                  <div class="option-row"
+                <div *ngSwitchCase="'order'" class="flex flex-col gap-2">
+                  <div class="flex items-center gap-3 mb-2"
                     *ngFor="let option of question.options; let optIndex = index; trackBy: trackByOption">
-                    <span class="drag-handle">☰</span>
-                    <c-float-input 
-                      [(ngModel)]="question.options[optIndex]" 
-                      placeholder="Opción"
-                      [name]="'orderOption_' + i + '_' + optIndex"
-                      [disabled]="question.options[optIndex] === 'Otros'">
-                    </c-float-input>
-                    <i class="pi pi-times" (click)="removeOption(i, optIndex)" title="Eliminar opción"></i>
+                    <span class="material-symbols-outlined">
+                      swap_vert
+                    </span>
+                    <div class="group-input relative w-full">
+                      <input
+                        type="text"
+                        class="w-full p-1 border-none dark:bg-transparent focus:outline-none input"
+                        [(ngModel)]="question.options[optIndex]" 
+                        placeholder="Opción"
+                        [name]="'option_' + i + '_' + optIndex"
+                      />
+                      <span class="hover-input"></span>
+                    </div>
+                    <i class="pi pi-times cursor-pointer hover:text-gray-950 dark:hover:text-gray-400 transition-opacity" (click)="removeOption(i, optIndex)" title="Eliminar opción"></i>
                   </div>
                   <c-button label="Agregar opción" (onClick)="addOption(i)" styleClass="p-button-warning"></c-button>
                 </div>

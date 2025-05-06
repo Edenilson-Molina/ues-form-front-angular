@@ -48,6 +48,8 @@ export default class FormEditorComponent {
 
   // Opciones para el tipo de pregunta
   questionTypes = [
+    { label: 'Texto corto', value: 'short' },
+    { label: 'Texto largo', value: 'long' },
     { label: 'Selección múltiple', value: 'multiple' },
     { label: 'Selección única', value: 'single' },
     { label: 'Falso / Verdadero', value: 'truefalse' },
@@ -66,10 +68,21 @@ export default class FormEditorComponent {
     const newQuestion = {
       shortQuestion: '',
       type: this.newQuestionType,
-      options: this.newQuestionType === 'multiple' || this.newQuestionType === 'single' || this.newQuestionType === 'likert' || this.newQuestionType === 'order' ? ['Opción inicial'] : [],
+      options: 
+        this.newQuestionType === 'multiple' || 
+        this.newQuestionType === 'single' || 
+        this.newQuestionType === 'order' ? ['Opción inicial'] : 
+        this.newQuestionType === 'likert' ? [
+          'Totalmente en desacuerdo',
+          'En desacuerdo',
+          'Neutral',
+          'De acuerdo',
+          'Totalmente de acuerdo'
+        ] : [],
       rangeFrom: 1,
       rangeTo: 5,
-      rangeValue: 1
+      rangeValue: 1,
+      answer: '',
     };
     this.questions.push(newQuestion);
   }
@@ -98,16 +111,6 @@ export default class FormEditorComponent {
     this.questions.splice(index, 1);
   }
 
-  onTypeChange(index: number) {
-    const question = this.questions[index];
-    console.log('Cambiando tipo de pregunta a:', question.type);
-    // Reiniciar opciones si el tipo cambia
-    question.options = question.type === 'multiple' || question.type === 'likert' || question.type === 'order' ? ['Opción 1'] : [];
-    question.rangeFrom = 1;
-    question.rangeTo = 5;
-    question.rangeValue = 1;
-  }
-
   drop(event: CdkDragDrop<any[]>) {
     console.log('Arrastrando:', event.previousIndex, 'a', event.currentIndex);
     moveItemInArray(this.questions, event.previousIndex, event.currentIndex);
@@ -132,5 +135,28 @@ export default class FormEditorComponent {
 
   trackByOption(index: number, option: any): number {
     return index;
+  }
+
+  // Función para generar etiquetas del rango
+  getRangeLabels(from: number, to: number): number[] {
+    const labels = [];
+    for (let i = from; i <= to; i++) {
+      labels.push(i);
+    }
+    return labels;
+  }
+
+  getSafeRangeFrom(value: any): number {
+    const num = Number(value);
+    if (isNaN(num) || num < 1) return 1;
+    if (num > 10) return 10;
+    return num;
+  }
+
+  getSafeRangeTo(value: any): number {
+    const num = Number(value);
+    if (isNaN(num) || num < 1) return 1;
+    if (num > 10) return 10;
+    return num;
   }
 }
