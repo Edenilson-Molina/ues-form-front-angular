@@ -4,12 +4,15 @@
     <p class="text-gray-500">Editor de encuestas</p>
   </div>
   <div class="flex flex-wrap gap-4">
-    <c-button label="Mis encuestas" [severity]="'primary'" [variant]="'outlined'" [icon]="'login'" routerLink="/dashboard"/>
+    <c-button label="Mis encuestas" [severity]="'primary'" [variant]="'outlined'" [icon]="'login'"
+      routerLink="/dashboard" />
   </div>
   <div class="flex flex-wrap justify-end gap-4 w-full">
-    <c-button label="Respuestas" [severity]="'primary'" [variant]="'outlined'" [icon]="'monitoring'" routerLink="/dashboard"/>
-    <c-button label="Ver encuesta" [severity]="'primary'" [variant]="'outlined'" [icon]="'visibility'" routerLink="/dashboard"/>
-    <c-button label="Publicar" [severity]="'primary'" [icon]="'publish'" routerLink="/dashboard"/>
+    <c-button label="Respuestas" [severity]="'primary'" [variant]="'outlined'" [icon]="'monitoring'"
+      routerLink="/dashboard" />
+    <c-button label="Ver encuesta" [severity]="'primary'" [variant]="'outlined'" [icon]="'visibility'"
+      routerLink="/dashboard" />
+    <c-button label="Publicar" [severity]="'primary'" [icon]="'publish'" routerLink="/dashboard" />
   </div>
 </header>
 <section class="flex flex-col gap-4">
@@ -17,48 +20,59 @@
     <c-panel class="w-full" title="Datos internos" subTitle="No es visible para los encuestados">
       <section class="flex flex-col gap-4">
         <div>
-          <label class="block font-semibold text-gray-800 dark:text-white">Grupo meta <span class="text-primary-500">*</span></label>
+          <label class="block font-semibold text-gray-800 dark:text-white">Grupo meta <span
+              class="text-primary-500">*</span></label>
           <span class="text-gray-500 dark:text-gray-400">Clasifica las encuestas para una mejor gestión</span>
           <div class="w-full sm:w-72">
-            <c-select placeholder="Seleccione grupo meta"/>
+            <c-select placeholder="Seleccione grupo meta" [(ngModel)]="internalData.targetGroup" name="targetGroup" />
           </div>
         </div>
         <div>
-          <label class="block font-semibold text-gray-800 dark:text-white">Grupo <span class="text-primary-500">*</span></label>
+          <label class="block font-semibold text-gray-800 dark:text-white">Grupo <span
+              class="text-primary-500">*</span></label>
           <span class="text-gray-500 dark:text-gray-400">Lo que buscas conseguir realizando esta encuesta</span>
-          <c-textarea placeholder="Conocer..."/>
+          <c-textarea placeholder="Conocer..." [(ngModel)]="internalData.goal" name="goal" />
         </div>
         <div>
-          <label class="block font-semibold text-gray-800 dark:text-white">Identificador <span class="text-primary-500">*</span></label>
+          <label class="block font-semibold text-gray-800 dark:text-white">Identificador <span
+              class="text-primary-500">*</span></label>
           <span class="text-gray-500 dark:text-gray-400">Identifica el enlace de tu encuesta de forma única</span>
           <div class="flex flex-wrap items-center gap-4">
             <div class="w-full sm:w-72">
-              <c-float-input placeholder="Código de la encuesta" icon="refresh" iconPosition="left"/>
+              <c-float-input placeholder="Código de la encuesta" icon="refresh" iconPosition="left"
+                [(ngModel)]="internalData.identifier" name="identifier" />
             </div>
-            <span class="text-gray-500 dark:text-gray-400">URL: https://ues-forms.wood-agent.site/surveys/encuesta-chida-1</span>
+            <span class="text-gray-500 dark:text-gray-400">URL:
+              https://ues-forms.wood-agent.site/surveys/{{ internalData.identifier || 'encuesta-chida-1' }}</span>
           </div>
         </div>
         <div class="flex justify-end">
-          <c-button label="Guardar" [severity]="'primary'" [icon]="'save'"/>
+          <c-button label="Guardar" [severity]="'primary'" [icon]="'save'" (onClick)="saveInternalData()" />
         </div>
       </section>
     </c-panel>
-    <c-panel class="w-full" title="Información general" subTitle="Datos generales de la encuesta. Este apartado será lo primero que verán los encuestados">
+    <c-panel class="w-full" title="Información general"
+      subTitle="Datos generales de la encuesta. Este apartado será lo primero que verán los encuestados">
       <section class="flex flex-col gap-4">
         <div>
-          <label class="block font-semibold text-gray-800 dark:text-white">Título<span class="text-primary-500">*</span></label>
-          <span class="text-gray-500 dark:text-gray-400">Escribe un nombre corto e identificativo para tu encuesta</span>
+          <label class="block font-semibold text-gray-800 dark:text-white">Título<span
+              class="text-primary-500">*</span></label>
+          <span class="text-gray-500 dark:text-gray-400">Escribe un nombre corto e identificativo para tu
+            encuesta</span>
           <div class="w-full sm:w-72">
-            <c-float-input placeholder="" icon="title" iconPosition="left"/>
+            <c-float-input placeholder="" icon="title" iconPosition="left" [(ngModel)]="generalInfo.title"
+              name="title" />
           </div>
         </div>
         <div>
-          <label class="block font-semibold text-gray-800 dark:text-white">Descripción <span class="text-primary-500">*</span></label>
+          <label class="block font-semibold text-gray-800 dark:text-white">Descripción <span
+              class="text-primary-500">*</span></label>
           <span class="text-gray-500 dark:text-gray-400">Describe, explica, da instrucciones, etc.</span>
-          <c-textarea placeholder="Conocer..."/>
+          <c-textarea placeholder="Conocer..." [(ngModel)]="generalInfo.description" name="description" />
         </div>
         <div>
-          <p class="text-gray-500 dark:text-gray-400">Además de mostrar esta información, por defecto, cada encuesta posee los siguientes campos para recolectar datos sobre los encuestados:</p>
+          <p class="text-gray-500 dark:text-gray-400">Además de mostrar esta información, por defecto, cada encuesta
+            posee los siguientes campos para recolectar datos sobre los encuestados:</p>
           <ul class="list-disc pl-5">
             <li>
               <span class="text-gray-500 dark:text-gray-400">Nombres</span>
@@ -81,22 +95,183 @@
           </ul>
         </div>
         <div class="flex justify-end">
-          <c-button label="Guardar" severity="primary" icon="save" [iconPosition]="'left'"/>
+          <c-button label="Guardar" severity="primary" icon="save" [iconPosition]="'left'"
+            (onClick)="saveGeneralInfo()" />
         </div>
       </section>
     </c-panel>
     <c-panel class="w-full" title="Formulario" subTitle="Crea y edita las preguntas de tu encuesta">
-      <section class="border p-4 rounded-sm">
+      <section class="border dark:border-gray-600 p-4 rounded-sm">
         <h3 class="block font-semibold text-gray-800 dark:text-white">Agregar nueva pregunta</h3>
         <label class="text-gray-500 dark:text-gray-400">Tipo de pregunta</label>
         <div class="flex flex-wrap items-end gap-4">
           <div class="w-full sm:w-72">
-            <c-select placeholder="Seleccione tipo de pregunta"/>
+            <c-select placeholder="Seleccione tipo de pregunta" [options]="questionTypes" [optionLabel]="'label'"
+              [optionValue]="'value'" [(ngModel)]="newQuestionType" name="newQuestionType">
+            </c-select>
           </div>
-          <c-button label="Agregar" severity="primary" variant="outlined" icon="add" iconPosition="left"/>
+          <c-button label="Agregar" severity="primary" variant="outlined" icon="add" iconPosition="left"
+            (onClick)="addQuestion()" />
         </div>
       </section>
       <p-divider />
+      <section class="mt-4">
+        <h3 class="block font-semibold text-gray-800 dark:text-white mb-4">Preguntas agregadas</h3>
+        <!-- Lista de preguntas con drag-and-drop -->
+        <form #questionForm="ngForm">
+          <div cdkDropList (cdkDropListDropped)="drop($event)">
+            <div 
+              *ngFor="let question of questions; let i = index; trackBy: trackByQuestion" 
+              cdkDrag
+              class="border bg-transparent p-4 rounded-sm mb-4 dark:border-gray-600 shadow-sm">
+              <div class="flex justify-center drag-handle" cdkDragHandle>☰</div>
+
+              <!-- Campo Pregunta -->
+                <textarea 
+                class="w-full font-medium my-2 border-none dark:bg-transparent focus:outline-none focus:ring-0 focus:border-primary-500 resize-none"
+                type="text"
+                [(ngModel)]="question.shortQuestion" 
+                placeholder="Escribe tu pregunta aquí"
+                [name]="'shortQuestion_' + i"
+                rows="1"
+                appAutosize
+                ></textarea>
+
+              <!-- Campo según el tipo de pregunta -->
+              <ng-container [ngSwitch]="question.type">
+                <!-- Selección Múltiple -->
+                <div *ngSwitchCase="'multiple'">
+                  <div class="flex items-center gap-3 mb-2"
+                    *ngFor="let option of question.options; let optIndex = index; trackBy: trackByOption">
+                    <input type="checkbox" [value]="option" disabled />
+                    <div class="group-input relative w-full">
+                      <input
+                        type="text"
+                        class="w-full p-1 border-none dark:bg-transparent focus:outline-none input"
+                        [(ngModel)]="question.options[optIndex]" 
+                        placeholder="Opción"
+                        [name]="'option_' + i + '_' + optIndex"
+                        [disabled]="question.options[optIndex] === 'Otros'"
+                      />
+                      <span class="hover-input"></span>
+                    </div>
+                    <i 
+                      class="pi pi-times cursor-pointer hover:text-gray-950 dark:hover:text-gray-400 transition-opacity" 
+                      (click)="removeOption(i, optIndex)" 
+                      title="Eliminar opción"
+                      *ngIf="question.options.length > 1"
+                    ></i>
+                  </div>
+                  <div class="flex flex-wrap gap-4 mt-2">
+                    <c-button label="Agregar opción" (onClick)="addOption(i)" styleClass="p-button-warning"></c-button>
+                    <c-button 
+                      label='Agregar opción de "Otros"' 
+                      (onClick)="addOtherOption(i)" 
+                      variant="outlined"
+                      styleClass="p-button-warning" 
+                      *ngIf="!question.options.includes('Otros')" />
+                  </div>
+                </div>
+
+                <!-- Selección Única -->
+                <div *ngSwitchCase="'single'" class="options-group">
+                  <div class="option-row" 
+                    *ngFor="let option of question.options; let optIndex = index; trackBy: trackByOption">
+                    <input type="radio" [value]="option" disabled />
+                    <c-float-input 
+                      [(ngModel)]="question.options[optIndex]" 
+                      placeholder="Opción"
+                      [name]="'option_' + i + '_' + optIndex"
+                      [disabled]="question.options[optIndex] === 'Otros'">
+                    </c-float-input>
+                    <i class="pi pi-times" (click)="removeOption(i, optIndex)" title="Eliminar opción"></i>
+                  </div>
+                  <div class="flex gap-4">
+                    <c-button label="Agregar opción" (onClick)="addOption(i)" styleClass="p-button-warning"></c-button>
+                    <c-button 
+                      label='Agregar opción de "Otros"' 
+                      (onClick)="addOtherOption(i)" 
+                      variant="outlined"
+                      styleClass="p-button-warning" 
+                      *ngIf="!question.options.includes('Otros')" />
+                  </div>
+                </div>
+
+                <!-- Falso / Verdadero -->
+                <div *ngSwitchCase="'truefalse'" class="options-group">
+                  <div class="option-row">
+                    <input type="radio" value="yes" disabled />
+                    <span>Sí</span>
+                  </div>
+                  <div class="option-row">
+                    <input type="radio" value="no" disabled />
+                    <span>No</span>
+                  </div>
+                </div>
+
+                <!-- Escala Numérica -->
+                <div *ngSwitchCase="'numeric'" class="range-group">
+                  <c-float-input label="Desde" [(ngModel)]="question.rangeFrom" placeholder="1"
+                    [name]="'rangeFrom_' + i"></c-float-input>
+                  <c-float-input label="Hasta" [(ngModel)]="question.rangeTo" placeholder="5"
+                    [name]="'rangeTo_' + i"></c-float-input>
+                  <p-slider [min]="question.rangeFrom || 1" [max]="question.rangeTo || 5"
+                    [(ngModel)]="question.rangeValue" [name]="'rangeValue_' + i"></p-slider>
+                </div>
+
+                <!-- Escala / Escala Likert -->
+                <div *ngSwitchCase="'likert'" class="options-group">
+                  <div class="option-row"
+                    *ngFor="let option of question.options; let optIndex = index; trackBy: trackByOption">
+                    <input type="radio" [value]="option" disabled />
+                    <c-float-input 
+                      [(ngModel)]="question.options[optIndex]" 
+                      placeholder="Opción"
+                      [name]="'likertOption_' + i + '_' + optIndex"
+                      [disabled]="question.options[optIndex] === 'Otros'">
+                    </c-float-input>
+                    <i class="pi pi-times" (click)="removeOption(i, optIndex)" title="Eliminar opción"></i>
+                  </div>
+                  <c-button label="Agregar opción" (onClick)="addOption(i)" styleClass="p-button-warning"></c-button>
+                </div>
+
+                <!-- Ordenamiento -->
+                <div *ngSwitchCase="'order'" class="options-group">
+                  <div class="option-row"
+                    *ngFor="let option of question.options; let optIndex = index; trackBy: trackByOption">
+                    <span class="drag-handle">☰</span>
+                    <c-float-input 
+                      [(ngModel)]="question.options[optIndex]" 
+                      placeholder="Opción"
+                      [name]="'orderOption_' + i + '_' + optIndex"
+                      [disabled]="question.options[optIndex] === 'Otros'">
+                    </c-float-input>
+                    <i class="pi pi-times" (click)="removeOption(i, optIndex)" title="Eliminar opción"></i>
+                  </div>
+                  <c-button label="Agregar opción" (onClick)="addOption(i)" styleClass="p-button-warning"></c-button>
+                </div>
+              </ng-container>
+
+              <!-- Pie de la pregunta -->
+              <div class="w-full flex justify-end items-center mt-4">
+                <div class="flex gap-4">
+                  <i class="pi pi-copy" (click)="duplicateQuestion(i)" title="Duplicar pregunta"></i>
+                  <i 
+                  class="pi pi-trash"  
+                  (click)="deleteQuestion(i)" 
+                  title="Eliminar pregunta">
+                  </i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <!-- Botón Guardar -->
+        <div class="actions">
+          <c-button label="Guardar" (onClick)="saveForm()" styleClass="p-button-danger"></c-button>
+        </div>
+      </section>
     </c-panel>
   </article>
 </section>

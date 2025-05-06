@@ -1,0 +1,24 @@
+.group-input .hover-input::before, .hover-input::after {
+    @apply bg-primary-600;
+    content: '';
+    height: 2px;
+    width: 0;
+    bottom: 1px;
+    position: absolute;
+    transition: 0.2s ease all;
+    -moz-transition: 0.2s ease all;
+    -webkit-transition: 0.2s ease all; 
+}
+
+.group-input .hover-input::before {
+    left: 50%;
+}
+
+.group-input .hover-input::after {
+    right: 50%;
+}
+
+.group-input .input:focus ~ .hover-input::before,
+.group-input .input:focus ~ .hover-input::after {
+    width: 50%;
+}
