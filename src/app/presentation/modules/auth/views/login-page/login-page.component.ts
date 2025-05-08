@@ -27,6 +27,9 @@ import { AuthService } from '@services/auth.service';
 
 import { login } from '@store/auth.actions';
 import { Session } from '@app/interfaces/store';
+import { ModalComponent } from "../../../../components/modal/modal.component";
+import { ButtonComponent } from "../../../../components/button/button.component";
+import { TextareaComponent } from "../../../../components/inputs/textarea/textarea.component";
 
 @Component({
   selector: 'app-login-page',
@@ -40,7 +43,10 @@ import { Session } from '@app/interfaces/store';
     InputTextModule,
     PasswordModule,
     InputErrorsComponent,
-  ],
+    ModalComponent,
+    ButtonComponent,
+    TextareaComponent
+],
   templateUrl: './login-page.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -56,13 +62,21 @@ export default class LoginPageComponent {
   session$!: Observable<Session>;
   sessionValue!: Session;
   form!: FormGroup;
+  formUnlock!: FormGroup;
   redirect: string = '';
+
+  showModalRequestUnlock: boolean = true;
 
   constructor( private fb: FormBuilder, private route: ActivatedRoute,) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
     });
+
+    this.formUnlock = this.fb.group({
+      justificacion_solicitud: ['', Validators.required],
+    });
+
     this.session$ = this.store.select('session');
     this.session$.subscribe((session) => {
       this.sessionValue = session;
@@ -98,7 +112,19 @@ export default class LoginPageComponent {
     return this.form.get(key) as FormControl<string>;
   }
 
+  getFormUnlockField(key:string): FormControl<string> {
+    return this.formUnlock.get(key) as FormControl<string>;
+  }
+
   navigateToRegister() {
     this.router.navigate(['/request-register']);
+  }
+
+  handleRequestUnlock() {
+    this.showModalRequestUnlock = true;
+    this.formUnlock.markAllAsTouched();
+    if (this.formUnlock.valid) {
+
+    }
   }
 }
