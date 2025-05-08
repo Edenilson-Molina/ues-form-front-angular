@@ -117,9 +117,10 @@ export class AxiosAdapter implements HttpAdapter<AxiosRequestConfig> {
     } catch (error: any) {
       this.store.dispatch(isLoading(false));
       let message: string = '';
+      let errors: {};
       let summary = '';
       let type: ToastType = 'error';
-      let details: string[] = [];
+      let details: Record<string, string[]> = {};
 
       if (error.code === 'ERR_NETWORK') {
         summary = 'Error de conexión';
@@ -166,8 +167,8 @@ export class AxiosAdapter implements HttpAdapter<AxiosRequestConfig> {
           if (error.response?.status >= 400 && error.response?.status < 500) {
             if (error.response?.data?.message) {
               message = error.response?.data?.message;
-              if (error.response?.data?.details) {
-                details = error.response?.data?.details;
+              if (error.response?.data?.errors) {
+                details = error.response?.data?.errors;
               }
             }
             summary = 'Advertencia';
@@ -179,19 +180,20 @@ export class AxiosAdapter implements HttpAdapter<AxiosRequestConfig> {
       }
 
       // Mostrar notificación en el UI
-      sendNotification({
-        type: type,
-        summary: summary,
-        message: message,
-      });
-
-      if (details.length > 0) {
-        details.forEach((detail) => {
+      if (Object.keys(details).length > 0) {
+        Object.keys(details).forEach((key) => {
           sendNotification({
             type: type,
             summary: summary,
-            message: detail,
+            message: message,
+            description: details[key][0],
           });
+        });
+      } else {
+        sendNotification({
+          type: type,
+          summary: summary,
+          message: message,
         });
       }
 

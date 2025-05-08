@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import {
   FormGroup,
   FormBuilder,
@@ -96,5 +96,9 @@ export default class LoginPageComponent {
 
   getFormField(key:string): FormControl<string> {
     return this.form.get(key) as FormControl<string>;
+  }
+
+  navigateToRegister() {
+    this.router.navigate(['/request-register']);
   }
 }

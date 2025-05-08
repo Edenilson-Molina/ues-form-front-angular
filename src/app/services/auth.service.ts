@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
-import { LoginDto } from '@interfaces/request/auth.dto';
-import { LoginResponse } from '@interfaces/responses/auth.dto';
+import { LoginDto, requestRegisterDto, sendVerificationEmailDto, verifyEmailDto } from '@interfaces/request/auth.dto';
+import { LoginResponse, requestRegisterResponse, sendVerificationEmailResponse, verifyEmailResponse } from '@interfaces/responses/auth.dto';
 import { getAxiosAdapter } from './common/axios.service';
 import { map, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
@@ -17,6 +17,27 @@ export class AuthService {
   private axiosService = getAxiosAdapter()
 
   constructor(private store: Store<{session: Session}>) {}
+
+  async sendVerificationEmail(sendVerificationEmailDto: sendVerificationEmailDto) {
+    const config: AxiosRequestConfig = {
+      baseURL: `${environment.apiPublic}` || 'http://localhost:8321/public'
+    }
+    return await this.axiosService.post<sendVerificationEmailDto,sendVerificationEmailResponse>('/auth/send-verify-email', sendVerificationEmailDto, config);
+  }
+
+  async verifyEmail(verifyEmailDto: verifyEmailDto) {
+    const config: AxiosRequestConfig = {
+      baseURL: `${environment.apiPublic}` || 'http://localhost:8321/public'
+    }
+    return await this.axiosService.post<verifyEmailDto, verifyEmailResponse>('/auth/verify-email', verifyEmailDto, config);
+  }
+
+  async requestRegister(requestRegisterDto: requestRegisterDto) {
+    const config: AxiosRequestConfig = {
+      baseURL: `${environment.apiPublic}` || 'http://localhost:8321/public'
+    }
+    return await this.axiosService.post<requestRegisterDto,requestRegisterResponse>('/auth/request-registration', requestRegisterDto, config);
+  }
 
   async login(loginDto: LoginDto) {
     const config: AxiosRequestConfig = {

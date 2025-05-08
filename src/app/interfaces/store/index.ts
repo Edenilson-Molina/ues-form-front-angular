@@ -20,3 +20,14 @@ export interface Session {
   // person: Person | null;
   // company: Company | null;
 }
+
+export interface RequestRegisterState {
+  username: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  nombre: string;
+  apellido: string;
+  identificacion: string;
+  justificacion_solicitud: string;
+}

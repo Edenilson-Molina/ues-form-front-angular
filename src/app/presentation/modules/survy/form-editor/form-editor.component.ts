@@ -68,10 +68,10 @@ export default class FormEditorComponent {
     const newQuestion = {
       shortQuestion: '',
       type: this.newQuestionType,
-      options: 
-        this.newQuestionType === 'multiple' || 
-        this.newQuestionType === 'single' || 
-        this.newQuestionType === 'order' ? ['Opción inicial'] : 
+      options:
+        this.newQuestionType === 'multiple' ||
+        this.newQuestionType === 'single' ||
+        this.newQuestionType === 'order' ? ['Opción inicial'] :
         this.newQuestionType === 'likert' ? [
           'Totalmente en desacuerdo',
           'En desacuerdo',
@@ -103,7 +103,7 @@ export default class FormEditorComponent {
   }
 
   duplicateQuestion(index: number) {
-    let questionToDuplicate = { ...this.questions[index] };
+    let questionToDuplicate = structuredClone(this.questions[index]);
     this.questions.splice(index + 1, 0, questionToDuplicate);
   }
 

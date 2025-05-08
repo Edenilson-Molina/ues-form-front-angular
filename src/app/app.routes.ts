@@ -9,6 +9,11 @@ export const routes: Routes = [
     loadComponent: () => import('./presentation/modules/auth/views/login-page/login-page.component')
   },
   {
+    path: 'request-register',
+    canActivate: [RedirectIfAuthenticatedGuard],
+    loadComponent: () => import('./presentation/modules/auth/views/request-register-page/request-register-page.component')
+  },
+  {
     path: 'dashboard',
     canActivate: [AuthGuard],
     loadComponent: () => import('./presentation/layouts/dashboard/dashboard.component'),

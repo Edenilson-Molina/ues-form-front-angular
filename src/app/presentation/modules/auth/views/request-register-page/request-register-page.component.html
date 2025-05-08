@@ -1,0 +1,293 @@
+<main class="w-full">
+  <header class="flex justify-center w-full">
+    <img
+      class="w-[20%]"
+      src="assets/images/logo-system.png"
+      alt="UES Forms"
+    />
+  </header>
+  <section class="w-full px-10 sm:px-20 xl:px-40">
+    <c-card>
+      <header>
+        <h1 class="text-primary-600 text-3xl font-bold text-center mb-1">Solicitud de registro</h1>
+        <p class="text-gray-500 text-center">Para hacer uso de la plataforma necesitas llenar el siguiente formulario y verificar tu correo electrónico</p>
+      </header>
+      <section>
+        <form
+          [formGroup]="form"
+          class="flex flex-col gap-4"
+        >
+          <article class="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6">
+            <h2 class="text-lg font-bold col-span-full">Información general</h2>
+            <div>
+              <c-float-input
+                required
+                label="Nombres"
+                typeLabel="label"
+                labelClass="!font-medium"
+                formControlName="nombre"
+                type="text"
+                iconPosition="left"
+                icon="keyboard_double_arrow_right"
+                variant="outlined"
+                [formControl]="getFormField('nombre')"
+              />
+            </div>
+            <div>
+              <c-float-input
+                required
+                label="Apellidos"
+                typeLabel="label"
+                labelClass="!font-medium"
+                formControlName="apellido"
+                type="text"
+                iconPosition="left"
+                icon="keyboard_double_arrow_right"
+                variant="outlined"
+                [formControl]="getFormField('apellido')"
+              />
+            </div>
+            <div>
+              <c-float-input
+                required
+                label="Identificación"
+                typeLabel="label"
+                labelClass="!font-medium"
+                formControlName="identificacion"
+                type="text"
+                iconPosition="left"
+                icon="keyboard_double_arrow_right"
+                variant="outlined"
+                [formControl]="getFormField('identificacion')"
+              />
+            </div>
+            <div>
+              <c-float-input
+                required
+                label="Usuario"
+                typeLabel="label"
+                labelClass="!font-medium"
+                formControlName="username"
+                type="text"
+                iconPosition="left"
+                icon="keyboard_double_arrow_right"
+                variant="outlined"
+                [formControl]="getFormField('username')"
+              />
+            </div>
+            <div class="col-span-full">
+              <c-float-input
+                required
+                label="Correo electrónico"
+                typeLabel="label"
+                labelClass="!font-medium"
+                formControlName="email"
+                type="text"
+                iconPosition="left"
+                icon="keyboard_double_arrow_right"
+                variant="outlined"
+                [formControl]="getFormField('email')"
+              />
+            </div>
+            <div>
+              <c-float-password
+                required
+                label="Contraseña"
+                typeLabel="label"
+                labelClass="!font-medium"
+                formControlName="password"
+                type="text"
+                iconPosition="left"
+                icon="keyboard_double_arrow_right"
+                variant="outlined"
+                [formControl]="getFormField('password')"
+              />
+            </div>
+            <div>
+              <c-float-password
+                required
+                label="Confirmar contraseña"
+                typeLabel="label"
+                labelClass="!font-medium"
+                formControlName="confirmPassword"
+                type="text"
+                iconPosition="left"
+                icon="keyboard_double_arrow_right"
+                variant="outlined"
+                [formControl]="getFormField('confirmPassword')"
+              />
+            </div>
+          </article>
+          <article class="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6">
+            <h2 class="text-lg font-bold col-span-full">Detalle</h2>
+            <div class="col-span-full">
+              <c-textarea
+                required
+                label="Razón de solicitud de registro"
+                typeLabel="label"
+                labelClass="!font-medium"
+                formControlName="justificacion_solicitud"
+                class="resize-none"
+                [rows]="4"
+                variant="outlined"
+                [formControl]="getFormField('justificacion_solicitud')"
+              />
+
+            </div>
+          </article>
+          <div class="flex flex-wrap justify-center gap-6">
+            <c-button
+              label="Cerrar"
+              [severity]="'primary'"
+              [variant]="'outlined'"
+              class="w-full sm:w-32"
+              (onClick)="onClose()"
+            />
+            <c-button
+              label="Siguiente"
+              [severity]="'primary'"
+              class="w-full sm:w-32"
+              (onClick)="onSubmit()"
+            />
+          </div>
+        </form>
+      </section>
+    </c-card>
+  </section>
+  <section>
+    <!-- Modal envio de codigo verificador -->
+    <modal
+      [visible]="showModalValidEmail"
+      [closable]="false"
+      styleClass="w-[90%] sm:w-[80%] md:w-[80%] lg:w-[80%] xl:w-[30%] bg-auto"
+      [style]="{ 'border-radius': '20px' }"
+      >
+      <header class="w-full">
+        <div class="w-full flex flex-col justify-center items-center gap-y-2">
+          <img
+            class="w-24 mx-auto mt-4"
+            alt=""
+            src="assets/images/logo.png"
+          />
+          <h1 class="text-xl font-bold text-primary-600 dark:text-primary-500 ms-10">
+            Verificación de correo electrónico
+          </h1>
+        </div>
+      </header>
+      <content>
+        <div class="flex flex-col w-full justify-center items-center gap-4">
+          <span class="text-center">Para hacer efectiva su solicitud, por favor verifique su correo electrónico.</span>
+          <i class="pi pi-send" style="font-size: 3rem"></i>
+        </div>
+      </content>
+      <footer class="w-full">
+        <div class="flex relative w-full items-center gap-x-2">
+          <span
+            class="absolute material-symbols-outlined cursor-pointer hover:opacity-80 transition-all duration-300"
+            (click)="closeModal()">
+            arrow_back
+          </span>
+          <div class="flex justify-center w-full">
+            <c-button
+              severity="danger"
+              variant="solid"
+              label="Enviar código de verificación"
+              (onClick)="onSendEmail()"
+            />
+          </div>
+        </div>
+      </footer>
+    </modal>
+
+    <!-- Modal para confirmar codigo verificador -->
+    <modal
+      [visible]="showModalConfirmCode"
+      [closable]="false"
+      styleClass="w-[90%] sm:w-[80%] md:w-[80%] lg:w-[80%] xl:w-[30%] bg-auto"
+      [style]="{ 'border-radius': '20px' }"
+      >
+      <header class="w-full">
+        <div class="w-full flex flex-col justify-center items-center gap-y-2">
+          <img
+            class="w-24 mx-auto mt-4"
+            alt=""
+            src="assets/images/logo.png"
+          />
+          <h1 class="text-xl font-bold text-primary-600 dark:text-primary-500 ms-10">
+            Verificación de correo electrónico
+          </h1>
+        </div>
+      </header>
+      <content>
+        <div class="flex flex-col w-full justify-center items-center gap-4">
+          <span class="text-center">Para hacer efectiva su solicitud, por favor verifique su correo electrónico.</span>
+          <div class="flex flex-col w-full justify-center items-center gap-4">
+            <label for="code" class="font-semibold">Ingrese el código de verificación</label>
+            <p-inputotp name="code" [(ngModel)]="code" [integerOnly]="true" [length]="6" />
+          </div>
+        </div>
+      </content>
+      <footer class="w-full">
+        <div class="flex relative w-full items-center gap-x-2">
+          <span
+            class="absolute material-symbols-outlined cursor-pointer hover:opacity-80 transition-all duration-300"
+            (click)="closeModal()">
+            arrow_back
+          </span>
+          <div class="flex justify-center w-full">
+            <c-button
+              severity="danger"
+              variant="solid"
+              label="Enviar código de verificación"
+              (onClick)="onConfirmCode()"
+            />
+          </div>
+        </div>
+      </footer>
+    </modal>
+
+    <!-- Modal para confirmar solicitud -->
+    <modal
+      [visible]="showModalConfirmRequest"
+      [closable]="false"
+      styleClass="w-[90%] sm:w-[80%] md:w-[80%] lg:w-[80%] xl:w-[30%] bg-auto"
+      [style]="{ 'border-radius': '20px' }"
+      >
+      <header class="w-full">
+        <div class="w-full flex flex-col justify-center items-center gap-y-2">
+          <img
+            class="w-24 mx-auto mt-4"
+            alt=""
+            src="assets/images/logo.png"
+          />
+          <h1 class="text-xl font-bold text-primary-600 dark:text-primary-500 ms-10">
+            Gracias
+          </h1>
+        </div>
+      </header>
+      <content>
+        <div class="flex flex-col w-full justify-center items-center gap-4">
+          <span class="text-center px-10 sm:px-20">Tu solicitud de registro está siendo procesada por un administrador. Serás notificado mediante correo electrónico.</span>
+          <i class="pi pi-check" style="font-size: 3rem"></i>
+        </div>
+      </content>
+      <footer class="w-full">
+        <div class="flex relative w-full items-center gap-x-2">
+          <span
+            class="absolute material-symbols-outlined cursor-pointer hover:opacity-80 transition-all duration-300"
+            (click)="closeModal()">
+            arrow_back
+          </span>
+          <div class="flex justify-center w-full">
+            <c-button
+              severity="danger"
+              variant="solid"
+              label="Regresar al inicio"
+              (onClick)="closeModal()"
+            />
+          </div>
+        </div>
+      </footer>
+    </modal>
+  </section>
+</main>

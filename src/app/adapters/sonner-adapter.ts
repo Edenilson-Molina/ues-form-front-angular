@@ -14,7 +14,11 @@ export const sendNotification = (toastConfig: ToastConfig) => {
     case 'success':
       return toast.success(toastConfig.message);
     case 'error':
-      return toast.error(toastConfig.message);
+      return toastConfig.description
+        ? toast.error(toastConfig.message, {
+            description: toastConfig.description,
+        })
+        : toast.error(toastConfig.message);
     case 'warning':
       return toast.warning(toastConfig.message);
     case 'info':
