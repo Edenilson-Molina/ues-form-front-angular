@@ -31,6 +31,10 @@ export const routes: Routes = [
         loadComponent: () => import('./presentation/modules/survy/form-editor/form-editor.component')
       },
       {
+        path: 'catalogues/target-group',
+        loadComponent: () => import('./presentation/modules/catalogues/target-group/target-group.component'),
+      },
+      {
         path: 'test',
         loadComponent: () => import('./presentation/modules/test/test.component')
       },
