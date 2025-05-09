@@ -13,7 +13,7 @@
     class="flex w-full md:w-3/5 lg:w-3/6 xl:w-2/4 2xl:w-1/4 lg:mr-14"
   >
     <p-card
-      styleClass="p-10 md:px-16 text-center shadow-xl bg-white/40 backdrop-blur-md rounded-2xl"
+      styleClass="p-6 text-center shadow-xl bg-white/40 backdrop-blur-md rounded-2xl"
       class="w-full"
     >
       <ng-template #header>
@@ -56,12 +56,6 @@
         type="submit"
         styleClass="w-full mt-4 text-white"
         />
-        <!-- <ButtonComponent
-        :label="t('login.submit')"
-        @click="handleLogin()"
-        :loading="loading"
-        class="sm:w-52 mt-4 mx-auto block"
-        />-->
         <div class="mt-3">
           <p class="text-sm text-center cursor-pointer hover:text-gray-950">
             <span (click)="navigateToRegister()">Registrarse</span>
@@ -75,8 +69,8 @@
   <!-- Modal para solicitud de desbloqueo -->
   <form [formGroup]="formUnlock">
     <modal
-    [visible]="showModalRequestUnlock"
-    [closable]="false"
+      [visible]="showModalRequestUnlock()"
+      [closable]="false"
       styleClass="w-[90%] sm:w-[80%] md:w-[80%] lg:w-[80%] xl:w-[30%] bg-auto"
       [style]="{ 'border-radius': '20px' }">
       <header class="w-full">
@@ -112,7 +106,7 @@
         <div class="flex relative w-full items-center gap-x-2">
           <span
             class="absolute material-symbols-outlined cursor-pointer hover:opacity-80 transition-all duration-300"
-            (click)="showModalRequestUnlock = false">
+            (click)="showModalRequestUnlock.set(false)">
             arrow_back
           </span>
           <div class="flex justify-center w-full">
@@ -127,4 +121,45 @@
       </footer>
     </modal>
   </form>
+
+  <modal
+    [visible]="showModalSubmittedRequest"
+    [closable]="false"
+    styleClass="w-[90%] sm:w-[80%] md:w-[80%] lg:w-[80%] xl:w-[30%] bg-auto"
+    [style]="{ 'border-radius': '20px' }">
+  >
+    <header class="w-full">
+      <div class="w-full flex flex-col justify-center items-center gap-y-2">
+        <img class="w-24 mx-auto mt-4" alt="" src="assets/images/logo.png" />
+        <h1 class="text-xl font-bold text-primary-600 dark:text-primary-500 ms-10">
+          Solicitud enviada
+        </h1>
+      </div>
+    </header>
+    <content>
+      <div class="flex flex-col w-full justify-center items-center gap-4">
+        <span class="text-center">
+          Tu solicitud de desbloqueo está siendo procesada por un administrador. Serás notificado mediante correo electrónico.
+        </span>
+        <i class="pi pi-check-circle text-green-500" style="font-size: 3rem"></i>
+      </div>
+    </content>
+    <footer class="w-full">
+      <div class="flex relative w-full items-center gap-x-2">
+        <span
+          class="absolute material-symbols-outlined cursor-pointer hover:opacity-80 transition-all duration-300"
+          (click)="showModalSubmittedRequest = false">
+          arrow_back
+        </span>
+        <div class="flex justify-center w-full">
+          <c-button
+            severity="primary"
+            variant="solid"
+            label="Regresar al inicio"
+            (onClick)="handleEndRequestUnlock()"
+          />
+        </div>
+      </div>
+    </footer>
+  </modal>
 </section>

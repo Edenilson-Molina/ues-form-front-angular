@@ -14,6 +14,7 @@ export interface Session {
   user: UserData | null;
   accessToken: string | null;
   refreshToken: string | null;
+  isUnlocked: boolean;
   isLoading: boolean;
   darkMode: boolean;
   showMenu: boolean;

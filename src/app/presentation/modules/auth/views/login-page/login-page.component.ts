@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import {
   FormGroup,
   FormBuilder,
@@ -65,9 +65,10 @@ export default class LoginPageComponent {
   formUnlock!: FormGroup;
   redirect: string = '';
 
-  showModalRequestUnlock: boolean = true;
+  showModalRequestUnlock = signal<boolean>(false);
+  showModalSubmittedRequest: boolean = false;
 
-  constructor( private fb: FormBuilder, private route: ActivatedRoute,) {
+  constructor( private fb: FormBuilder, private route: ActivatedRoute) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
@@ -99,9 +100,15 @@ export default class LoginPageComponent {
     if (this.form.valid) {
       try{
         const response = await this.authService.login(this.form.value);
-        const { accessToken, refreshToken } = response;
-        this.store.dispatch(login(accessToken, refreshToken));
-        this.router.navigate([this.redirect]);
+        const { accessToken, refreshToken, isUnlocked } = response;
+        this.store.dispatch(login(accessToken, refreshToken, isUnlocked));
+
+        // Check if the user is unlocked
+        if(this.sessionValue.isUnlocked){
+          this.router.navigate([this.redirect]);
+        }else{
+          this.showModalRequestUnlock.set(true);
+        }
       } catch (error) {
         console.error(error);
       }
@@ -120,11 +127,24 @@ export default class LoginPageComponent {
     this.router.navigate(['/request-register']);
   }
 
-  handleRequestUnlock() {
-    this.showModalRequestUnlock = true;
+  async handleRequestUnlock() {
     this.formUnlock.markAllAsTouched();
     if (this.formUnlock.valid) {
-
+      try {
+        await this.authService.requestUnlockUser(this.formUnlock.value);
+        this.showModalRequestUnlock.set(false);
+        this.showModalSubmittedRequest = true;
+      } catch (error) {
+        //console.error(error);
+      }
     }
+  }
+
+  handleEndRequestUnlock() {
+    this.formUnlock.reset();
+    this.form.reset();
+    this.showModalRequestUnlock.set(false);
+    this.showModalSubmittedRequest = false;
+    this.router.navigate(['/login']);
   }
 }

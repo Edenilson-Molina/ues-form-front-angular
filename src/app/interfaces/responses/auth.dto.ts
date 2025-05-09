@@ -1,6 +1,7 @@
 export interface LoginResponse {
   accessToken: string;
   refreshToken: string;
+  isUnlocked: boolean;
 }
 
 export interface RefreshResponse {

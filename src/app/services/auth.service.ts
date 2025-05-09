@@ -39,6 +39,10 @@ export class AuthService {
     return await this.axiosService.post<requestRegisterDto,requestRegisterResponse>('/auth/request-registration', requestRegisterDto, config);
   }
 
+  async requestUnlockUser({ justificacion_solicitud }: {justificacion_solicitud: string}) {
+    return await this.axiosService.post('/auth/solicitudes-desbloqueo/request-unlocking', { justificacion_solicitud });
+  }
+
   async login(loginDto: LoginDto) {
     const config: AxiosRequestConfig = {
       baseURL: `${environment.apiPublic}` || 'http://localhost:8321/public'
@@ -52,7 +56,7 @@ export class AuthService {
 
   isAuthenticated(): Observable<boolean> {
     return this.store.select(state => state.session).pipe(
-      map(session => !!session.accessToken && !this.isTokenExpired(session.accessToken))
+      map(session => !!session.accessToken && !this.isTokenExpired(session.accessToken) && session.isUnlocked)
     );
   }
 

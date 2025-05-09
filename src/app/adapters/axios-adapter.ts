@@ -180,13 +180,20 @@ export class AxiosAdapter implements HttpAdapter<AxiosRequestConfig> {
       }
 
       // Mostrar notificación en el UI
-      if (Object.keys(details).length > 0) {
+      if (typeof details === 'string') {
+        sendNotification({
+          type: type,
+          summary: summary,
+          message: message,
+          description: details, // Usar el string directamente
+        });
+      } else if (typeof details === 'object' && details !== null && Object.keys(details).length > 0) {
         Object.keys(details).forEach((key) => {
           sendNotification({
             type: type,
             summary: summary,
             message: message,
-            description: details[key][0],
+            description: Array.isArray(details[key]) ? details[key][0] : details[key], // Manejar array o valor directo
           });
         });
       } else {

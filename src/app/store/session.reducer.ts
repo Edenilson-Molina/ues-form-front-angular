@@ -9,6 +9,7 @@ function initStore() {
   const initState: Session = {
     accessToken: '',
     refreshToken: '',
+    isUnlocked: true,
     user: null,
     isLoading: false,
     showMenu: false,
@@ -19,12 +20,13 @@ function initStore() {
 
 export const sessionReducer = createReducer(
   initialState,
-  on(login, (state, { accessToken, refreshToken }) => {
+  on(login, (state, { accessToken, refreshToken, isUnlocked }) => {
     const userInfo = decoderToken(accessToken!);
     return {
       ...state,
-      accessToken: accessToken,
-      refreshToken: refreshToken,
+      accessToken,
+      refreshToken,
+      isUnlocked,
       user: userInfo,
     };
   }),
@@ -34,6 +36,7 @@ export const sessionReducer = createReducer(
       ...state,
       accessToken: '',
       refreshToken: '',
+      isUnlocked: true,
       user: null,
     };
   }),
