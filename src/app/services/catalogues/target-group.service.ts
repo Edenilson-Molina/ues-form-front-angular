@@ -8,6 +8,7 @@ import { Store } from '@ngrx/store';
 import { Session } from '@app/interfaces/store';
 import { environment } from '@environments/environment';
 import { AxiosRequestConfig } from 'axios';
+import { TargetGroupData } from '@app/interfaces/responses/target-group.dto';
 
 
 @Injectable({
@@ -18,11 +19,44 @@ export class TargetGroupService {
 
   constructor(private store: Store<{session: Session}>) {}
 
-  async getTargetGroup() {
-    return await this.axiosService.get('/catalogo/grupos-meta');
+  async getTargetGroup(page?: number, filterName?: string, filterState?: boolean | null) {
+    if(page && filterName && filterState !== null) {
+      return await this.axiosService.post(`catalogo/grupos-meta/search?page=${page}`, {
+        filters: [
+          { field: 'nombre', operator: 'like', value: `%${filterName}%` },
+          { field: 'estado', operator: '=', value: filterState },
+        ]
+      });
+    }else if(page && filterState !== null) {
+      return await this.axiosService.post(`catalogo/grupos-meta/search?page=${page}`, {
+        filters: [
+          { field: 'estado', operator: '=', value: filterState },
+        ]
+      });
+    } else if (page && filterName) {
+      return await this.axiosService.post(`catalogo/grupos-meta/search?page=${page}`, {
+        filters: [
+          { field: 'nombre', operator: 'like', value: `%${filterName}%` },
+        ]
+      });
+    } else{
+      return await this.axiosService.get(`catalogo/grupos-meta?page=${page ? page : 1}`);
+    }
   }
 
-  async getTargetGroupPaginated(page: number) {
-    return await this.axiosService.get(`catalogo/grupos-meta?page=${page}`);
+  async updateTargetGroup(data: TargetGroupData) {
+    return await this.axiosService.put(`catalogo/grupos-meta/${data.id}`, {
+      nombre: data.nombre,
+      descripcion: data.descripcion,
+      estado: data.estado
+    });
+  }
+
+  async createTargetGroup(data: TargetGroupData) {
+    return await this.axiosService.post(`catalogo/grupos-meta`, {
+      nombre: data.nombre,
+      descripcion: data.descripcion,
+      estado: data.estado
+    });
   }
 }

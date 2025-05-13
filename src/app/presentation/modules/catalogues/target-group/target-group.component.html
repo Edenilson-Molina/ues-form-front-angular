@@ -5,7 +5,7 @@
   </div>
   <div class="flex flex-wrap gap-4">
     <c-button label="Mis encuestas" [severity]="'primary'" [variant]="'outlined'" [icon]="'login'" routerLink="/dashboard"/>
-    <c-button label="Agregar" [severity]="'primary'" [icon]="'add'" routerLink="/dashboard"/>
+    <c-button label="Agregar" [severity]="'primary'" [icon]="'add'" (onClick)="showModalAdd.set(true); this.form.reset();"/>
   </div>
 
 </header>
@@ -15,9 +15,10 @@
       <section>
         <header class="flex flex-col lg:flex-row items-center justify-center gap-4">
           <article class="grid grid-cols-1 md:grid-cols-3 gap-x-4 gap-y-2 w-full">
-            <c-float-input type="text" label="Nombre" icon="filter_alt" iconPosition="left"/>
+            <c-float-input [(ngModel)]="filterName" type="text" label="Nombre" icon="filter_alt" iconPosition="left"/>
             <c-select
               label="Estado"
+              [(ngModel)]="filterState"
               [options]="[
                 { label: 'Activo', value: true },
                 { label: 'Inactivo', value: false }
@@ -25,8 +26,8 @@
               [placeholder]="'Selecciona una opción'"
               />
               <article class="flex flex-row gap-4 mt-2">
-                <c-button label="" [severity]="'primary'" [iconOnly]="true" [icon]="'search'" rounded="full"/>
-                <c-button label="" [severity]="'secondary'" variant="outlined" [iconOnly]="true" [icon]="'replay'" rounded="full"/>
+                <c-button label="" [severity]="'primary'" [iconOnly]="true" [icon]="'search'" rounded="full" (onClick)="handlerFilter()"/>
+                <c-button label="" [severity]="'secondary'" variant="outlined" [iconOnly]="true" [icon]="'replay'" rounded="full" (onClick)="handleResetFilter()"/>
               </article>
           </article>
         </header>
@@ -47,9 +48,214 @@
             (onPageChange)="handlePagination($event)"
           >
             <ng-template dataTableColumn="estado" let-data>
-              <p-tag value="{{data.estado ? 'Activo' : 'Inactivo'}}" [severity]="data.estado === 'Activa' ? 'success' : undefined"/>
+              <p-tag value="{{data.estado ? 'Activo' : 'Inactivo'}}" [severity]="data.estado ? 'success' : undefined"/>
             </ng-template>
           </data-table>
+        </section>
+        <section>
+          <!-- Modal de detalle -->
+          <modal
+            [visible]="showModalDetail()"
+            [closable]="true"
+            (onClose)="showModalDetail.set(false)"
+            styleClass="w-[90%] sm:w-[80%] md:w-[80%] lg:w-[80%] xl:w-[30%] bg-auto p-4"
+            [style]="{ 'border-radius': '20px' }"
+          >
+          <header class="flex justify-between w-full">
+            <h1 class="text-xl font-bold text-primary-600 dark:text-primary-500">
+              Detalle del grupo meta
+            </h1>
+          </header>
+          <content>
+            <article class="flex flex-col w-full gap-3">
+              <span class="text-gray-600 font-semibold text-lg">Información general</span>
+              <div>
+                <span class="text-gray-600 font-medium">Nombre</span>
+                <p class="text-gray-500">{{ detailTarget().nombre }}</p>
+              </div>
+              <div>
+                <span class="text-gray-600 font-medium">Descripción</span>
+                <p class="text-gray-500">{{ detailTarget().descripcion }}</p>
+              </div>
+              <div>
+                <span class="text-gray-600 font-medium">Fecha de creación</span>
+                <p class="text-gray-500">{{ detailTarget().created_at }}</p>
+              </div>
+              <div>
+                <span class="text-gray-600 font-medium">Estado</span>
+                <p class="text-gray-500">
+                  <p-tag value="{{detailTarget().estado ? 'Activo' : 'Inactivo'}}" [severity]="detailTarget().estado ? 'success' : undefined"/>
+                </p>
+              </div>
+            </article>
+          </content>
+          <footer class="w-full">
+            <div class="flex w-full justify-end gap-x-2">
+              <c-button
+                severity="danger"
+                variant="outlined"
+                class="w-24"
+                label="Cerrar"
+                (onClick)="showModalDetail.set(false)"
+              />
+            </div>
+          </footer>
+          </modal>
+
+          <!-- Modal de edit -->
+          <form [formGroup]="form">
+            <modal
+              [visible]="showModalEdit()"
+              [closable]="true"
+              (onClose)="showModalEdit.set(false)"
+              styleClass="w-[90%] sm:w-[80%] md:w-[80%] lg:w-[80%] xl:w-[30%] bg-auto p-4"
+              [style]="{ 'border-radius': '20px' }">
+            <header class="flex justify-between w-full">
+              <h1 class="text-xl font-bold text-primary-600 dark:text-primary-500">
+                Editar grupo meta
+              </h1>
+            </header>
+            <content>
+              <article class="flex flex-col w-full gap-3">
+                <span class="text-gray-600 font-semibold text-lg">Información general</span>
+                <c-float-input
+                  required
+                  label="Nombre"
+                  typeLabel="label"
+                  labelClass="!font-medium"
+                  formControlName="nombre"
+                  type="text"
+                  iconPosition="left"
+                  icon="double_arrow"
+                  variant="outlined"
+                  [formControl]="getFormField('nombre')"
+                />
+                <c-textarea
+                  required
+                  label="Descripción"
+                  typeLabel="label"
+                  labelClass="!font-medium"
+                  formControlName="descripcion"
+                  type="text"
+                  icon="filter_alt"
+                  iconPosition="left"
+                  variant="outlined"
+                  [formControl]="getFormField('descripcion')"
+                />
+                <c-select
+                  required
+                  label="Estado"
+                  typeLabel="label"
+                  labelClass="!font-medium"
+                  formControlName="estado"
+                  [options]="[
+                    { label: 'Activo', value: true },
+                    { label: 'Inactivo', value: false }
+                  ]"
+                  [placeholder]="'Selecciona una opción'"
+                  [formControl]="getFormField('estado')"
+                  variant="outlined"
+                />
+              </article>
+            </content>
+            <footer class="w-full">
+              <div class="flex w-full justify-end gap-x-2">
+                <c-button
+                  severity="danger"
+                  variant="outlined"
+                  class="w-24"
+                  label="Cerrar"
+                  (onClick)="showModalEdit.set(false)"
+                />
+                <c-button
+                  severity="primary"
+                  variant="solid"
+                  class="w-24"
+                  label="Guardar"
+                  (onClick)="handleEditTargetGroup()"
+                />
+              </div>
+            </footer>
+            </modal>
+          </form>
+
+          <!-- Modal de add -->
+          <form [formGroup]="form">
+            <modal
+              [visible]="showModalAdd()"
+              [closable]="true"
+              (onClose)="showModalAdd.set(false)"
+              styleClass="w-[90%] sm:w-[80%] md:w-[80%] lg:w-[80%] xl:w-[30%] bg-auto p-4"
+              [style]="{ 'border-radius': '20px' }">
+              <header class="flex justify-between w-full">
+                <h1 class="text-xl font-bold text-primary-600 dark:text-primary-500">
+                  Agregar grupo meta
+                </h1>
+              </header>
+              <content>
+                <article class="flex flex-col w-full gap-3">
+                  <span class="text-gray-600 font-semibold text-lg">Información general</span>
+                  <c-float-input
+                    required
+                    label="Nombre"
+                    typeLabel="label"
+                    labelClass="!font-medium"
+                    formControlName="nombre"
+                    type="text"
+                    iconPosition="left"
+                    icon="double_arrow"
+                    variant="outlined"
+                    [formControl]="getFormField('nombre')"
+                  />
+                  <c-textarea
+                    required
+                    label="Descripción"
+                    typeLabel="label"
+                    labelClass="!font-medium"
+                    formControlName="descripcion"
+                    type="text"
+                    icon="filter_alt"
+                    iconPosition="left"
+                    variant="outlined"
+                    [formControl]="getFormField('descripcion')"
+                  />
+                  <c-select
+                    required
+                    label="Estado"
+                    typeLabel="label"
+                    labelClass="!font-medium"
+                    formControlName="estado"
+                    [options]="[
+                      { label: 'Activo', value: true },
+                      { label: 'Inactivo', value: false }
+                    ]"
+                    [placeholder]="'Selecciona una opción'"
+                    [formControl]="getFormField('estado')"
+                    variant="outlined"
+                  />
+                </article>
+              </content>
+              <footer class="w-full">
+                <div class="flex w-full justify-end gap-x-2">
+                  <c-button
+                    severity="danger"
+                    variant="outlined"
+                    class="w-24"
+                    label="Cerrar"
+                    (onClick)="showModalAdd.set(false)"
+                  />
+                  <c-button
+                    severity="primary"
+                    variant="solid"
+                    class="w-24"
+                    label
+                    (onClick)="handleAddTargetGroup()"
+                    label="Guardar"
+                  />
+                </div>
+              </footer>
+            </modal>
+          </form>
         </section>
       </section>
     </c-card>

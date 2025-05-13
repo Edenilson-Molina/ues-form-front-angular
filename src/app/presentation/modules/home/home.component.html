@@ -14,8 +14,8 @@
     <c-info-card title="199" description="Nuevos usuarios registrados" icon="group" severity="secondary"/>
     <c-info-card title="15" description="Nuevas encuestas generadas" icon="list" severity="info"/>
   </article>
-  <article class="flex flex-col md:flex-row gap-4">
-    <c-card titleCard="Encuestas con mayor actividad" chip="Semanal" icon="bar_chart" class="w-full md:w-[70%]">
+  <article class="flex flex-col lg:flex-row gap-4">
+    <c-card titleCard="Encuestas con mayor actividad" chip="Semanal" icon="bar_chart" class="w-full lg:w-[70%]">
       <data-table
         [data]="encuestas()"
         [columns]="columns"
@@ -32,7 +32,7 @@
         (onPageChange)="handlePagination($event)"
       />
     </c-card>
-    <c-card titleCard="Estado de encuestas" chip="Anual" icon="analytics" class="w-full md:w-[30%]">
+    <c-card titleCard="Estado de encuestas" chip="Anual" icon="analytics" class="w-full lg:w-[30%]">
       <p-chart type="doughnut" [data]="data" [options]="options" class="flex justify-center w-full" />
     </c-card>
   </article>
