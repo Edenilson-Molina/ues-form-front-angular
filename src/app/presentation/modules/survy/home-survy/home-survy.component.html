@@ -4,8 +4,8 @@
     <p class="text-gray-500">Crea, publica y comparte tus encuestas</p>
   </div>
   <div class="flex flex-wrap gap-4">
-    <c-button label="Grupos meta" [severity]="'primary'" [variant]="'outlined'" [icon]="'login'" routerLink="/dashboard"/>
-    <c-button label="Agregar" [severity]="'primary'" [icon]="'add'" routerLink="/dashboard"/>
+    <c-button label="Grupos meta" [severity]="'primary'" [variant]="'outlined'" [icon]="'login'" routerLink="/dashboard/survy/catalogues/target-group"/>
+    <c-button label="Agregar" [severity]="'primary'" [icon]="'add'" routerLink="/dashboard" (onClick)="createSurveys()"/>
   </div>
 </header>
 <section class="flex flex-col gap-4">
@@ -14,20 +14,22 @@
       <section>
         <header class="flex flex-col lg:flex-row items-center justify-center gap-4">
           <article class="grid grid-cols-1 lg:grid-cols-3 gap-x-4 gap-y-2 w-full">
-            <c-float-input type="text" label="Título" icon="filter_alt" iconPosition="left"/>
-            <c-float-input type="text" label="Grupo meta" icon="account_tree" iconPosition="left"/>
+            <c-float-input [(ngModel)]="filterSurveys().titulo" type="text" label="Título" icon="filter_alt" iconPosition="left"/>
+            <c-float-input [(ngModel)]="filterSurveys().grupo_meta" type="text" label="Grupo meta" icon="account_tree" iconPosition="left"/>
             <c-select
               label="Estado"
               [options]="[
-                { label: 'Activo', value: 'active' },
-                { label: 'Inactivo', value: 'inactive' }
+                { label: 'Activo', value: '1' },
+                { label: 'Inactivo', value: '2' },
+                { label: 'En edición', value: '4' }
               ]"
+              [(ngModel)]="filterSurveys().id_estado"
               [placeholder]="'Selecciona una opción'"
               />
           </article>
           <article class="flex flex-row gap-4 mt-4">
-            <c-button label="" [severity]="'primary'" [iconOnly]="true" [icon]="'search'" rounded="full"/>
-            <c-button label="" [severity]="'secondary'" variant="outlined" [iconOnly]="true" [icon]="'replay'" rounded="full"/>
+            <c-button label="" [severity]="'primary'" [iconOnly]="true" [icon]="'search'" rounded="full" (onClick)="filterSurveysData()"/>
+            <c-button label="" [severity]="'secondary'" variant="outlined" [iconOnly]="true" [icon]="'replay'" rounded="full" (onClick)="resetFilters()"/>
           </article>
         </header>
         <section class="flex flex-col gap-4 mt-4">
@@ -39,7 +41,7 @@
             [pagination]="pagination()"
             [paginationCustomDesign]="false"
             [showPagination]="true"
-            [showPerPageOptionsDropdown]="true"
+            [showPerPageOptionsDropdown]="false"
             [showPrevNextLinks]="true"
             [showFirstLastLinks]="true"
             headerAlign="start"
@@ -47,7 +49,7 @@
             (onPageChange)="handlePagination($event)"
           >
             <ng-template dataTableColumn="estado" let-data>
-              <p-tag [value]="data.estado" [severity]="data.estado === 'Activa' ? 'success' : undefined"/>
+              <p-tag [value]="data.estado.nombre" [severity]="data.estado.nombre === 'Activa' ? 'success' : data.estado.nombre == 'En edición' ? 'info': undefined"/>
             </ng-template>
           </data-table>
         </section>

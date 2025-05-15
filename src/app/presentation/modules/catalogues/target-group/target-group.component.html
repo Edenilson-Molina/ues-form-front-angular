@@ -4,7 +4,7 @@
     <p class="text-gray-500">Administra los grupos meta de tus encuestas</p>
   </div>
   <div class="flex flex-wrap gap-4">
-    <c-button label="Mis encuestas" [severity]="'primary'" [variant]="'outlined'" [icon]="'login'" routerLink="/dashboard"/>
+    <c-button label="Mis encuestas" [severity]="'primary'" [variant]="'outlined'" [icon]="'login'" routerLink="/dashboard/survy/my-surveys"/>
     <c-button label="Agregar" [severity]="'primary'" [icon]="'add'" (onClick)="showModalAdd.set(true); this.form.reset();"/>
   </div>
 

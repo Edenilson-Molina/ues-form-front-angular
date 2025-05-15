@@ -5,10 +5,12 @@ import { CardComponent } from "../../components/card/card.component";
 import { DataTableComponent } from "../../components/data-table/data-table.component";
 import { ChartModule } from 'primeng/chart';
 import { isPlatformBrowser } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   imports: [
+    RouterLink,
     ButtonComponent,
     InfoCardComponent,
     CardComponent,

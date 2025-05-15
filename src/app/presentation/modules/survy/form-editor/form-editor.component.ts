@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { DividerModule } from 'primeng/divider';
 import { SliderModule } from 'primeng/slider';
 import { ButtonComponent } from "../../../components/button/button.component";
@@ -7,10 +7,11 @@ import { FloatInputTextComponent } from "../../../components/inputs/float-input-
 import { SelectComponent } from "../../../components/inputs/select/select.component";
 import { TextareaComponent } from "../../../components/inputs/textarea/textarea.component";
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule } from '@angular/forms';
 import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AutosizeDirective } from "../../../../directives/autosize.directive";
+import { SurvyService } from '@app/services/survy.service';
 
 @Component({
   selector: 'app-form-editor',
@@ -33,6 +34,10 @@ import { AutosizeDirective } from "../../../../directives/autosize.directive";
   styleUrl: './form-editor.component.css',
 })
 export default class FormEditorComponent {
+  // Injecting
+  private survyService = inject(SurvyService);
+  private router: Router = inject(Router);
+
   // Datos internos
   internalData = {
     targetGroup: '',
@@ -63,6 +68,23 @@ export default class FormEditorComponent {
 
   // Lista de preguntas
   questions: any[] = [];
+
+  constructor(private fb: FormBuilder, private route: ActivatedRoute) {
+
+    // IdForm en la URL
+    this.route.params.subscribe((params) => {
+        const idForm:number = params['formId'];
+        this.survyService.getSurveyById(idForm).then((response: any) => {
+          if(response.success){
+
+          }
+        }).catch((error: any) => {
+          this.router.navigate(['dashboard/survy/my-surveys']);
+        });
+      }
+    );
+  }
+
 
   addQuestion() {
     const newQuestion = {

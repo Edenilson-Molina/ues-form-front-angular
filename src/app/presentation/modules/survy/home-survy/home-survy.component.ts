@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { ButtonComponent } from "../../../components/button/button.component";
 import { CardComponent } from "../../../components/card/card.component";
 import { FloatInputTextComponent } from "../../../components/inputs/float-input-text/float-input-text.component";
@@ -6,34 +6,92 @@ import { SelectComponent } from "../../../components/inputs/select/select.compon
 import { DataTableComponent } from "../../../components/data-table/data-table.component";
 import { DataTableColumnDirective } from '../../../components/data-table/data-table.component';
 import { TagModule } from 'primeng/tag';
+import { Router, RouterLink } from '@angular/router';
+import { SurvyService } from '@app/services/survy.service';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-home-survy',
   standalone: true,
-  imports: [ButtonComponent, CardComponent, FloatInputTextComponent, SelectComponent, DataTableComponent, DataTableColumnDirective, TagModule ],
+  imports: [
+    RouterLink,
+    ReactiveFormsModule,
+    FormsModule,
+    ButtonComponent,
+    CardComponent,
+    FloatInputTextComponent,
+    SelectComponent,
+    DataTableComponent,
+    DataTableColumnDirective,
+    TagModule
+  ],
   templateUrl: './home-survy.component.html',
 })
 export default class HomeSurvyComponent {
-  encuestas = signal([
-    {
-      titulo: 'Quiere trabajar con tres tecnologias diferentes a la vez?',
-      grupo_meta: 'explotacion',
-      fecha_publicacion: '2023-10-01',
-      estado: 'Activa',
-    },
-    {
-      titulo: 'Le gusta hacer el figma del proyecto?',
-      grupo_meta: 'senior',
-      fecha_publicacion: '2023-10-02',
-      estado: 'Activa',
-    },
-    {
-      titulo: 'Le gusta caminar desde bolivar hasta el excuartel?',
-      grupo_meta: 'chambeador',
-      fecha_publicacion: '2023-10-03',
-      estado: 'Inactiva',
-    },
-  ]);
+  // Injecting
+  private mysurvyService = inject(SurvyService);
+  private router = inject(Router);
+
+  ngOnInit(): void {
+    this.getSurveys();
+  }
+
+  filterSurveys = signal<any>({
+    titulo: '',
+    grupo_meta: '',
+    id_estado: null,
+  });
+  encuestas = signal([]);
+
+  async filterSurveysData() {
+    this.encuestas.set([]);
+    await this.getSurveys();
+  }
+
+  async resetFilters() {
+    this.filterSurveys.set({
+      titulo: '',
+      grupo_meta: '',
+      id_estado: null,
+    });
+    this.paginationParams.set({
+      page: 1,
+      per_page: 10,
+      paginate: true,
+    });
+    await this.getSurveys();
+  }
+
+  async getSurveys() {
+    this.isLoading.set(true);
+    const { page, per_page } = this.paginationParams();
+    const { titulo, grupo_meta, id_estado } = this.filterSurveys();
+    const response:any = await this.mysurvyService.getSurveys(
+      {
+        page,
+        per_page,
+        titulo,
+        grupo_meta,
+        id_estado,
+      }
+    );
+    this.encuestas.set(response.data);
+    this.pagination.set({
+      from: response.pagination.from,
+      page: response.pagination.page,
+      per_page: response.pagination.per_page,
+      to: response.pagination.to,
+      totalItems: response.pagination.totalItems,
+    });
+    this.isLoading.set(false);
+  }
+
+  async createSurveys() {
+    const response:any = await this.mysurvyService.createSurvey();
+    if (response.success) {
+      this.router.navigate(['/dashboard/survy/form-editor/' + response.data.id]);
+    }
+  }
 
   isLoading = signal<boolean>(false);
 
@@ -63,7 +121,7 @@ export default class HomeSurvyComponent {
       label: 'Editar Encuesta',
       icon: 'visibility',
       class: 'text-blue-500 dark:text-blue-400 bg-transparent',
-      onClick: (data: any) => console.log('View item:', data),
+      onClick: (data: any) => this.router.navigate(['/dashboard/survy/form-editor/' + data.id]),
     },
     {
       label: 'Responder Encuesta',
@@ -88,5 +146,6 @@ export default class HomeSurvyComponent {
       per_page: event.per_page,
       paginate: true,
     });
+    this.getSurveys();
   }
 }
