@@ -3,104 +3,99 @@
   [(visible)]="visible"
   [closable]="false"
   position="left"
-  styleClass="w-[300px]"
+  styleClass="w-[250px]"
   (onHide)="setVisible(false)"
-  *ngIf="visible"
 >
-    <ng-template #headless class="flex flex-col h-[95vh] lg:h-screen bg-white dark:bg-zinc-700">
-      <div class="w-full flex justify-end">
-        <p-button
-          icon="pi pi-times"
-          styleClass="bg-transparent border-none text-zinc-700 dark:text-white mt-3 me-3"
-          (click)="closeCallback($event)"
+  <ng-template #headless class="flex flex-col h-[95vh] lg:h-screen bg-white dark:bg-zinc-700">
+    <div class="w-full flex justify-end">
+      <p-button icon="pi pi-times" styleClass="bg-transparent border-none text-zinc-700 dark:text-white mt-3 me-3" (click)="closeCallback($event)" />
+    </div>
+    <div class="flex items-center justify-center shrink-0">
+      <img class="w-[70%] dark:brightness-75" alt="Logo" src="assets/images/logo-system.png" />
+    </div>
+    <div class="overflow-y-auto">
+      <ul class="list-none p-4 m-0">
+        <li>
+          <ul class="flex flex-col gap-1 list-none p-0 m-0 overflow-hidden">
+            @for(route of menu; track route.path){
+              <li class="flex flex-col list-none p-0 m-0 overflow-hidden">
+                @if(!route.children){
+                  <a
+                    pRipple
+                    [routerLink]="[route.path]"
+                    (click)="setVisible(false)"
+                    routerLinkActive="bg-red-800 text-white"
+                    [routerLinkActiveOptions]="{ exact: true }"
+                    [ngClass]="{
+                      'flex items-center cursor-pointer rounded p-2 p-ripple': true,
+                      'hover:bg-slate-200 dark:hover:bg-red-900': !isRouteActive(route.path),
+                      'bg-red-800 text-white': isRouteActive(route.path)
+                    }"
+                  >
+                    <div class="flex items-center gap-2">
+                      <span class="material-symbols-outlined">{{ route.icon }}</span>
+                      <span class="font-medium">{{ route.name }}</span>
+                    </div>
+                  </a>
+                } @else {
+                  <a
+                    pRipple
+                    (click)="toggleMenu(route.path)"
+                    [ngClass]="{
+                      'flex items-center cursor-pointer rounded p-2 p-ripple': true,
+                      'hover:bg-slate-200': !isParentRouteActive(route),
+                      'bg-red-800 text-white': isParentRouteActive(route)
+                    }"
+                  >
+                    <div class="flex gap-2">
+                      <span class="material-symbols-outlined">{{ route.icon }}</span>
+                      <span class="font-medium">{{ route.name }}</span>
+                    </div>
+                    <i class="pi ml-auto" [ngClass]="isMenuExpanded(route.path) ? 'pi-chevron-up' : 'pi-chevron-down'"></i>
+                  </a>
+                  <ul *ngIf="isMenuExpanded(route.path)" class="flex flex-col gap-1 list-none p-0 ml-6 mt-1 mb-2 overflow-hidden">
+                    <li class="flex flex-col gap-1 list-none overflow-hidden">
+                      @for(subroute of route.children; track subroute.path){
+                        <a
+                          pRipple
+                          [routerLink]="[subroute.path]"
+                          (click)="setVisible(false)"
+                          routerLinkActive="text-red-800 font-bold"
+                          [ngClass]="{
+                            'flex gap-2 p-1 items-center cursor-pointer transition-all duration-300': true,
+                            'hover:ml-1': !isRouteActive(subroute.path)
+                          }"
+                        >
+                          <span class="material-symbols-outlined">{{ subroute.icon }}</span>
+                          <span class="font-medium">{{ subroute.name }}</span>
+                        </a>
+                      }
+                    </li>
+                  </ul>
+                }
+              </li>
+            }
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="mt-auto mb-2">
+      <hr class="mb-3 mx-4 border-t border-0 border-slate-300 dark:border-slate-200"/>
+      <a
+        pRipple
+        class="mx-3 my-1.5 flex items-center cursor-pointer p-3 gap-2 rounded text-slate-700 hover:bg-slate-200 dark:text-slate-200 dark:hover:bg-neutral-800 duration-150 transition-colors"
+        (click)="handleLogout()"
+      >
+        <p-avatar
+          [icon]="loading() ? 'pi pi-spin pi-spinner-dotted' : 'pi pi-sign-out'"
+          shape="circle"
+          size="normal"
+          class="bg-slate-100 dark:bg-gray-600"
         />
-      </div>
-      <div class="flex items-center justify-between px-6 pt-4 shrink-0">
-        <span class="inline-flex items-center gap-2">
-          <span class="inline-flex items-center gap-2">
-            <img
-              class="w-full dark:brightness-75"
-              alt="Logo"
-              src="assets/images/logo-system.png"
-            />
-          </span>
-        </span>
-      </div>
-      <div class="overflow-y-auto">
-        <ul class="list-none p-4 m-0">
-          <li>
-            <ul class="flex flex-col gap-1 list-none p-0 m-0 overflow-hidden">
-              @for(route of menu; track route.path){
-                <li>
-                  @if(!route.children){
-                    <a
-                      pRipple
-                      [routerLink]="[route.path]"
-                      (click)="setVisible(false)"
-                      routerLinkActive="bg-red-800 text-white"
-                      [routerLinkActiveOptions]="{ exact: true }"
-                      class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-red-800 hover:text-white dark:text-surface-0 dark:hover:bg-red-800 duration-150 transition-colors"
-                    >
-                      <span class="material-symbols-outlined mr-1">{{
-                        route.icon
-                      }}</span>
-                      <span class="font-medium">{{ route.name }}</span>
-                    </a>
-
-                  } @else {
-                    <a
-                      pRipple
-                      [routerLink]="[route.path]"
-                      routerLinkActive="bg-red-800 text-white"
-                      class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-red-800 hover:text-white dark:text-surface-0 dark:hover:bg-red-800 duration-150 transition-colors p-ripple"
-                    >
-                      <span class="material-symbols-outlined mr-1">{{
-                        route.icon
-                      }}</span>
-                      <span class="font-medium">{{ route.name }}</span>
-                      <i class="pi pi-chevron-down ml-auto"></i>
-                    </a>
-                    <ul
-                      class="list-none py-0 pl-4 pr-0 m-0 hidden overflow-y-hidden transition-all duration-[400ms] ease-in-out"
-                    >
-                      <li>
-                        @for(subroute of route.children; track subroute.path){
-                          <a
-                            pRipple
-                            class="flex items-center cursor-pointer p-4 rounded text-surface-700 hover:bg-red-200 dark:text-surface-0 dark:hover:bg-red-800 duration-150 transition-colors p-ripple"
-                          >
-                            <span class="material-symbols-outlined mr-1">{{
-                              subroute.icon
-                            }}</span>
-                            <span class="font-medium">{{ subroute.name }}</span>
-                          </a>
-                        }
-                      </li>
-                    </ul>
-                  }
-                </li>
-              }
-            </ul>
-          </li>
-        </ul>
-      </div>
-      <div class="mt-auto mb-2">
-        <hr class="mb-3 mx-4 border-t border-0 border-slate-300 dark:border-slate-200"/>
-        <a
-          pRipple
-          class="mx-3 my-1.5 flex items-center cursor-pointer p-3 gap-2 rounded text-slate-700 hover:bg-slate-200 dark:text-slate-200 dark:hover:bg-neutral-800 duration-150 transition-colors"
-          (click)="handleLogout()"
-        >
-          <p-avatar
-            [icon]=" loading() ? 'pi pi-spin pi-spinner-dotted' : 'pi pi-sign-out'"
-            shape="circle"
-            size="normal"
-            class="bg-slate-100 dark:bg-gray-600"
-          />
-          <span class="capitalize">Cerrar sesión</span>
-        </a>
-      </div>
-    </ng-template>
+        <span class="capitalize">Cerrar sesión</span>
+      </a>
+    </div>
+  </ng-template>
 </p-drawer>
 <div class="flex items-center rounded-xl md:rounded-l-none">
   <p-button

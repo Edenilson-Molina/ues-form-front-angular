@@ -49,39 +49,75 @@ export class DrawerComponent {
     {
       name: 'Inicio',
       path: '/dashboard',
-      icon: 'home',
+      icon: 'home'
     },
     {
       name: 'Usuarios',
       path: '/dashboard/users',
-      icon: 'person',
+      icon: 'person'
+    },
+    {
+      name: 'Encuestas',
+      icon: 'assignment',
+      path: '/dashboard/survy',
+      children: [
+        {
+          name: 'Mis encuestas',
+          path: '/dashboard/survy/my-surveys',
+          icon: 'assignment_ind',
+        },
+        {
+          name: 'Grupos metas',
+          path: '/dashboard/survy/catalogues/target-group',
+          icon: 'group',
+        }
+      ]
     },
     {
       name: 'Tareas',
       path: '/dashboard/educacion',
-      icon: 'editor_choice',
+      icon: 'editor_choice'
     },
     {
       name: 'Pruebas de componentes',
       path: '/dashboard/test',
-      icon: 'experiment',
+      icon: 'experiment'
     },
   ];
 
   visible = false;
   username: string = 'Name not found';
   loading = signal<boolean>(false);
+  activeRoute: string | null = null;
+  // Estado de expansión para cada menú con subrutas (indexado por el path del padre)
+  expandedMenus: { [key: string]: boolean } = {};
 
   session$!: Observable<Session>;
   sessionValue = signal<Session | null>(null);
 
   constructor() {
-    this.session$ = this.store.select('session');
-    this.session$.subscribe((session) => {
-      this.sessionValue.set(session);
-      this.visible = session.showMenu;
+  this.session$ = this.store.select('session');
+  this.session$.subscribe((session) => {
+    this.sessionValue.set(session);
+    this.visible = session.showMenu;
+  });
+
+  this.router.events.subscribe(() => {
+    this.activeRoute = this.router.url;
+    // Expandir automáticamente los menús padres si una subruta está activa
+    this.menu.forEach((route) => {
+      if (route.children) {
+        this.expandedMenus[route.path] = this.isParentRouteActive(route);
+      }
     });
-  }
+  });
+
+  this.menu.forEach((route) => {
+    if (route.children) {
+      this.expandedMenus[route.path] = false;
+    }
+  });
+}
 
   setVisible(value: boolean): void {
     this.store.dispatch(showMenu(value));
@@ -102,5 +138,30 @@ export class DrawerComponent {
     } finally {
       this.loading.set(false);
     }
+  }
+
+  isRouteActive(path: string): boolean {
+    return this.activeRoute === path;
+  }
+
+  isParentRouteActive(route: Route): boolean {
+    if (route.children && this.activeRoute) {
+      return route.children.some((subroute) =>
+        this.activeRoute?.startsWith(subroute.path)
+      );
+    }
+    return false;
+  }
+
+  // Método para alternar el estado de expansión de un menú
+  toggleMenu(path: string): void {
+    if (this.expandedMenus[path] !== undefined) {
+      this.expandedMenus[path] = !this.expandedMenus[path];
+    }
+  }
+
+  // Método para verificar si un menú está expandido
+  isMenuExpanded(path: string): boolean {
+    return this.expandedMenus[path] || false;
   }
 }

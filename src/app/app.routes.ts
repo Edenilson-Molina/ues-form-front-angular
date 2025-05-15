@@ -15,31 +15,42 @@ export const routes: Routes = [
   },
   {
     path: 'dashboard',
-    canActivate: [AuthGuard],
     loadComponent: () => import('./presentation/layouts/dashboard/dashboard.component'),
     children: [
       {
         path: '',
+        canActivate: [AuthGuard],
+        data: { Permissions: ['encuesta_ver'] },
         loadComponent: () => import('./presentation/modules/home/home.component')
       },
       {
-        path: 'survy',
+        path: 'survy/my-surveys',
+        canActivate: [AuthGuard],
+        data: { Permissions: ['encuesta_ver'] },
         loadComponent: () => import('./presentation/modules/survy/home-survy/home-survy.component')
       },
       {
         path: 'survy/form-editor/:formId',
+        canActivate: [AuthGuard],
+        data: { Permissions: ['encuesta_ver'] },
         loadComponent: () => import('./presentation/modules/survy/form-editor/form-editor.component')
       },
       {
-        path: 'catalogues/target-group',
+        path: 'survy/catalogues/target-group',
+        canActivate: [AuthGuard],
+        data: { Permissions: ['encuesta_ver'] },
         loadComponent: () => import('./presentation/modules/catalogues/target-group/target-group.component'),
       },
       {
         path: 'test',
+        canActivate: [AuthGuard],
+        data: { Permissions: ['encuesta_ver'] },
         loadComponent: () => import('./presentation/modules/test/test.component')
       },
       {
         path: 'users',
+        canActivate: [AuthGuard],
+        data: { Permissions: ['encuesta_ver'] },
         loadComponent: () => import('./presentation/modules/users/views/user-page/user-page.component')
       }
     ]

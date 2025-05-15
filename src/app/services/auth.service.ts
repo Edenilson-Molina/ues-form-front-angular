@@ -8,6 +8,7 @@ import { Store } from '@ngrx/store';
 import { Session } from '@app/interfaces/store';
 import { environment } from '@environments/environment';
 import { AxiosRequestConfig } from 'axios';
+import { jwtDecode } from 'jwt-decode';
 
 
 @Injectable({
@@ -58,6 +59,19 @@ export class AuthService {
     return this.store.select(state => state.session).pipe(
       map(session => !!session.accessToken && !this.isTokenExpired(session.accessToken) && session.isUnlocked)
     );
+  }
+
+  getPermissions(): string[] {
+    let token: string | null = null;
+    this.store.select(state => state.session.accessToken).subscribe(accessToken => {
+      token = accessToken;
+    }).unsubscribe();
+
+    if (token) {
+      const decoded: any = jwtDecode(token);
+      return decoded.permissions || [];
+    }
+    return [];
   }
 
   private isTokenExpired(token: string): boolean {
