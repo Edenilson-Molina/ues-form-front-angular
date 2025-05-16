@@ -1,16 +1,6 @@
 import { Injectable } from '@angular/core';
-
-import { LoginDto, requestRegisterDto, sendVerificationEmailDto, verifyEmailDto } from '@interfaces/request/auth.dto';
-import { LoginResponse, requestRegisterResponse, sendVerificationEmailResponse, verifyEmailResponse } from '@interfaces/responses/auth.dto';
 import { getAxiosAdapter } from './common/axios.service';
-import { map, Observable } from 'rxjs';
-import { Store } from '@ngrx/store';
-import { Session } from '@app/interfaces/store';
-import { environment } from '@environments/environment';
-import { AxiosRequestConfig } from 'axios';
-import { jwtDecode } from 'jwt-decode';
 import { requestSurvyDto } from '@app/interfaces/request/survy.dto';
-
 
 @Injectable({
   providedIn: 'root'
@@ -37,5 +27,13 @@ export class SurvyService {
 
   async getSurveyById(id: number) {
     return await this.axiosService.get(`/encuestas/editor/form/${id}`);
+  }
+
+  async getInternalDataSurvey(id: number) {
+    return await this.axiosService.get(`/encuestas/editor/internal-data/${id}`);
+  }
+
+  async getGeneralInfoSurvey(id: number) {
+    return await this.axiosService.get(`/encuestas/editor/general-info/${id}`);
   }
 }

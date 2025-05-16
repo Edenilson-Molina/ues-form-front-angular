@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
 
-import { LoginDto, requestRegisterDto, sendVerificationEmailDto, verifyEmailDto } from '@interfaces/request/auth.dto';
-import { LoginResponse, requestRegisterResponse, sendVerificationEmailResponse, verifyEmailResponse } from '@interfaces/responses/auth.dto';
 import { getAxiosAdapter } from '../common/axios.service';
 import { map, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { Session } from '@app/interfaces/store';
 import { environment } from '@environments/environment';
 import { AxiosRequestConfig } from 'axios';
-import { TargetGroupData } from '@app/interfaces/responses/target-group.dto';
+import { TargetGroupDto } from '@app/interfaces/responses/target-group.dto';
+import { requestTargetGroupDto } from '@app/interfaces/request/target-group';
 
 
 @Injectable({
@@ -19,32 +18,25 @@ export class TargetGroupService {
 
   constructor(private store: Store<{session: Session}>) {}
 
-  async getTargetGroup(page?: number, filterName?: string, filterState?: boolean | null) {
-    if(page && filterName && filterState !== null) {
-      return await this.axiosService.post(`catalogo/grupos-meta/search?page=${page}`, {
-        filters: [
-          { field: 'nombre', operator: 'like', value: `%${filterName}%` },
-          { field: 'estado', operator: '=', value: filterState },
-        ]
-      });
-    }else if(page && filterState !== null) {
-      return await this.axiosService.post(`catalogo/grupos-meta/search?page=${page}`, {
-        filters: [
-          { field: 'estado', operator: '=', value: filterState },
-        ]
-      });
-    } else if (page && filterName) {
-      return await this.axiosService.post(`catalogo/grupos-meta/search?page=${page}`, {
-        filters: [
-          { field: 'nombre', operator: 'like', value: `%${filterName}%` },
-        ]
-      });
-    } else{
-      return await this.axiosService.get(`catalogo/grupos-meta?page=${page ? page : 1}`);
+  async getTargetGroup(requestTargetGroupDto: requestTargetGroupDto) {
+    const filters = [];
+    if (requestTargetGroupDto.filterName) {
+      filters.push({ field: 'nombre', operator: 'like', value: `%${requestTargetGroupDto.filterName}%` });
+    }
+    if (requestTargetGroupDto.filterState !== null && requestTargetGroupDto.filterState !== undefined) {
+      filters.push({ field: 'activo', operator: '=', value: requestTargetGroupDto.filterState });
+    }
+
+    if (filters.length > 0) {
+      return await this.axiosService.post(`catalogo/grupos-meta/search?page=${requestTargetGroupDto.page}`, { filters });
+    } else if (requestTargetGroupDto.page) {
+      return await this.axiosService.get(`catalogo/grupos-meta?page=${requestTargetGroupDto.page}`);
+    } else {
+      return await this.axiosService.get(`catalogo/grupos-meta?pagination=${requestTargetGroupDto.paginate}`);
     }
   }
 
-  async updateTargetGroup(data: TargetGroupData) {
+  async updateTargetGroup(data: TargetGroupDto) {
     return await this.axiosService.put(`catalogo/grupos-meta/${data.id}`, {
       nombre: data.nombre,
       descripcion: data.descripcion,
@@ -52,7 +44,7 @@ export class TargetGroupService {
     });
   }
 
-  async createTargetGroup(data: TargetGroupData) {
+  async createTargetGroup(data: TargetGroupDto) {
     return await this.axiosService.post(`catalogo/grupos-meta`, {
       nombre: data.nombre,
       descripcion: data.descripcion,

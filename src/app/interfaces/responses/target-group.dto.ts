@@ -1,4 +1,4 @@
-export interface TargetGroupData {
+export interface TargetGroupDto {
   id: number;
   id_usuario: number;
   nombre: string;

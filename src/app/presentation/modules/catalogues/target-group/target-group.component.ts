@@ -12,8 +12,9 @@ import { DataTableColumnDirective } from '../../../components/data-table/data-ta
 import { TargetGroupService } from '@services/catalogues/target-group.service';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ModalComponent } from "../../../components/modal/modal.component";
-import { TargetGroupData } from '@app/interfaces/responses/target-group.dto';
+import { TargetGroupDto } from '@app/interfaces/responses/target-group.dto';
 import { TextareaComponent } from "../../../components/inputs/textarea/textarea.component";
+import { requestTargetGroupDto } from '@app/interfaces/request/target-group';
 
 @Component({
   selector: 'app-target-group',
@@ -43,7 +44,7 @@ export default class TargetGroupComponent {
   showModalEdit = signal(false);
   showModalAdd = signal(false);
 
-  detailTarget = signal<TargetGroupData>({
+  detailTarget = signal<TargetGroupDto>({
     id: 0,
     id_usuario: 0,
     nombre: '',
@@ -69,7 +70,11 @@ export default class TargetGroupComponent {
 
   // Methods and Lifecycle Hooks
   ngOnInit(): void {
-    this.getTargetGroup();
+    this.getTargetGroup({
+      page: 1,
+      filterName: '',
+      filterState: null,
+    });
   }
 
   pagination = signal({
@@ -90,7 +95,7 @@ export default class TargetGroupComponent {
       label: 'Detalle del grupo',
       icon: 'visibility',
       class: 'text-gray-500 dark:text-gray-400 bg-transparent',
-      onClick: (data: TargetGroupData) => {
+      onClick: (data: TargetGroupDto) => {
         this.showModalDetail.set(true);
         this.detailTarget.set({...data});
       },
@@ -99,7 +104,7 @@ export default class TargetGroupComponent {
       label: 'Editar grupo',
       icon: 'edit',
       class: 'text-blue-500 dark:text-blue-400 bg-transparent',
-      onClick: (data: TargetGroupData) => {
+      onClick: (data: TargetGroupDto) => {
         this.showModalEdit.set(true);
         this.detailTarget.set({...data});
         this.form.patchValue(data);
@@ -108,18 +113,30 @@ export default class TargetGroupComponent {
   ];
 
   async handlerFilter(){
-    await this.getTargetGroup(1, this.filterName(), this.filterState());
+    await this.getTargetGroup({
+      page: 1,
+      filterName: this.filterName(),
+      filterState: this.filterState(),
+    });
   }
 
   async handleResetFilter() {
     this.filterName.set('');
     this.filterState.set(null);
-    await this.getTargetGroup(1,'', null);
+    await this.getTargetGroup({
+      page: 1,
+      filterName: '',
+      filterState: null,
+    });
   }
 
   async handlePagination(event: any) {
     this.targetGroupList.set([]);
-    await this.getTargetGroup(event.page, this.filterName(), this.filterState());
+    await this.getTargetGroup({
+      page: event.page,
+      filterName: this.filterName(),
+      filterState: this.filterState(),
+    });
   }
 
   async handleAddTargetGroup() {
@@ -130,7 +147,11 @@ export default class TargetGroupComponent {
     const response = await this.targetGroupService.createTargetGroup(this.form.value);
     if (response) {
       this.showModalAdd.set(false);
-      await this.getTargetGroup(1, '', null);
+      await this.getTargetGroup({
+        page: this.pagination().page,
+        filterName: this.filterName(),
+        filterState: this.filterState(),
+      });
     }
   }
 
@@ -142,14 +163,18 @@ export default class TargetGroupComponent {
     const response = await this.targetGroupService.updateTargetGroup({id:this.detailTarget().id,...this.form.value});
     if (response) {
       this.showModalEdit.set(false);
-      await this.getTargetGroup(1, '', null);
+      await this.getTargetGroup({
+        page: this.pagination().page,
+        filterName: this.filterName(),
+        filterState: this.filterState(),
+      });
     }
   }
 
-  async getTargetGroup(page?: number, filterName?: string, filterState?: boolean | null) {
+  async getTargetGroup(requestTargetGroupDto: requestTargetGroupDto) {
     this.isLoading.set(true);
     this.targetGroupList.set([]);
-    const response:any = await this.targetGroupService.getTargetGroup(page, filterName, filterState);
+    const response:any = await this.targetGroupService.getTargetGroup(requestTargetGroupDto);
     this.targetGroupList.set(response.data);
     this.pagination.set({
       from: response.meta.from,

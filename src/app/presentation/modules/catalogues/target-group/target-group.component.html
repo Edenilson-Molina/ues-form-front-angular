@@ -48,7 +48,7 @@
             (onPageChange)="handlePagination($event)"
           >
             <ng-template dataTableColumn="estado" let-data>
-              <p-tag value="{{data.estado ? 'Activo' : 'Inactivo'}}" [severity]="data.estado ? 'success' : undefined"/>
+              <p-tag value="{{data.activo ? 'Activo' : 'Inactivo'}}" [severity]="data.activo ? 'success' : undefined"/>
             </ng-template>
           </data-table>
         </section>

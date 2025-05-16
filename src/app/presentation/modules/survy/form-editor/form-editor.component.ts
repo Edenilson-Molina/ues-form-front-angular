@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { DividerModule } from 'primeng/divider';
 import { SliderModule } from 'primeng/slider';
 import { ButtonComponent } from "../../../components/button/button.component";
@@ -7,17 +7,23 @@ import { FloatInputTextComponent } from "../../../components/inputs/float-input-
 import { SelectComponent } from "../../../components/inputs/select/select.component";
 import { TextareaComponent } from "../../../components/inputs/textarea/textarea.component";
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AutosizeDirective } from "../../../../directives/autosize.directive";
 import { SurvyService } from '@app/services/survy.service';
+import { TargetGroupService } from '@app/services/catalogues/target-group.service';
+import { TargetGroupDto } from '@app/interfaces/responses/target-group.dto';
+import { CategoryQuestionService } from '@app/services/category-question.service';
+import { CategoryQuestion } from '@app/interfaces/request/category-question';
 
 @Component({
   selector: 'app-form-editor',
   standalone: true,
   imports: [
     RouterModule,
+    FormsModule,
+    ReactiveFormsModule,
     DividerModule,
     SliderModule,
     DragDropModule,
@@ -34,67 +40,97 @@ import { SurvyService } from '@app/services/survy.service';
   styleUrl: './form-editor.component.css',
 })
 export default class FormEditorComponent {
-  // Injecting
+  // Inyección de servicios
   private survyService = inject(SurvyService);
+  private targetService = inject(TargetGroupService);
+  private cagetoryQuestionService = inject(CategoryQuestionService);
   private router: Router = inject(Router);
 
-  // Datos internos
-  internalData = {
-    targetGroup: '',
-    goal: '',
-    identifier: ''
-  };
+  // Listas de grupos meta y tipos de preguntas
+  targetGroups = signal<TargetGroupDto[]>([]);
+  questionTypes = signal<CategoryQuestion[]>([]);
 
-  // Información general
-  generalInfo = {
-    title: '',
-    description: ''
-  };
+  // Banderas
+  isSeeAnswer: boolean = false;
 
-  // Opciones para el tipo de pregunta
-  questionTypes = [
-    { label: 'Texto corto', value: 'short' },
-    { label: 'Texto largo', value: 'long' },
-    { label: 'Selección múltiple', value: 'multiple' },
-    { label: 'Selección única', value: 'single' },
-    { label: 'Falso / Verdadero', value: 'truefalse' },
-    { label: 'Escala numérica', value: 'numeric' },
-    { label: 'Escala / Escala Likert', value: 'likert' },
-    { label: 'Ordenamiento', value: 'order' }
-  ];
+  // FormGroups para datos internos y generales
+  internalDataForm!: FormGroup;
+  generalInfoForm!: FormGroup;
 
-  // Tipo de pregunta seleccionada al agregar una nueva
-  newQuestionType: string = 'multiple';
-
-  // Lista de preguntas
+  newQuestionType: string = '';
   questions: any[] = [];
 
   constructor(private fb: FormBuilder, private route: ActivatedRoute) {
+    // Formulario de datos internos
+    this.internalDataForm = this.fb.group({
+      id_grupo_meta: [null, Validators.required],
+      objetivo: ['', [Validators.required, Validators.minLength(3)]],
+      codigo: ['', [Validators.required, Validators.minLength(3)]]
+    });
+    // Formulario de información general
+    this.generalInfoForm = this.fb.group({
+      titulo: ['', [Validators.required, Validators.minLength(3)]],
+      descripcion: ['', [Validators.required, Validators.minLength(3)]]
+    });
 
-    // IdForm en la URL
     this.route.params.subscribe((params) => {
-        const idForm:number = params['formId'];
-        this.survyService.getSurveyById(idForm).then((response: any) => {
-          if(response.success){
+      const idForm: number = params['formId'];
+      this.survyService.getSurveyById(idForm).then(
 
-          }
-        }).catch((error: any) => {
-          this.router.navigate(['dashboard/survy/my-surveys']);
-        });
-      }
-    );
+      ).catch(() => {
+        this.router.navigate(['dashboard/survy/my-surveys']);
+      });
+      this.targetService.getTargetGroup({ paginate: false }).then((response: any) => {
+        this.targetGroups.set(response.data);
+      });
+      this.survyService.getInternalDataSurvey(idForm).then((response: any) => {
+        if (response.success) {
+          this.internalDataForm.patchValue({
+            id_grupo_meta: response.data.id_grupo_meta,
+            objetivo: response.data.objetivo,
+            codigo: response.data.codigo
+          });
+        }
+      });
+      this.survyService.getGeneralInfoSurvey(idForm).then((response: any) => {
+        if (response.success) {
+          this.generalInfoForm.patchValue({
+            titulo: response.data.titulo,
+            descripcion: response.data.descripcion
+          });
+        }
+      });
+
+      this.cagetoryQuestionService.getCategoriesQuestion().then((response) => {
+        if (response.success) {
+          this.questionTypes.set(response.data);
+          this.newQuestionType = response.data[2].codigo;
+        }
+      });
+    });
   }
 
+  getInternalDataField(key: string): FormControl<any> {
+    return this.internalDataForm.get(key) as FormControl<any>;
+  }
+  getGeneralInfoField(key: string): FormControl<any> {
+    return this.generalInfoForm.get(key) as FormControl<any>;
+  }
 
+  //
+  // Metodo para guardar preguntas de la encuesta
+  //
   addQuestion() {
     const newQuestion = {
       shortQuestion: '',
       type: this.newQuestionType,
       options:
-        this.newQuestionType === 'multiple' ||
-        this.newQuestionType === 'single' ||
-        this.newQuestionType === 'order' ? ['Opción inicial'] :
-        this.newQuestionType === 'likert' ? [
+        this.newQuestionType === 'multiple_choice' ||
+        this.newQuestionType === 'single_choice' ||
+        this.newQuestionType === 'ranking' ?
+        ['Opción inicial'] :
+        this.newQuestionType === 'escale_likert' ?
+        [
           'Totalmente en desacuerdo',
           'En desacuerdo',
           'Neutral',
@@ -134,20 +170,7 @@ export default class FormEditorComponent {
   }
 
   drop(event: CdkDragDrop<any[]>) {
-    console.log('Arrastrando:', event.previousIndex, 'a', event.currentIndex);
     moveItemInArray(this.questions, event.previousIndex, event.currentIndex);
-  }
-
-  saveInternalData() {
-    console.log('Datos internos guardados:', this.internalData);
-  }
-
-  saveGeneralInfo() {
-    console.log('Información general guardada:', this.generalInfo);
-  }
-
-  saveForm() {
-    console.log('Formulario guardado:', this.questions);
   }
 
   // Funciones trackBy para mejorar el rendimiento de *ngFor
@@ -180,5 +203,26 @@ export default class FormEditorComponent {
     if (isNaN(num) || num < 1) return 1;
     if (num > 10) return 10;
     return num;
+  }
+
+
+  //
+  // Métodos para guardar datos
+  //
+
+  saveInternalData() {
+    this.internalDataForm.markAllAsTouched();
+    if (this.internalDataForm.invalid) return;
+    console.log('Datos internos guardados:', this.internalDataForm.value);
+  }
+
+  saveGeneralInfo() {
+    this.generalInfoForm.markAllAsTouched();
+    if (this.generalInfoForm.invalid) return;
+    console.log('Información general guardada:', this.generalInfoForm.value);
+  }
+
+  saveForm() {
+    console.log('Formulario guardado:', this.questions);
   }
 }
