@@ -1,14 +1,17 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+import { TagModule } from 'primeng/tag';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { ButtonComponent } from "../../../components/button/button.component";
 import { CardComponent } from "../../../components/card/card.component";
 import { FloatInputTextComponent } from "../../../components/inputs/float-input-text/float-input-text.component";
 import { SelectComponent } from "../../../components/inputs/select/select.component";
 import { DataTableComponent } from "../../../components/data-table/data-table.component";
 import { DataTableColumnDirective } from '../../../components/data-table/data-table.component';
-import { TagModule } from 'primeng/tag';
-import { Router, RouterLink } from '@angular/router';
+
 import { SurvyService } from '@app/services/survy.service';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SurveyDto } from '@app/interfaces/responses/survy.dto';
 
 @Component({
   selector: 'app-home-survy',
@@ -41,7 +44,7 @@ export default class HomeSurvyComponent {
     grupo_meta: '',
     id_estado: null,
   });
-  encuestas = signal([]);
+  encuestas = signal<SurveyDto[]>([]);
 
   async filterSurveysData() {
     this.encuestas.set([]);
@@ -66,7 +69,7 @@ export default class HomeSurvyComponent {
     this.isLoading.set(true);
     const { page, per_page } = this.paginationParams();
     const { titulo, grupo_meta, id_estado } = this.filterSurveys();
-    const response:any = await this.mysurvyService.getSurveys(
+    const response = await this.mysurvyService.getSurveys(
       {
         page,
         per_page,
@@ -111,9 +114,9 @@ export default class HomeSurvyComponent {
 
   columns = [
     { field: 'titulo', header: 'Titulo', sortable: true },
-    { field: 'grupo_meta', header: 'Grupo Meta', sortable: true },
+    { field: 'grupo_meta', header: 'Grupo Meta', sortable: true, headerClass: '!justify-center' },
     { field: 'fecha_publicacion', header: 'Fecha Publicacion', sortable: true },
-    { field: 'estado', header: 'Estado', sortable: true },
+    { field: 'estado', header: 'Estado', sortable: true, headerClass: '!justify-center' },
   ];
 
   actionButtons = [

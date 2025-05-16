@@ -32,7 +32,7 @@ export class TargetGroupService {
     } else if (requestTargetGroupDto.page) {
       return await this.axiosService.get(`catalogo/grupos-meta?page=${requestTargetGroupDto.page}`);
     } else {
-      return await this.axiosService.get(`catalogo/grupos-meta?pagination=${requestTargetGroupDto.paginate}`);
+      return await this.axiosService.get(`catalogo/grupos-meta?pagination=${requestTargetGroupDto.paginate}&activo=${requestTargetGroupDto.activo}`);
     }
   }
 
@@ -40,7 +40,7 @@ export class TargetGroupService {
     return await this.axiosService.put(`catalogo/grupos-meta/${data.id}`, {
       nombre: data.nombre,
       descripcion: data.descripcion,
-      estado: data.estado
+      activo: data.activo
     });
   }
 
@@ -48,7 +48,7 @@ export class TargetGroupService {
     return await this.axiosService.post(`catalogo/grupos-meta`, {
       nombre: data.nombre,
       descripcion: data.descripcion,
-      estado: data.estado
+      activo: data.activo
     });
   }
 }

@@ -47,7 +47,7 @@
             actionsAlign="start"
             (onPageChange)="handlePagination($event)"
           >
-            <ng-template dataTableColumn="estado" let-data>
+            <ng-template dataTableColumn="activo" let-data>
               <p-tag value="{{data.activo ? 'Activo' : 'Inactivo'}}" [severity]="data.activo ? 'success' : undefined"/>
             </ng-template>
           </data-table>
@@ -84,7 +84,7 @@
               <div>
                 <span class="text-gray-600 font-medium">Estado</span>
                 <p class="text-gray-500">
-                  <p-tag value="{{detailTarget().estado ? 'Activo' : 'Inactivo'}}" [severity]="detailTarget().estado ? 'success' : undefined"/>
+                  <p-tag value="{{detailTarget().activo ? 'Activo' : 'Inactivo'}}" [severity]="detailTarget().activo ? 'success' : undefined"/>
                 </p>
               </div>
             </article>
@@ -147,13 +147,13 @@
                   label="Estado"
                   typeLabel="label"
                   labelClass="!font-medium"
-                  formControlName="estado"
+                  formControlName="activo"
                   [options]="[
                     { label: 'Activo', value: true },
                     { label: 'Inactivo', value: false }
                   ]"
                   [placeholder]="'Selecciona una opción'"
-                  [formControl]="getFormField('estado')"
+                  [formControl]="getFormField('activo')"
                   variant="outlined"
                 />
               </article>
@@ -224,7 +224,7 @@
                     label="Estado"
                     typeLabel="label"
                     labelClass="!font-medium"
-                    formControlName="estado"
+                    formControlName="activo"
                     [options]="[
                       { label: 'Activo', value: true },
                       { label: 'Inactivo', value: false }

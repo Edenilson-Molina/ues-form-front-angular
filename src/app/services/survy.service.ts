@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { getAxiosAdapter } from './common/axios.service';
-import { requestSurvyDto } from '@app/interfaces/request/survy.dto';
+import { putGeneralInfoSurvyDto, putInternalDataSurvyDto, requestSurvyDto } from '@app/interfaces/request/survy.dto';
+import { GetSurveysDtoResponse, UpdateGeneralInfoSurveyDto, UpdateInternatDataSurveyDto } from '@app/interfaces/responses/survy.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,7 @@ export class SurvyService {
       requestParams.id_estado ? `id_estado=${requestParams.id_estado}` : ''
     ].filter(Boolean).join('&');
     const filter = params ? `${params}` : '';
-    return await this.axiosService.get(`/encuestas?${filter}`);
+    return await this.axiosService.get<GetSurveysDtoResponse>(`/encuestas?${filter}`);
   }
 
   async createSurvey() {
@@ -35,5 +36,13 @@ export class SurvyService {
 
   async getGeneralInfoSurvey(id: number) {
     return await this.axiosService.get(`/encuestas/editor/general-info/${id}`);
+  }
+
+  async putInternalDataSurvey(id: number, data: putInternalDataSurvyDto) {
+    return await this.axiosService.put<putInternalDataSurvyDto, UpdateInternatDataSurveyDto>(`/encuestas/editor/internal-data/${id}`, data);
+  }
+
+  async putGeneralInfoSurvey(id: number, data: putGeneralInfoSurvyDto) {
+    return await this.axiosService.put<putGeneralInfoSurvyDto, UpdateGeneralInfoSurveyDto>(`/encuestas/editor/general-info/${id}`, data);
   }
 }

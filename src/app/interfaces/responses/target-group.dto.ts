@@ -3,6 +3,6 @@ export interface TargetGroupDto {
   id_usuario: number;
   nombre: string;
   descripcion: string;
-  estado: boolean;
+  activo: boolean;
   created_at: Date;
 }

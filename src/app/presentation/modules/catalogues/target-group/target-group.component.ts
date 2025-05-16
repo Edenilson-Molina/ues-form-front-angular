@@ -49,7 +49,7 @@ export default class TargetGroupComponent {
     id_usuario: 0,
     nombre: '',
     descripcion: '',
-    estado: false,
+    activo: false,
     created_at: new Date(),
   });
   targetGroupList = signal([]);
@@ -64,7 +64,7 @@ export default class TargetGroupComponent {
     this.form = this.fb.group({
       nombre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       descripcion: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(255)]],
-      estado: [true, [Validators.required]]
+      activo: [true, [Validators.required]]
     });
   }
 
@@ -87,7 +87,7 @@ export default class TargetGroupComponent {
 
   columns = [
     { field: 'nombre', header: 'Nombre', sortable: true },
-    { field: 'estado', header: 'Estado', sortable: true },
+    { field: 'activo', header: 'Estado', sortable: true },
   ];
 
   actionButtons = [
@@ -107,6 +107,7 @@ export default class TargetGroupComponent {
       onClick: (data: TargetGroupDto) => {
         this.showModalEdit.set(true);
         this.detailTarget.set({...data});
+        console.log(data);
         this.form.patchValue(data);
       },
     },
@@ -153,6 +154,7 @@ export default class TargetGroupComponent {
         filterState: this.filterState(),
       });
     }
+    this.isLoading.set(false);
   }
 
   async handleEditTargetGroup() {

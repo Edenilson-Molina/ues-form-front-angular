@@ -124,7 +124,7 @@
         <div class="flex flex-wrap items-end gap-4">
           <div class="w-full sm:w-72">
             <c-select placeholder="Seleccione tipo de pregunta" [options]="questionTypes()" [optionLabel]="'nombre'"
-              [optionValue]="'codigo'" [(ngModel)]="newQuestionType" name="newQuestionType">
+              [(ngModel)]="newQuestionType" name="newQuestionType">
             </c-select>
           </div>
           <c-button label="Agregar" severity="primary" variant="outlined" icon="add" iconPosition="left"
@@ -142,17 +142,24 @@
               cdkDrag
               class="border bg-transparent p-4 rounded-sm mb-4 dark:border-gray-600 shadow-sm">
               <div class="flex justify-center drag-handle" cdkDragHandle>☰</div>
+              <p-tag severity="secondary" [value]="question.nombre" [rounded]="true" />
 
               <!-- Campo Pregunta -->
+              <div class="mt-4 mb-2">
                 <textarea
-                class="w-full font-medium my-2 border-none dark:bg-transparent focus:outline-none focus:ring-0 focus:border-primary-500 resize-none"
+                class="w-full font-medium border-none dark:bg-transparent focus:outline-none focus:ring-0 focus:border-primary-500 resize-none"
                 type="text"
                 [(ngModel)]="question.shortQuestion"
                 placeholder="Escribe tu pregunta aquí"
                 [name]="'shortQuestion_' + i"
                 rows="1"
                 appAutosize
+                [ngClass]="{'border-red-500': !question.shortQuestion || question.shortQuestion.trim().length < 3}"
                 ></textarea>
+                <div *ngIf="!question.shortQuestion || question.shortQuestion.trim().length < 3" class="text-red-500 text-xs">
+                  La pregunta es obligatoria y debe tener al menos 3 caracteres.
+                </div>
+              </div>
 
               <!-- Campo según el tipo de pregunta -->
               <ng-container [ngSwitch]="question.type">
@@ -190,26 +197,34 @@
 
                 <!-- Selección Múltiple -->
                 <div *ngSwitchCase="'multiple_choice'">
-                  <div class="flex items-center gap-3 mb-2"
+                  <div class="flex flex-col mb-2"
                     *ngFor="let option of question.options; let optIndex = index; trackBy: trackByOption">
-                    <input type="checkbox" [value]="option" disabled />
-                    <div class="group-input relative w-full">
-                      <input
-                        type="text"
-                        class="w-full p-1 border-none dark:bg-transparent focus:outline-none input"
-                        [(ngModel)]="question.options[optIndex]"
-                        placeholder="Opción"
-                        [name]="'option_' + i + '_' + optIndex"
-                        [disabled]="question.options[optIndex] === 'Otros'"
-                      />
-                      <span class="hover-input"></span>
-                    </div>
-                    <i
+                    <article class="flex items-center gap-3">
+                      <input type="checkbox" [value]="option" disabled />
+                      <div class="group-input relative w-full">
+                        <input
+                          type="text"
+                          class="w-full p-1 border-none dark:bg-transparent focus:outline-none input"
+                          [(ngModel)]="question.options[optIndex]"
+                          placeholder="Opción"
+                          [name]="'option_' + i + '_' + optIndex"
+                          [disabled]="question.options[optIndex] === 'Otros'"
+                          [ngClass]="{'border-red-500': !option || option.trim().length < 1}"
+                        />
+                        <span class="hover-input"></span>
+                      </div>
+                      <i
                       class="pi pi-times cursor-pointer hover:text-gray-950 dark:hover:text-gray-400 transition-opacity"
                       (click)="removeOption(i, optIndex)"
                       title="Eliminar opción"
                       *ngIf="question.options.length > 1"
-                    ></i>
+                      ></i>
+                    </article>
+                    <div *ngIf="!option || option.trim().length < 1" class="w-full">
+                      <span class="text-red-500 text-xs pl-6">
+                        La opción es obligatoria.
+                      </span>
+                    </div>
                   </div>
                   <div class="flex flex-wrap gap-4 mt-2">
                     <c-button label="Agregar opción" (onClick)="addOption(i)" styleClass="p-button-warning"></c-button>
@@ -224,26 +239,34 @@
 
                 <!-- Selección Única -->
                 <div *ngSwitchCase="'single_choice'" >
-                  <div class="flex items-center gap-3 mb-2"
+                  <div class="flex flex-col mb-2"
                     *ngFor="let option of question.options; let optIndex = index; trackBy: trackByOption">
-                    <input type="radio" [value]="option" disabled />
-                    <div class="group-input relative w-full">
-                      <input
-                        type="text"
-                        class="w-full p-1 border-none dark:bg-transparent focus:outline-none input"
-                        [(ngModel)]="question.options[optIndex]"
-                        placeholder="Opción"
-                        [name]="'option_' + i + '_' + optIndex"
-                        [disabled]="question.options[optIndex] === 'Otros'"
-                      />
-                      <span class="hover-input"></span>
-                    </div>
-                    <i
+                    <article class="flex items-center gap-3">
+                      <input type="radio" [value]="option" disabled />
+                      <div class="group-input relative w-full">
+                        <input
+                          type="text"
+                          class="w-full p-1 border-none dark:bg-transparent focus:outline-none input"
+                          [(ngModel)]="question.options[optIndex]"
+                          placeholder="Opción"
+                          [name]="'option_' + i + '_' + optIndex"
+                          [disabled]="question.options[optIndex] === 'Otros'"
+                          [ngClass]="{'border-red-500': !option || option.trim().length < 1}"
+                        />
+                        <span class="hover-input"></span>
+                      </div>
+                      <i
                       class="pi pi-times cursor-pointer hover:text-gray-950 dark:hover:text-gray-400 transition-opacity"
                       (click)="removeOption(i, optIndex)"
                       title="Eliminar opción"
-                      *ngIf="question.options.length > 1">
-                    </i>
+                      *ngIf="question.options.length > 1"
+                      ></i>
+                    </article>
+                    <div *ngIf="!option || option.trim().length < 1" class="w-full">
+                      <span class="text-red-500 text-xs pl-6">
+                        La opción es obligatoria.
+                      </span>
+                    </div>
                   </div>
                   <div class="flex flex-wrap gap-4 mt-2">
                     <c-button label="Agregar opción" (onClick)="addOption(i)" styleClass="p-button-warning"></c-button>
@@ -347,27 +370,34 @@
 
                 <!-- Ordenamiento -->
                 <div *ngSwitchCase="'ranking'" class="flex flex-col gap-2">
-                  <div class="flex items-center gap-3 mb-2"
+                  <div class="flex flex-col mb-2"
                     *ngFor="let option of question.options; let optIndex = index; trackBy: trackByOption">
-                    <span class="material-symbols-outlined">
-                      swap_vert
-                    </span>
-                    <div class="group-input relative w-full">
-                      <input
-                        type="text"
-                        class="w-full p-1 border-none dark:bg-transparent focus:outline-none input"
-                        [(ngModel)]="question.options[optIndex]"
-                        placeholder="Opción"
-                        [name]="'option_' + i + '_' + optIndex"
-                      />
-                      <span class="hover-input"></span>
+                    <article class="flex items-center gap-3">
+                      <span class="material-symbols-outlined">
+                        swap_vert
+                      </span>
+                      <div class="group-input relative w-full">
+                        <input
+                          type="text"
+                          class="w-full p-1 border-none dark:bg-transparent focus:outline-none input"
+                          [(ngModel)]="question.options[optIndex]"
+                          placeholder="Opción"
+                          [name]="'option_' + i + '_' + optIndex"
+                        />
+                        <span class="hover-input"></span>
+                      </div>
+                      <i
+                        class="pi pi-times cursor-pointer hover:text-gray-950 dark:hover:text-gray-400 transition-opacity"
+                        (click)="removeOption(i, optIndex)"
+                        title="Eliminar opción"
+                        *ngIf="question.options.length > 1">
+                      </i>
+                    </article>
+                    <div *ngIf="!option || option.trim().length < 1" class="w-full">
+                      <span class="text-red-500 text-xs pl-9">
+                        La opción es obligatoria.
+                      </span>
                     </div>
-                    <i
-                      class="pi pi-times cursor-pointer hover:text-gray-950 dark:hover:text-gray-400 transition-opacity"
-                      (click)="removeOption(i, optIndex)"
-                      title="Eliminar opción"
-                      *ngIf="question.options.length > 1">
-                    </i>
                   </div>
                   <c-button label="Agregar opción" (onClick)="addOption(i)" styleClass="p-button-warning"></c-button>
                 </div>
@@ -376,11 +406,11 @@
               <!-- Pie de la pregunta -->
               <div class="w-full flex justify-end items-center mt-4">
                 <div class="flex gap-4">
-                  <i class="pi pi-copy" (click)="duplicateQuestion(i)" title="Duplicar pregunta"></i>
+                  <i class="pi pi-copy cursor-pointer" (click)="duplicateQuestion(i)" title="Duplicar pregunta"></i>
                   <i
-                  class="pi pi-trash"
-                  (click)="deleteQuestion(i)"
-                  title="Eliminar pregunta">
+                    class="pi pi-trash cursor-pointer"
+                    (click)="deleteQuestion(i)"
+                    title="Eliminar pregunta">
                   </i>
                 </div>
               </div>

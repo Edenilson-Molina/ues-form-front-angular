@@ -1,15 +1,19 @@
+import { FormBuilder, FormGroup, FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Component, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { DividerModule } from 'primeng/divider';
 import { SliderModule } from 'primeng/slider';
+import { TagModule } from 'primeng/tag';
+
 import { ButtonComponent } from "../../../components/button/button.component";
 import { PanelComponent } from "../../../components/panel/panel.component";
 import { FloatInputTextComponent } from "../../../components/inputs/float-input-text/float-input-text.component";
 import { SelectComponent } from "../../../components/inputs/select/select.component";
 import { TextareaComponent } from "../../../components/inputs/textarea/textarea.component";
-import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { sendNotification, ToastType } from '@adapters/sonner-adapter';
+
 import { AutosizeDirective } from "../../../../directives/autosize.directive";
 import { SurvyService } from '@app/services/survy.service';
 import { TargetGroupService } from '@app/services/catalogues/target-group.service';
@@ -26,6 +30,7 @@ import { CategoryQuestion } from '@app/interfaces/request/category-question';
     ReactiveFormsModule,
     DividerModule,
     SliderModule,
+    TagModule,
     DragDropModule,
     FormsModule,
     CommonModule,
@@ -54,10 +59,11 @@ export default class FormEditorComponent {
   isSeeAnswer: boolean = false;
 
   // FormGroups para datos internos y generales
+  idForm!: number;
   internalDataForm!: FormGroup;
   generalInfoForm!: FormGroup;
 
-  newQuestionType: string = '';
+  newQuestionType: CategoryQuestion = {} as CategoryQuestion;
   questions: any[] = [];
 
   constructor(private fb: FormBuilder, private route: ActivatedRoute) {
@@ -74,16 +80,16 @@ export default class FormEditorComponent {
     });
 
     this.route.params.subscribe((params) => {
-      const idForm: number = params['formId'];
-      this.survyService.getSurveyById(idForm).then(
+      this.idForm = params['formId'];
+      this.survyService.getSurveyById(this.idForm).then(
 
       ).catch(() => {
         this.router.navigate(['dashboard/survy/my-surveys']);
       });
-      this.targetService.getTargetGroup({ paginate: false }).then((response: any) => {
+      this.targetService.getTargetGroup({ paginate: false, activo: true }).then((response: any) => {
         this.targetGroups.set(response.data);
       });
-      this.survyService.getInternalDataSurvey(idForm).then((response: any) => {
+      this.survyService.getInternalDataSurvey(this.idForm).then((response: any) => {
         if (response.success) {
           this.internalDataForm.patchValue({
             id_grupo_meta: response.data.id_grupo_meta,
@@ -92,7 +98,7 @@ export default class FormEditorComponent {
           });
         }
       });
-      this.survyService.getGeneralInfoSurvey(idForm).then((response: any) => {
+      this.survyService.getGeneralInfoSurvey(this.idForm).then((response: any) => {
         if (response.success) {
           this.generalInfoForm.patchValue({
             titulo: response.data.titulo,
@@ -104,12 +110,16 @@ export default class FormEditorComponent {
       this.cagetoryQuestionService.getCategoriesQuestion().then((response) => {
         if (response.success) {
           this.questionTypes.set(response.data);
-          this.newQuestionType = response.data[2].codigo;
+          this.newQuestionType = response.data[2];
         }
       });
     });
   }
 
+
+  //
+  // Metodos validadores para los formularios
+  //
   getInternalDataField(key: string): FormControl<any> {
     return this.internalDataForm.get(key) as FormControl<any>;
   }
@@ -123,13 +133,14 @@ export default class FormEditorComponent {
   addQuestion() {
     const newQuestion = {
       shortQuestion: '',
-      type: this.newQuestionType,
+      nombre: this.newQuestionType.nombre,
+      type: this.newQuestionType.codigo,
       options:
-        this.newQuestionType === 'multiple_choice' ||
-        this.newQuestionType === 'single_choice' ||
-        this.newQuestionType === 'ranking' ?
+        this.newQuestionType.codigo === 'multiple_choice' ||
+        this.newQuestionType.codigo === 'single_choice' ||
+        this.newQuestionType.codigo === 'ranking' ?
         ['Opción inicial'] :
-        this.newQuestionType === 'escale_likert' ?
+        this.newQuestionType.codigo === 'escale_likert' ?
         [
           'Totalmente en desacuerdo',
           'En desacuerdo',
@@ -210,19 +221,82 @@ export default class FormEditorComponent {
   // Métodos para guardar datos
   //
 
-  saveInternalData() {
+  async saveInternalData() {
     this.internalDataForm.markAllAsTouched();
     if (this.internalDataForm.invalid) return;
-    console.log('Datos internos guardados:', this.internalDataForm.value);
+    try{
+      let type: ToastType = 'success';
+      const response = await this.survyService.putInternalDataSurvey(this.idForm, {
+        id_grupo_meta: this.internalDataForm.value.id_grupo_meta,
+        objetivo: this.internalDataForm.value.objetivo,
+        identificador: this.internalDataForm.value.codigo
+      });
+      if (response.success) {
+        this.internalDataForm.patchValue({
+          id_grupo_meta: response.data.id_grupo_meta,
+          objetivo: response.data.objetivo,
+          codigo: response.data.codigo
+        });
+        sendNotification({
+          type: type,
+          summary: 'Datos internos guardados',
+          message: 'Actualizado',
+          description: response.message,
+        });
+      }
+    }catch (error) {
+
+    }
   }
 
-  saveGeneralInfo() {
+  async saveGeneralInfo() {
     this.generalInfoForm.markAllAsTouched();
     if (this.generalInfoForm.invalid) return;
-    console.log('Información general guardada:', this.generalInfoForm.value);
+    try{
+      let type: ToastType = 'success';
+      const response = await this.survyService.putGeneralInfoSurvey(this.idForm, {
+        titulo: this.generalInfoForm.value.titulo,
+        descripcion: this.generalInfoForm.value.descripcion
+      });
+      if (response.success) {
+        this.generalInfoForm.patchValue({
+          titulo: response.data.titulo,
+          descripcion: response.data.descripcion
+        });
+        sendNotification({
+          type: type,
+          summary: 'Información general guardada',
+          message: 'Actualizado',
+          description: response.message,
+        });
+      }
+    }catch (error) {
+
+    }
+  }
+
+  // Validación de preguntas antes de guardar
+  isQuestionsValid(): boolean {
+    for (const q of this.questions) {
+      if (!q.shortQuestion || q.shortQuestion.trim().length < 3) {
+        return false;
+      }
+      if ((q.type === 'multiple_choice' || q.type === 'single_choice' || q.type === 'ranking' || q.type === 'escale_likert') && q.options) {
+        for (const opt of q.options) {
+          if (!opt || opt.trim().length < 1) {
+            return false;
+          }
+        }
+      }
+    }
+    return true;
   }
 
   saveForm() {
+    if (!this.isQuestionsValid()) {
+      alert('Por favor, completa todas las preguntas y opciones antes de guardar.');
+      return;
+    }
     console.log('Formulario guardado:', this.questions);
   }
 }
