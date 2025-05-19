@@ -8,3 +8,11 @@ export interface CreateUserDto {
   name: string;
   password: string;
 }
+
+export interface requestUsersDto {
+  page?: number;
+  per_page?: number;
+  paginate?: boolean;
+  nombre_usuario?: string;
+  id_estado?: number | null;
+}

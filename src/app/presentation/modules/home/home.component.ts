@@ -5,7 +5,8 @@ import { CardComponent } from "../../components/card/card.component";
 import { DataTableComponent } from "../../components/data-table/data-table.component";
 import { ChartModule } from 'primeng/chart';
 import { isPlatformBrowser } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { SurvyService } from '@app/services/survy.service';
 
 @Component({
   selector: 'app-home',
@@ -21,6 +22,9 @@ import { RouterLink } from '@angular/router';
   styleUrl: './home.component.css',
 })
 export default class HomeComponent {
+  // Injecting
+  private mysurvyService = inject(SurvyService);
+  private router = inject(Router);
 
   constructor(private cd: ChangeDetectorRef) {}
 
@@ -38,6 +42,13 @@ export default class HomeComponent {
       participantes: 20
     }
   ]);
+
+  async createSurveys() {
+    const response:any = await this.mysurvyService.createSurvey();
+    if (response.success) {
+      this.router.navigate(['/dashboard/survy/form-editor/' + response.data.id]);
+    }
+  }
 
   isLoading = signal<boolean>(false);
 
