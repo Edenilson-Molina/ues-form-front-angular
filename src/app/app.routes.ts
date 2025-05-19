@@ -48,10 +48,16 @@ export const routes: Routes = [
         loadComponent: () => import('./presentation/modules/test/test.component')
       },
       {
-        path: 'users',
+        path: 'users/list',
         canActivate: [AuthGuard],
         data: { Permissions: ['encuesta_ver'] },
-        loadComponent: () => import('./presentation/modules/users/views/user-page/user-page.component')
+        loadComponent: () => import('./presentation/modules/admin/views/users-management-page/users-management-page.component')
+      },
+      {
+        path: 'users/request-register',
+        canActivate: [AuthGuard],
+        data: { Permissions: ['encuesta_ver'] },
+        loadComponent: () => import('./presentation/modules/admin/views/request-register-admin-page/request-register-admin-page.component')
       }
     ]
   },

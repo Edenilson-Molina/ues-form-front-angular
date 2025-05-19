@@ -5,7 +5,7 @@
   </div>
   <div class="flex flex-wrap gap-4">
     <c-button label="Encuestas" [severity]="'primary'" [variant]="'outlined'" [icon]="'content_copy'" routerLink="/dashboard/survy/my-surveys"/>
-    <c-button label="Nuevo formulario" [severity]="'primary'" [icon]="'add'" routerLink="/dashboard"/>
+    <c-button label="Nuevo formulario" [severity]="'primary'" [icon]="'add'" (onClick)="createSurveys()"/>
   </div>
 </header>
 <section class="flex flex-col gap-4">

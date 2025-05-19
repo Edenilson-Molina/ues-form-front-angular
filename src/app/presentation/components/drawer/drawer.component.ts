@@ -54,12 +54,24 @@ export class DrawerComponent {
     {
       name: 'Usuarios',
       path: '/dashboard/users',
-      icon: 'person'
+      icon: 'person',
+      children: [
+        {
+          name: 'Listado',
+          path: '/dashboard/users/list',
+          icon: 'manage_accounts',
+        },
+        {
+          name: 'Registro',
+          path: '/dashboard/users/request-register',
+          icon: 'admin_panel_settings',
+        }
+      ]
     },
     {
       name: 'Encuestas',
-      icon: 'assignment',
       path: '/dashboard/survy',
+      icon: 'assignment',
       children: [
         {
           name: 'Mis encuestas',
@@ -72,11 +84,6 @@ export class DrawerComponent {
           icon: 'group',
         }
       ]
-    },
-    {
-      name: 'Tareas',
-      path: '/dashboard/educacion',
-      icon: 'editor_choice'
     },
     {
       name: 'Pruebas de componentes',
