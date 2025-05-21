@@ -140,7 +140,7 @@ export default class FormEditorComponent {
         this.newQuestionType.codigo === 'single_choice' ||
         this.newQuestionType.codigo === 'ranking' ?
         ['Opción inicial'] :
-        this.newQuestionType.codigo === 'escale_likert' ?
+        this.newQuestionType.codigo === 'likert_scale' ?
         [
           'Totalmente en desacuerdo',
           'En desacuerdo',
@@ -151,7 +151,7 @@ export default class FormEditorComponent {
       rangeFrom: 1,
       rangeTo: 5,
       rangeValue: 1,
-      answer: '',
+      answer: ''
     };
     this.questions.push(newQuestion);
   }
@@ -281,7 +281,7 @@ export default class FormEditorComponent {
       if (!q.shortQuestion || q.shortQuestion.trim().length < 3) {
         return false;
       }
-      if ((q.type === 'multiple_choice' || q.type === 'single_choice' || q.type === 'ranking' || q.type === 'escale_likert') && q.options) {
+      if ((q.type === 'multiple_choice' || q.type === 'single_choice' || q.type === 'ranking' || q.type === 'likert_scale') && q.options) {
         for (const opt of q.options) {
           if (!opt || opt.trim().length < 1) {
             return false;
