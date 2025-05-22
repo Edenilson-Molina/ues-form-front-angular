@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { getAxiosAdapter } from './common/axios.service';
-import { putGeneralInfoSurvyDto, putInternalDataSurvyDto, requestSurvyDto } from '@app/interfaces/request/survy.dto';
+import { putFormSurvyDto, putGeneralInfoSurvyDto, putInternalDataSurvyDto, requestSurvyDto } from '@app/interfaces/request/survy.dto';
 import { GetSurveysDtoResponse, UpdateGeneralInfoSurveyDto, UpdateInternatDataSurveyDto } from '@app/interfaces/responses/survy.dto';
 
 @Injectable({
@@ -44,5 +44,11 @@ export class SurvyService {
 
   async putGeneralInfoSurvey(id: number, data: putGeneralInfoSurvyDto) {
     return await this.axiosService.put<putGeneralInfoSurvyDto, UpdateGeneralInfoSurveyDto>(`/encuestas/editor/general-info/${id}`, data);
+  }
+
+  async putFormSurvey(id: number, formulario: putFormSurvyDto[]) {
+    return await this.axiosService.put(`/encuestas/editor/form/${id}`, {
+      formulario
+    });
   }
 }

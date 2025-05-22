@@ -17,3 +17,15 @@ export interface putGeneralInfoSurvyDto{
   titulo: string;
   descripcion: string;
 }
+
+export interface putFormSurvyDto{
+  type: string;
+  shortQuestion: string;
+  nombre: string;
+  options?: string[];
+  rangeFrom?: number;
+  rangeTo?: number;
+  rangeValue?: number;
+  answer?: string;
+  allowOtherOption?: boolean;
+}
