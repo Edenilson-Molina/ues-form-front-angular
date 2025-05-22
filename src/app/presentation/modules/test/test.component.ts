@@ -93,7 +93,7 @@ export default class TestComponent implements OnInit {
 
     effect(() => {
       this.userService
-        .getAllUsers(this.paginationParams())
+        .getUsersTest(this.paginationParams())
         .subscribe((response) => {
           if ('data' in response) {
             this.users.set(response.data);

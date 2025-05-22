@@ -72,3 +72,24 @@ export interface Pagination {
   totalItems:   number;
 }
 
+export interface User {
+  id:         number;
+  username:   string;
+  email:      string;
+  id_persona: number;
+  id_estado:  number;
+  persona:    PersonaUser;
+  estado:     EstadoUser;
+}
+
+export interface EstadoUser {
+  id:     number;
+  nombre: string;
+}
+
+export interface PersonaUser {
+  id:       number;
+  nombre:   string;
+  apellido: string;
+}
+
