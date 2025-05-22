@@ -8,7 +8,6 @@ export const initialState: Session = initStore();
 function initStore() {
   const initState: Session = {
     accessToken: '',
-    refreshToken: '',
     isUnlocked: true,
     user: null,
     isLoading: false,
@@ -20,12 +19,11 @@ function initStore() {
 
 export const sessionReducer = createReducer(
   initialState,
-  on(login, (state, { accessToken, refreshToken, isUnlocked }) => {
+  on(login, (state, { accessToken, isUnlocked }) => {
     const userInfo = decoderToken(accessToken!);
     return {
       ...state,
       accessToken,
-      refreshToken,
       isUnlocked,
       user: userInfo,
     };
@@ -35,7 +33,6 @@ export const sessionReducer = createReducer(
     return {
       ...state,
       accessToken: '',
-      refreshToken: '',
       isUnlocked: true,
       user: null,
     };
