@@ -69,7 +69,6 @@ export default class UsersManagementPageComponent {
 
   async updateUser() {
     this.form.markAllAsTouched();
-    console.log(this.form.value);
     if (!this.form.valid) return;
     const response: any = await this.userService.updateUser(
       this.user().id,
