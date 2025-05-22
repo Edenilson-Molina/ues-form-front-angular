@@ -22,3 +22,11 @@ export interface requestRegisterDto {
   justificacion_solicitud: string;
 }
 
+export interface requestRolesDto {
+  page?: number;
+  per_page?: number;
+  paginate?: boolean;
+  estado?: number;
+  name?: string;
+}
+

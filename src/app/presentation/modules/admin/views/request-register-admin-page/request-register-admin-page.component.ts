@@ -74,7 +74,6 @@ export default class RequestRegisterAdminPageComponent {
       this.form.value.id_estado,
       this.form.value.justificacion_rechazo
     );
-    console.log(response);
     this.showModalUser.set(false);
     this.form.reset();
     await this.getUsers();
