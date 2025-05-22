@@ -50,9 +50,16 @@
           >
             <ng-template dataTableColumn="grupo_meta" let-data>
               <div class="flex items-center justify-center">
-                <p-tag severity="secondary" value="{{ data.grupo_meta ? data.grupo_meta.nombre : '' }}" [rounded]="true" />
+                <p-tag severity="secondary" value="{{ data.grupo_meta ? data.grupo_meta.nombre : 'Sin asignar' }}" [rounded]="true" />
               </div>
             </ng-template>
+
+            <ng-template dataTableColumn="fecha_publicacion" let-data>
+              <div class="flex items-center justify-center">
+                <span>{{ data.fecha_publicacion ?? '-' }}</span>
+              </div>
+            </ng-template>
+
 
             <ng-template dataTableColumn="estado" let-data>
               <div class="flex items-center justify-center">
