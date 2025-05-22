@@ -1,0 +1,35 @@
+<header class="flex flex-col justify-center items-center gap-y-2 mt-16 gap-4 mx-8">
+  <img class="w-24" alt="" src="assets/images/logo.png" />
+  <h1 class="text-xl font-bold text-primary-600 dark:text-primary-500">
+    Percepción sobre el costo de la vivienda en El Salvador
+  </h1>
+  <p class="text-gray-500">Crea, publica y comparte tus encuestas</p>
+</header>
+<main class="flex flex-col gap-4 my-8 mx-8">
+  <div class="flex flex-wrap justify-end gap-4">
+    <c-button label="Respuestas" [severity]="'primary'" [variant]="'outlined'" [icon]="'analytics'" />
+    <c-button label="Editar" [severity]="'primary'" [variant]="'outlined'" [icon]="'edit'" />
+  </div>
+  <section>
+    <c-panel
+      class="w-full"
+      title="Datos personales"
+      subTitle="Ingresa tu datos personales"
+      [collapsed]="false"
+    >
+      <c-float-input
+
+      />
+    </c-panel>
+  </section>
+  <section>
+    <c-panel
+      class="w-full"
+      title="Preguntas"
+      subTitle="Responde cada una de las preguntas"
+      [collapsed]="false"
+    >
+
+    </c-panel>
+  </section>
+</main>

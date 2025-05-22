@@ -8,7 +8,7 @@ import {
   PaginatedResponse,
   PaginationParams,
 } from '@interfaces/common/pagination.interface';
-import { GetUsersDtoResponse, UserResponse } from '@interfaces/responses/user.dto';
+import { EditUserAdmin, GetUsersDtoResponse, UserResponse } from '@interfaces/responses/user.dto';
 import { CreateUserDto, requestUsersDto, UserParams } from '@app/interfaces/request/user.dto';
 import { requestRolesDto } from '@app/interfaces/request/auth.dto';
 
@@ -58,7 +58,7 @@ export class UserService {
     return await this.axiosAdapter.get<GetUsersDtoResponse>(`/auth/solicitudes-registro?${filter}`);
   }
 
-  async updateRegisterUser(id: number, id_estado: number, justificacion_rechazo: string) {
+  async updateRegisterUser(id: number, id_estado: number, justificacion_rechazo?: string) {
     return await this.axiosAdapter.put(`/auth/solicitudes-registro/${id}`,
       {
         id_estado,
@@ -86,5 +86,9 @@ export class UserService {
       ].filter(Boolean).join('&');
       const filter = params ? `${params}` : '';
       return await this.axiosAdapter.get(`/auth/roles?${filter}`);
-    }
+  }
+
+  async getUserById(id: number) {
+    return await this.axiosAdapter.get<EditUserAdmin>(`/auth/users/${id}`);
+  }
 }
