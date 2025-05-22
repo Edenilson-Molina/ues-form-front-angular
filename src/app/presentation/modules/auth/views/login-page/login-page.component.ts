@@ -100,8 +100,8 @@ export default class LoginPageComponent {
     if (this.form.valid) {
       try{
         const response = await this.authService.login(this.form.value);
-        const { accessToken, refreshToken, isUnlocked } = response;
-        this.store.dispatch(login(accessToken, refreshToken, isUnlocked));
+        const { accessToken, isUnlocked } = response;
+        this.store.dispatch(login(accessToken, isUnlocked));
 
         // Check if the user is unlocked
         if(this.sessionValue.isUnlocked){

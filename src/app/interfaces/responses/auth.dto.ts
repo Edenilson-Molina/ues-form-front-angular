@@ -1,11 +1,6 @@
 export interface LoginResponse {
   accessToken: string;
-  refreshToken: string;
   isUnlocked: boolean;
-}
-
-export interface RefreshResponse {
-  accessToken: string;
 }
 
 export interface sendVerificationEmailResponse {
@@ -14,6 +9,7 @@ export interface sendVerificationEmailResponse {
   data: {
     email: string;
     expiration_date: string;
+    verified_previously?: boolean;
   };
 }
 

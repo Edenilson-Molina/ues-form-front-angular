@@ -14,6 +14,8 @@ import { AuthService } from '@app/services/auth.service';
 import { FloatInputPasswordComponent } from "../../../../components/inputs/float-input-password/float-input-password.component";
 import { InputOtp } from 'primeng/inputotp';
 import { AxiosError } from 'axios';
+import { sendNotification, ToastType } from '@adapters/sonner-adapter';
+
 
 @Component({
   selector: 'app-request-register-page',
@@ -97,10 +99,22 @@ export default class RequestRegisterPageComponent {
   async onSendEmail() {
     try {
       const { email } = this.form.value;
-      await this.authService.sendVerificationEmail({ email });
+      const response = await this.authService.sendVerificationEmail({ email });
       this.code = null;
       this.showModalValidEmail = false;
-      this.showModalConfirmCode = true;
+      if (response.data.verified_previously) {
+        sendNotification({
+          type: 'success' as ToastType,
+          summary: '',
+          message: 'Verificado',
+          description: 'El email ya fue verificado anteriormente. Se enviará la solicitud de registro',
+        });
+        // Si el correo ya fue verificado anteriormente, se envía la solicitud de registro
+        await this.authService.requestRegister(this.form.value);
+        this.showModalConfirmRequest = true;
+      } else {
+        this.showModalConfirmCode = true;
+      }
     }
     catch (error) {
       if (error instanceof AxiosError) {

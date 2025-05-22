@@ -32,13 +32,15 @@ export class NavbarComponent implements OnInit{
   session$!: Observable<Session>;
   sessionValue!: Session;
 
-  username: string = 'Name not found';
+  name: string = 'Invitado';
+  role: string = 'Invitado';
 
   constructor() {
     this.session$ = this.store.select('session');
     this.session$.subscribe((session) => {
       this.sessionValue = session;
-      // this.username = session.user?.username || 'Name not found';
+      this.name = session.user?.name || 'Invitado';
+      this.role = session.user?.roles[0] || 'Invitado';
     });
   }
 

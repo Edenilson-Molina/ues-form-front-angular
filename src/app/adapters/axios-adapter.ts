@@ -17,6 +17,22 @@ import { isLoading, login, resetState } from '@store/auth.actions';
 
 import type { HttpAdapter } from '@interfaces/index';
 
+let isRefreshing = false;
+let refreshSubscribers: unknown[] = [];
+
+function onRefreshed(token: string) {
+  refreshSubscribers.forEach((callback) => {
+    if (typeof callback === 'function') {
+      callback(token);
+    }
+  });
+  refreshSubscribers = [];
+}
+
+function addRefreshSubscriber(callback: unknown) {
+  refreshSubscribers.push(callback);
+}
+
 export class AxiosAdapter implements HttpAdapter<AxiosRequestConfig> {
   private axios: AxiosInstance;
   private store = inject(Store);
@@ -29,9 +45,7 @@ export class AxiosAdapter implements HttpAdapter<AxiosRequestConfig> {
     });
 
     this.axios = axios.create({
-      baseURL:
-        `${environment.api}` ||
-        'http://localhost:8321/api',
+      baseURL: `${environment.api}` || 'http://localhost:8321/api',
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
@@ -115,6 +129,7 @@ export class AxiosAdapter implements HttpAdapter<AxiosRequestConfig> {
       this.store.dispatch(isLoading(false));
       return response.data;
     } catch (error: any) {
+      const originalRequest = error.config;
       this.store.dispatch(isLoading(false));
       let message: string = '';
       let errors: {};
@@ -137,25 +152,54 @@ export class AxiosAdapter implements HttpAdapter<AxiosRequestConfig> {
         case 401:
           summary = 'Advertencia';
           message = error.response.data.message ?? 'Acceso no autorizado';
-          if (this.sessionStore?.refreshToken) {
+          if (
+            this.router.url !== '/login' &&
+            this.router.url !== '/request-register' &&
+            !originalRequest._retry
+          ) {
             try {
+
+              // Para manejar multiples solicitudes de refresh
+              if (isRefreshing) {
+                return new Promise((resolve) => {
+                  addRefreshSubscriber((token: string) => {
+                    originalRequest.headers['Authorization'] =
+                      'Bearer ' + token;
+                    resolve(axios(originalRequest));
+                  });
+                });
+              }
+              isRefreshing = true;
+              originalRequest._retry = true;
+
+
               const response = await axios.post(
                 `${environment.api}/auth/refresh`,
+                {},
                 {
-                  refreshToken: this.sessionStore.refreshToken,
+                  headers: {
+                    Authorization: `Bearer ${this.sessionStore.accessToken}`,
+                  },
                 }
               );
               this.store.dispatch(
-                login(response.data.accessToken, response.data.refreshToken)
+                login(response.data.accessToken, this.sessionStore.isUnlocked)
               );
 
-              const config = error.config;
-              config.headers.Authorization = `Bearer ${response.data.accessToken}`;
-              return (await axios.request(config)).data;
+              onRefreshed(response.data.accessToken);
+              isRefreshing = false;
+
+              originalRequest.headers.Authorization = `Bearer ${response.data.accessToken}`;
+              return (await axios.request(originalRequest)).data;
             } catch (error: any) {
+              isRefreshing = false;
               this.store.dispatch(resetState());
               this.router.navigate(['login']);
-              if (error.response?.data?.message && ((error.response?.status >= 400 && error.response?.status < 500))) {
+              if (
+                error.response?.data?.message &&
+                error.response?.status >= 400 &&
+                error.response?.status < 500
+              ) {
                 if (error.response?.data?.details) {
                   details = error.response?.data?.details;
                 }
@@ -187,13 +231,19 @@ export class AxiosAdapter implements HttpAdapter<AxiosRequestConfig> {
           message: message,
           description: details, // Usar el string directamente
         });
-      } else if (typeof details === 'object' && details !== null && Object.keys(details).length > 0) {
+      } else if (
+        typeof details === 'object' &&
+        details !== null &&
+        Object.keys(details).length > 0
+      ) {
         Object.keys(details).forEach((key) => {
           sendNotification({
             type: type,
             summary: summary,
             message: message,
-            description: Array.isArray(details[key]) ? details[key][0] : details[key], // Manejar array o valor directo
+            description: Array.isArray(details[key])
+              ? details[key][0]
+              : details[key], // Manejar array o valor directo
           });
         });
       } else {
