@@ -6,6 +6,7 @@ import {
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
   FormControl,
+  ValidatorFn,
 } from '@angular/forms';
 
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -51,7 +52,7 @@ export class FloatInputTextComponent implements ControlValueAccessor {
 
   // Input properties
   @Input() id: string = '';
-  @Input() type: 'text' | 'email' | 'url' | 'tel' | 'search' = 'text';
+  @Input() type: 'text' | 'email' | 'url' | 'tel' | 'search' | 'number' = 'text'; // Añadido 'number'
   @Input() icon?: string;
   @Input() iconColor?: string;
   @Input() iconClass?: string;
@@ -70,7 +71,7 @@ export class FloatInputTextComponent implements ControlValueAccessor {
   @Input() readonly: boolean = false;
   @Input() variant: 'filled' | 'outlined' = 'filled';
   @Input() size?: 'small' | 'large';
-  @Input() formControl!: FormControl
+  @Input() formControl!: FormControl;
 
   required = input(false, {
     transform: (value: boolean | string) =>
@@ -94,8 +95,27 @@ export class FloatInputTextComponent implements ControlValueAccessor {
   }
 
   public onInputChange(event: Event): void {
-    const newValue = (event.target as HTMLInputElement).value;
+    const input = event.target as HTMLInputElement;
+    let newValue = input.value;
+
+    // Filtrar solo números
+    if (this.type === 'number') {
+      // Permitir solo números entre 1 y 20
+      newValue = newValue.replace(/[^0-9]/g, ''); // Solo dígitos
+      if (newValue) {
+        const num = parseInt(newValue, 10);
+        if (isNaN(num) || num < 1) {
+          newValue = '';
+        } else if (num > 10) {
+          newValue = '10';
+        } else {
+          newValue = num.toString();
+        }
+      }
+    }
+
     this.value = newValue;
+    input.value = newValue; // Actualizar el valor del input
     this.onChange(newValue);
   }
 

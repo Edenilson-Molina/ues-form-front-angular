@@ -62,6 +62,10 @@ export const routes: Routes = [
     ]
   },
   {
+    path: 'survey/:id',
+
+  },
+  {
     path: '**',
     redirectTo: 'dashboard'
   }
