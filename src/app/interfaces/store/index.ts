@@ -1,9 +1,7 @@
 export interface UserData {
+  username: string;
   email: string;
-  userId: string;
-  candidateId: string;
-  recruiterId: string;
-  personId: string;
+  name: string;
   permissions: string[];
   roles: string[];
   iat: number;
