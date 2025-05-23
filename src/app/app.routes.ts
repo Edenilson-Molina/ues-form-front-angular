@@ -62,6 +62,10 @@ export const routes: Routes = [
     ]
   },
   {
+    path: 'survey/:id',
+    loadComponent: () => import('./presentation/modules/survy/survy-view-page/survy-view-page.component')
+  },
+  {
     path: '**',
     redirectTo: 'dashboard'
   }

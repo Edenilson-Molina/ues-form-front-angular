@@ -93,3 +93,53 @@ export interface PersonaUser {
   apellido: string;
 }
 
+export interface EditUserAdmin {
+  success: boolean;
+  message: string;
+  data:    DataUser;
+}
+
+export interface DataUser {
+  id:                number;
+  username:          string;
+  email:             string;
+  id_persona:        number;
+  id_estado:         number;
+  activo:            boolean;
+  email_verified_at: Date;
+  created_at:        Date;
+  updated_at:        Date;
+  persona:           PersonaDataUser;
+  estado:            EstadoDataUser;
+  roles:             RoleDataUser[];
+}
+
+export interface EstadoDataUser {
+  id:     number;
+  nombre: string;
+}
+
+export interface PersonaDataUser {
+  id:       number;
+  nombre:   string;
+  apellido: string;
+}
+
+export interface RoleDataUser {
+  id:          number;
+  name:        string;
+  guard_name:  string;
+  created_at:  Date;
+  updated_at:  Date;
+  activo:      boolean;
+  description: string;
+  pivot:       PivotDataUser;
+}
+
+export interface PivotDataUser {
+  model_type: string;
+  model_id:   number;
+  role_id:    number;
+}
+
+

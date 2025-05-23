@@ -19,4 +19,5 @@ export interface CategoryQuestion {
   requiere_lista:      boolean;
   id_tipo_pregunta:    number;
   tipo_pregunta:       string;
+  allowOtherOption?: boolean;
 }

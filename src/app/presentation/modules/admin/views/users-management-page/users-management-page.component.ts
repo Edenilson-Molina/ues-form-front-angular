@@ -12,7 +12,7 @@ import { ModalComponent } from "../../../../components/modal/modal.component";
 
 import { UserService } from '@app/services/user.service';
 import { StateService } from '@app/services/catalogues/states.service';
-import { User } from '@app/interfaces/responses/user.dto';
+import { DataUser, User } from '@app/interfaces/responses/user.dto';
 import { RouterLink } from '@angular/router';
 import { MultiSelectComponent } from "../../../../components/inputs/multiselect/multiselect.component";
 
@@ -47,7 +47,7 @@ export default class UsersManagementPageComponent {
   });
 
   users = signal<User[]>([]);
-  user = signal<User>({} as User);
+  user = signal<DataUser>({} as DataUser);
   states = signal([]);
   roles = signal([]);
   showModalUser = signal(false);
@@ -117,7 +117,9 @@ export default class UsersManagementPageComponent {
       const response: any = await this.userService.getRoles({
         estado: 1,
       });
-      this.roles.set(response.data);
+      this.roles.set(response.data.map((role: any) => ({
+        name: role.name,
+      })));
 
     }catch (error) {
     }
@@ -167,11 +169,13 @@ export default class UsersManagementPageComponent {
       label: 'Editar cuenta',
       icon: 'manage_accounts',
       class: 'text-blue-500 dark:text-blue-400 bg-transparent',
-      onClick: (data: User) => {
-        this.user.set(data);
+      onClick: async (data: User) => {
+        const response = await this.userService.getUserById(data.id);
+        this.user.set(response.data);
         this.form.reset();
         this.form.patchValue({
-          id_estado: data.id_estado,
+          id_estado: response.data.id_estado,
+          roles: response.data.roles.map((role) => role.name),
         });
         this.showModalUser.set(true);
       },
