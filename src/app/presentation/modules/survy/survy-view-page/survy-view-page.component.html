@@ -11,25 +11,131 @@
     <c-button label="Editar" [severity]="'primary'" [variant]="'outlined'" [icon]="'edit'" />
   </div>
   <section>
-    <c-panel
-      class="w-full"
-      title="Datos personales"
-      subTitle="Ingresa tu datos personales"
-      [collapsed]="false"
-    >
-      <c-float-input
-
-      />
+    <c-panel class="w-full" title="Datos personales" subTitle="Ingresa tu datos personales" [collapsed]="true">
+      <form [formGroup]="form" class="flex flex-col gap-4 w-full sm:w-[50%] lg:w-[30%]">
+        <c-float-input 
+          required
+          label="Nombres"
+          typeLabel="label"
+          labelClass="!font-medium"
+          formControlName="nombres"
+          type="text"
+          variant="outlined"
+          [formControl]="getFormField('nombres')"
+        />
+        <c-float-input 
+          required
+          label="Apellidos"
+          typeLabel="label"
+          labelClass="!font-medium"
+          formControlName="apellidos"
+          type="text"
+          variant="outlined"
+          [formControl]="getFormField('apellidos')"
+        />
+        <c-float-input 
+          required
+          label="Correo electrónico"
+          typeLabel="label"
+          labelClass="!font-medium"
+          formControlName="correo"
+          type="email"
+          variant="outlined"
+          icon="email"
+          iconPosition="left"
+          [formControl]="getFormField('correo')"
+        />
+        <c-datepicker
+          required
+          label="Fecha de nacimiento"
+          typeLabel="label"
+          labelClass="!font-medium"
+          formControlName="edad"
+          variant="outlined"
+          icon="calendar_today"
+          [formControl]="getFormField('fecha_nacimiento')"
+        />
+        <c-float-input 
+          required
+          label="Teléfono"
+          typeLabel="label"
+          labelClass="!font-medium"
+          formControlName="telefono"
+          type="text"
+          variant="outlined"
+          icon="phone"
+          iconPosition="left"
+          [formControl]="getFormField('telefono')"
+        />
+        <c-float-input 
+          required
+          label="Edad"
+          typeLabel="label"
+          labelClass="!font-medium"
+          formControlName="edad"
+          variant="outlined"
+          [formControl]="getFormField('edad')"
+        />
+      </form>
     </c-panel>
   </section>
   <section>
-    <c-panel
-      class="w-full"
-      title="Preguntas"
-      subTitle="Responde cada una de las preguntas"
-      [collapsed]="false"
-    >
-
+    <!-- Preguntas del formulario -->
+    <c-panel class="w-full" title="Preguntas" subTitle="Por favor, responde las siguientes preguntas" [collapsed]="false">
+      <form [formGroup]="surveyForm">
+        <div formArrayName="answers">
+          <div *ngFor="let question of questionario(); let i = index">
+            <!-- Mostrar la pregunta -->
+            <div class="mt-4 mb-2">
+              <h4 class="font-medium text-gray-800 dark:text-white">
+                {{ question.shortQuestion }}
+              </h4>
+            </div>
+  
+            <!-- Respuesta según el tipo de pregunta -->
+            <ng-container [ngSwitch]="question.type">
+              <!-- Pregunta Abierta Corta -->
+              <div *ngSwitchCase="'short_text'">
+                <div class="flex items-center gap-3 mb-2">
+                  <div class="group-input relative w-full">
+                    <input type="text"
+                      class="w-full p-1 border dark:border-gray-600 rounded dark:bg-transparent focus:outline-none focus:ring-0 focus:border-primary-500"
+                      [formControlName]="i" 
+                      placeholder="Respuesta corta"
+                      [ngClass]="{'border-red-500': getAnswerControl(i).invalid && (getAnswerControl(i).dirty || getAnswerControl(i).touched)}" 
+                    />
+                    <div *ngIf="getAnswerControl(i).invalid && (getAnswerControl(i).dirty || getAnswerControl(i).touched)"
+                      class="text-red-500 text-xs">
+                      <div *ngIf="getAnswerControl(i).errors?.['required']">La respuesta es requerida.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+  
+              <!-- Pregunta Abierta Larga -->
+              <div *ngSwitchCase="'long_text'">
+                <div class="flex items-center gap-3 mb-2">
+                  <div class="group-input relative w-full">
+                    <textarea
+                      class="w-full p-1 border dark:border-gray-600 rounded dark:bg-transparent focus:outline-none focus:ring-0 focus:border-primary-500 resize-none"
+                      [formControlName]="i" placeholder="Respuesta larga" rows="3"
+                      [ngClass]="{'border-red-500': getAnswerControl(i).invalid && (getAnswerControl(i).dirty || getAnswerControl(i).touched)}"></textarea>
+                    <div *ngIf="getAnswerControl(i).invalid && (getAnswerControl(i).dirty || getAnswerControl(i).touched)"
+                      class="text-red-500 text-xs">
+                      <div *ngIf="getAnswerControl(i).errors?.['required']">La respuesta es requerida.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+  
+        <!-- Botón Guardar -->
+        <div class="flex justify-end mt-4">
+          <c-button label="Enviar Respuestas" severity="primary" icon="send" (onClick)="saveSurvey()" />
+        </div>
+      </form>
     </c-panel>
   </section>
 </main>

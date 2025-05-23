@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { getAxiosAdapter } from './common/axios.service';
 import { putFormSurvyDto, putGeneralInfoSurvyDto, putInternalDataSurvyDto, requestSurvyDto } from '@app/interfaces/request/survy.dto';
 import { GetSurveysDtoResponse, UpdateGeneralInfoSurveyDto, UpdateInternatDataSurveyDto } from '@app/interfaces/responses/survy.dto';
+import { AxiosRequestConfig } from 'axios';
+import { environment } from '@environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -50,5 +52,19 @@ export class SurvyService {
     return await this.axiosService.put(`/encuestas/editor/form/${id}`, {
       formulario
     });
+  }
+
+  async showSurvey(codigo: string) {
+    const config: AxiosRequestConfig = {
+      baseURL: `${environment.apiPublic}` || 'http://localhost:8321/public'
+    }
+    return await this.axiosService.get(`/external/show-survey/${codigo}`, config);
+  }
+
+  async answerSurvey(codigo: string, data: any) {
+    const config: AxiosRequestConfig = {
+      baseURL: `${environment.apiPublic}` || 'http://localhost:8321/public'
+    }
+    return await this.axiosService.post(`/external/show-survey/${codigo}`, data, config);
   }
 }
