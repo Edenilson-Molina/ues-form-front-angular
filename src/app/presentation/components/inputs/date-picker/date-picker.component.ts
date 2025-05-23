@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, input, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, input, Input } from '@angular/core';
 import {
   FormsModule,
   ReactiveFormsModule,
@@ -20,7 +20,7 @@ import { InputErrorsComponent } from '@components/inputs/input-errors/input-erro
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    DatePickerModule,
+    DatePickerModule, // Corregido
     FloatLabelModule,
     FluidModule,
     InputErrorsComponent,
@@ -34,15 +34,19 @@ import { InputErrorsComponent } from '@components/inputs/input-errors/input-erro
       multi: true,
     },
   ],
+  host: {
+    '[class]': 'containerClass',
+    '[style]': 'containerStyle',
+  },
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DatePickerComponent {
-  value: string | null = '';
-  onChange: (value: string | null) => void = () => {};
+  value: Date | Date[] | null = null; // Soporta single, multiple, o range
+  onChange: (value: Date | Date[] | null) => void = () => {};
   onTouched: () => void = () => {};
 
   // Input properties
   @Input() id: string = '';
-  @Input() type: 'text' | 'email' | 'url' | 'tel' | 'search' = 'text';
   @Input() icon?: string;
   @Input() iconColor?: string;
   @Input() iconClass?: string;
@@ -86,11 +90,11 @@ export class DatePickerComponent {
     );
   }
 
-  public writeValue(value: string | null): void {
-    this.value = value || '';
+  public writeValue(value: Date | Date[] | null): void {
+    this.value = value;
   }
 
-  public registerOnChange(fn: (value: string | null) => void): void {
+  public registerOnChange(fn: (value: Date | Date[] | null) => void): void {
     this.onChange = fn;
   }
 
@@ -98,17 +102,9 @@ export class DatePickerComponent {
     this.onTouched = fn;
   }
 
-  public onInputChange(event: Event): void {
-    const newValue = (event.target as HTMLInputElement).value;
-    this.value = newValue;
-    this.onChange(newValue);
-  }
-
-  public onInputBlur(): void {
+  public onDateSelect(value: Date | Date[] | null): void {
+    this.value = value;
+    this.onChange(value);
     this.onTouched();
-  }
-
-  public onDateChange(event: any): void {
-    console.log('onDateChange', event);
   }
 }

@@ -10,9 +10,9 @@
   <div class="flex flex-wrap justify-end gap-4 w-full">
     <c-button *ngIf="isSeeAnswer" label="Respuestas" [severity]="'primary'" [variant]="'outlined'" [icon]="'monitoring'"
       routerLink="/dashboard/survy/my-surveys" />
-    <c-button label="Ver encuesta" [severity]="'primary'" [variant]="'outlined'" [icon]="'visibility'"
-      routerLink="/dashboard" />
-    <c-button label="Publicar" [severity]="'primary'" [icon]="'publish'" routerLink="/dashboard" />
+    <c-button *ngIf="codigo" label="Ver encuesta" [severity]="'primary'" [variant]="'outlined'" [icon]="'visibility'"
+      [routerLink]="'/survey/'+ codigo" />
+    <c-button label="Publicar" [severity]="'primary'" [icon]="'publish'" (onClick)="publicForm()" />
   </div>
 </header>
 <section class="flex flex-col gap-4">

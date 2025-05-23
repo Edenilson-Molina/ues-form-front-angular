@@ -130,7 +130,7 @@ export default class HomeSurvyComponent {
       label: 'Responder Encuesta',
       icon: 'arrow_outward',
       class: 'text-primary-500 dark:text-primary-400 bg-transparent',
-      onClick: (data: any) => console.log('Delete item:', data),
+      onClick: (data: any) => this.router.navigate(['/survey/' + data.codigo]),
     },
     {
       label: 'Estadísticas',

@@ -7,7 +7,7 @@
     position: absolute;
     transition: 0.2s ease all;
     -moz-transition: 0.2s ease all;
-    -webkit-transition: 0.2s ease all; 
+    -webkit-transition: 0.2s ease all;
 }
 
 .group-input .hover-input::before {
