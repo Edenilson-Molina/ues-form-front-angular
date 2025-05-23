@@ -68,12 +68,19 @@ export default class RequestRegisterAdminPageComponent {
 
   async updateUser() {
     this.form.markAllAsTouched();
-    if (this.form.invalid) return;
-    const response: any = await this.userService.updateRegisterUser(
-      this.user().id,
-      this.form.value.id_estado,
-      this.form.value.justificacion_rechazo
-    );
+
+    const { id_estado, justificacion_rechazo } = this.form.value;
+    const userId = this.user().id;
+
+    // Si el estado es 6, no se requiere justificación
+    if (id_estado === 6) {
+      await this.userService.updateRegisterUser(userId, id_estado);
+    } else {
+      // Validar el formulario antes de continuar
+      if (!this.form.valid) return;
+      await this.userService.updateRegisterUser(userId, id_estado, justificacion_rechazo);
+    }
+
     this.showModalUser.set(false);
     this.form.reset();
     await this.getUsers();

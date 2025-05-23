@@ -71,8 +71,8 @@ export const routes: Routes = [
     ]
   },
   {
-    path: 'survey/:id',
-
+    path: 'survey/:codigo',
+    loadComponent: () => import('./presentation/modules/survy/survy-view-page/survy-view-page.component')
   },
   {
     path: '**',
