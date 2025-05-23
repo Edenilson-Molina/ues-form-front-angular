@@ -1,0 +1,31 @@
+/* survey-response.component.css */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+.question {
+  margin-bottom: 1.5rem;
+}
+.required {
+  color: red;
+}
+input[type="checkbox"], p-radioButton {
+  accent-color: #007bff;
+}
+textarea, input[type="text"], input[type="number"], input[type="email"], input[type="tel"], input[type="date"] {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+.p-radiobutton {
+  margin-right: 0.5rem;
+}
+.p-radiobutton-label {
+  font-size: 1rem;
+  color: #333;
+}

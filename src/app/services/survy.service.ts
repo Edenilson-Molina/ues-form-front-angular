@@ -61,10 +61,10 @@ export class SurvyService {
     return await this.axiosService.get(`/external/show-survey/${codigo}`, config);
   }
 
-  async answerSurvey(codigo: string, data: any) {
+  async answerSurvey(data: any) {
     const config: AxiosRequestConfig = {
       baseURL: `${environment.apiPublic}` || 'http://localhost:8321/public'
     }
-    return await this.axiosService.post(`/external/show-survey/${codigo}`, data, config);
+    return await this.axiosService.post(`/external/answer-survey`, data, config);
   }
 }
