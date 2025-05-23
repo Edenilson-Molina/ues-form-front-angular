@@ -1,18 +1,18 @@
-<header class="flex flex-col justify-center items-center gap-y-2 mt-16 gap-4 mx-8">
+<header class="flex flex-col justify-center items-center gap-y-2 mt-16 gap-4 mx-8 sm:mx-24">
   <img class="w-24" alt="" src="assets/images/logo.png" />
   <h1 class="text-xl font-bold text-primary-600 dark:text-primary-500">
-    Percepción sobre el costo de la vivienda en El Salvador
+    {{ survey()?.titulo }}
   </h1>
-  <p class="text-gray-500">Crea, publica y comparte tus encuestas</p>
+  <p class="text-gray-500">{{ survey()?.descripcion }}</p>
 </header>
-<main class="flex flex-col gap-4 my-8 mx-8">
+<main class="flex flex-col gap-4 my-8 mx-8 sm:mx-24">
   <div class="flex flex-wrap justify-end gap-4">
-    <c-button label="Respuestas" [severity]="'primary'" [variant]="'outlined'" [icon]="'analytics'" />
+    <c-button *ngIf="isSeeAnswer" label="Respuestas" [severity]="'primary'" [variant]="'outlined'" [icon]="'analytics'" />
     <c-button label="Editar" [severity]="'primary'" [variant]="'outlined'" [icon]="'edit'" />
   </div>
   <section>
-    <c-panel class="w-full" title="Datos personales" subTitle="Ingresa tu datos personales" [collapsed]="true">
-      <form [formGroup]="form" class="flex flex-col gap-4 w-full sm:w-[50%] lg:w-[30%]">
+    <c-panel class="w-full" title="Datos personales" subTitle="Ingresa tu datos personales" [collapsed]="false">
+      <form [formGroup]="form" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
         <c-float-input
           required
           label="Nombres"
@@ -84,44 +84,46 @@
       <form [formGroup]="surveyForm">
         <div formArrayName="answers">
           <div *ngFor="let question of survey()?.formulario; let i = index; trackBy: trackByQuestion">
-            <div class="mt-4 mb-2">
-              <h4 class="font-medium text-gray-800 dark:text-white">
-                {{ question.shortQuestion }} <span *ngIf="question.required" class="text-red-500">*</span>
+            <div class="mt-4">
+              <h4 class="font-medium text-gray-800 dark:text-white w-full sm:w-[50%] lg:w-[35%]">
+                {{ question.shortQuestion }}
               </h4>
               <p-tag [value]="question.nombre" severity="secondary" [rounded]="true" class="mb-2" />
             </div>
 
             <ng-container [ngSwitch]="question.type">
               <!-- Pregunta Abierta Corta -->
-              <div *ngSwitchCase="'short_text'">
+              <div *ngSwitchCase="'short_text'" class="w-full sm:w-[50%] lg:w-[35%]">
                 <c-float-input
                   [formControlName]="i"
                   placeholder="Respuesta corta"
                   type="text"
                   variant="outlined"
+                  [maxlength]="25"
                   [ngClass]="{'border-red-500': getAnswerControl(i).invalid && (getAnswerControl(i).dirty || getAnswerControl(i).touched)}"
                 />
                 <small *ngIf="getAnswerControl(i).invalid && (getAnswerControl(i).dirty || getAnswerControl(i).touched)" class="text-red-500">
-                  La respuesta es requerida.
+                  La respuesta es requerida o inválida.
                 </small>
               </div>
 
               <!-- Pregunta Abierta Larga -->
-              <div *ngSwitchCase="'long_text'">
+              <div *ngSwitchCase="'long_text'" class="w-full sm:w-[50%] lg:w-[35%]">
                 <textarea
                   class="w-full p-1 border dark:border-gray-600 rounded dark:bg-transparent focus:outline-none focus:ring-0 focus:border-primary-500 resize-none"
                   [formControlName]="i"
                   placeholder="Respuesta larga"
                   rows="3"
-                  [ngClass]="{'border-red-500': getAnswerControl(i).invalid && (getAnswerControl(i).dirty || getAnswerControl(i).touched)}"
-                ></textarea>
+                  maxlength="150"
+                  [ngClass]="{'border-red-500': getAnswerControl(i).invalid && (getAnswerControl(i).dirty || getAnswerControl(i).touched)}">
+                </textarea>
                 <small *ngIf="getAnswerControl(i).invalid && (getAnswerControl(i).dirty || getAnswerControl(i).touched)" class="text-red-500">
                   La respuesta es requerida.
                 </small>
               </div>
 
               <!-- Selección Múltiple -->
-              <div *ngSwitchCase="'multiple_choice'" class="flex flex-col gap-2">
+              <div *ngSwitchCase="'multiple_choice'" class="flex flex-col gap-2 ml-1">
                 <label *ngFor="let option of question.options; trackBy: trackByOption" class="flex items-center gap-2">
                   <input
                     type="checkbox"
@@ -131,7 +133,7 @@
                   />
                   {{ option.opcion }}
                 </label>
-                <div *ngIf="question.allowOtherOption" class="mt-2">
+                <div *ngIf="question.allowOtherOption" class="flex flex-col gap-2 w-full lg:w-[35%]">
                   <label class="flex items-center gap-2">
                     <input
                       type="checkbox"
@@ -141,15 +143,20 @@
                     />
                     Otros
                   </label>
-                  <c-float-input
-                    *ngIf="getAnswerControl(i).value?.includes('other')"
-                    [(ngModel)]="otherResponses[question.idPregunta]"
-                    [ngModelOptions]="{standalone: true}"
-                    placeholder="Especifique"
-                    type="text"
-                    variant="outlined"
-                    [maxlength]="255"
-                  />
+                  <div class="pl-8" *ngIf="getAnswerControl(i).value?.includes('other')">
+                    <div class="group-input relative w-full">
+                      <input
+                        type="text"
+                        *ngIf="getAnswerControl(i).value?.includes('other')"
+                        class="w-full p-1 dark:bg-transparent focus:outline-none input"
+                        [(ngModel)]="otherResponses[question.idPregunta]"
+                        [ngModelOptions]="{standalone: true}"
+                        placeholder="Especifique"
+                        maxlength="50"
+                      />
+                      <span class="hover-input"></span>
+                    </div>
+                  </div>
                 </div>
                 <small *ngIf="getAnswerControl(i).invalid && (getAnswerControl(i).dirty || getAnswerControl(i).touched)" class="text-red-500">
                   Debes seleccionar al menos una opción.
@@ -163,25 +170,32 @@
                     [value]="option.id"
                     [formControl]="getAnswerControl(i)"
                     [name]="'question_' + question.idPregunta"
-                  ></p-radioButton>
+                  />
                   <label class="ml-2">{{ option.opcion }}</label>
                 </div>
-                <div *ngIf="question.allowOtherOption" class="mt-2">
-                  <p-radioButton
-                    value="other"
-                    [formControl]="getAnswerControl(i)"
-                    [name]="'question_' + question.idPregunta"
-                  ></p-radioButton>
-                  <label class="ml-2">Otros</label>
-                  <c-float-input
-                    *ngIf="getAnswerControl(i).value === 'other'"
-                    [(ngModel)]="otherResponses[question.idPregunta]"
-                    [ngModelOptions]="{standalone: true}"
-                    placeholder="Especifique"
-                    type="text"
-                    variant="outlined"
-                    [maxlength]="255"
-                  />
+                <div *ngIf="question.allowOtherOption" class="flex flex-col gap-2 w-full lg:w-[35%]">
+                  <div class="flex items-center gap-2">
+                    <p-radioButton
+                      value="other"
+                      [formControl]="getAnswerControl(i)"
+                      [name]="'question_' + question.idPregunta"
+                    />
+                    <label class="ml-2">Otros<span *ngIf="getAnswerControl(i).value === 'other'">:</span></label>
+                  </div>
+                  <div class="pl-8" *ngIf="getAnswerControl(i).value === 'other'">
+                    <div class="group-input relative w-full">
+                      <input
+                        type="text"
+                        *ngIf="getAnswerControl(i).value === 'other'"
+                        class="w-full p-1 dark:bg-transparent focus:outline-none input"
+                        [(ngModel)]="otherResponses[question.idPregunta]"
+                        [ngModelOptions]="{standalone: true}"
+                        placeholder="Especifique"
+                        maxlength="50"
+                      />
+                      <span class="hover-input"></span>
+                    </div>
+                  </div>
                 </div>
                 <small *ngIf="getAnswerControl(i).invalid && (getAnswerControl(i).dirty || getAnswerControl(i).touched)" class="text-red-500">
                   Debes seleccionar una opción.
@@ -195,7 +209,7 @@
                     [value]="option.id"
                     [formControl]="getAnswerControl(i)"
                     [name]="'question_' + question.idPregunta"
-                  ></p-radioButton>
+                  />
                   <label class="ml-2">{{ option.opcion }}</label>
                 </div>
                 <small *ngIf="getAnswerControl(i).invalid && (getAnswerControl(i).dirty || getAnswerControl(i).touched)" class="text-red-500">
@@ -205,15 +219,20 @@
 
               <!-- Escala Numérica -->
               <div *ngSwitchCase="'numeric_scale'" class="flex flex-col gap-2">
-                <p-slider
-                  [formControlName]="i"
-                  [min]="question.rangeFrom"
-                  [max]="question.rangeTo"
-                  [step]="1"
-                ></p-slider>
-                <div class="flex justify-between mt-2">
-                  <span>{{ question.rangeFrom }}</span>
-                  <span>{{ question.rangeTo }}</span>
+                <div class="flex flex-col items-center mb-2 gap-2 w-full lg:w-[35%]">
+                  <div class="flex w-full justify-between items-center">
+                    <span *ngFor="let value of getRangeLabels(question.rangeFrom, question.rangeTo)"
+                      class="text-sm text-gray-700 dark:text-gray-300">
+                      {{ value }}
+                    </span>
+                  </div>
+                  <p-slider
+                    class="w-full"
+                    [formControlName]="i"
+                    [min]="question.rangeFrom"
+                    [max]="question.rangeTo"
+                    [step]="1"
+                  />
                 </div>
                 <small *ngIf="getAnswerControl(i).invalid && (getAnswerControl(i).dirty || getAnswerControl(i).touched)" class="text-red-500">
                   Debes seleccionar un valor.
@@ -227,7 +246,7 @@
                     [value]="option.id"
                     [formControl]="getAnswerControl(i)"
                     [name]="'question_' + question.idPregunta"
-                  ></p-radioButton>
+                  />
                   <label class="ml-2">{{ option.opcion }}</label>
                 </div>
                 <small *ngIf="getAnswerControl(i).invalid && (getAnswerControl(i).dirty || getAnswerControl(i).touched)" class="text-red-500">
@@ -258,7 +277,6 @@
             severity="primary"
             icon="send"
             (onClick)="saveSurvey()"
-            [disabled]="form.invalid || surveyForm.invalid"
           />
         </div>
       </form>

@@ -54,6 +54,10 @@ export class SurvyService {
     });
   }
 
+  async publicFormSurvey(id: number) {
+    return await this.axiosService.put(`/encuestas/publish/${id}`);
+  }
+
   async showSurvey(codigo: string) {
     const config: AxiosRequestConfig = {
       baseURL: `${environment.apiPublic}` || 'http://localhost:8321/public'

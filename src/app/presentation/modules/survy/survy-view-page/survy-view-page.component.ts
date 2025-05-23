@@ -32,13 +32,20 @@ import { RadioButtonModule } from 'primeng/radiobutton';
     DatePickerComponent
   ],
   templateUrl: './survy-view-page.component.html',
-  styleUrls: ['./survy-view-page.component.css'],
+  styleUrls: [
+    './survy-view-page.component.css',
+    '../form-editor/form-editor.component.css'
+  ],
 })
 export default class SurveyViewPageComponent implements OnInit {
   survey = signal<any>(null);
   form: FormGroup;
   surveyForm: FormGroup;
   otherResponses: { [key: number]: string } = {}; // Para respuestas de "Otros" (openAnswer)
+
+  // Banderas
+  isSeeAnswer: boolean = false;
+  isLoading: boolean = true;
 
   constructor(private fb: FormBuilder, private route: ActivatedRoute, private survyService: SurvyService) {
     // Formulario de datos personales
@@ -69,6 +76,7 @@ export default class SurveyViewPageComponent implements OnInit {
       if (response.success) {
         this.survey.set(response.data);
         this.initializeAnswersForm();
+        this.isLoading = false;
       } else {
         sendNotification({
           type: 'error',
@@ -91,7 +99,7 @@ export default class SurveyViewPageComponent implements OnInit {
     const answers = this.survey().formulario.map((question: any) =>
       this.fb.control(
         question.type === 'multiple_choice' || question.type === 'ranking' ? [] : null,
-        question.required ? Validators.required : []
+        Validators.required
       )
     );
     this.surveyForm.setControl('answers', this.fb.array(answers));
@@ -143,40 +151,40 @@ export default class SurveyViewPageComponent implements OnInit {
     const payload = {
       codigo: this.route.snapshot.paramMap.get('codigo'),
       encuestado: {
-      ...this.form.value,
-      fecha_nacimiento: new Date(this.form.value.fecha_nacimiento).toISOString().split('T')[0],
+        ...this.form.value,
+        fecha_nacimiento: new Date(this.form.value.fecha_nacimiento).toISOString().split('T')[0],
       },
       respuestas: this.survey().formulario.map((question: any, index: number) => {
-      const answerValue = this.getAnswerControl(index).value;
-      const respuesta: any = { idPregunta: question.idPregunta };
+        const answerValue = this.getAnswerControl(index).value;
+        const respuesta: any = { idPregunta: question.idPregunta };
 
-      // Short/Long text
-      if ((question.type === 'short_text' || question.type === 'long_text') && answerValue) {
-        respuesta.answer = answerValue;
-      }
-
-      // Options (multiple, single, likert, true/false, ranking)
-      if (
-        ['multiple_choice', 'single_choice', 'likert_scale', 'true_false', 'ranking'].includes(question.type)
-      ) {
-        const options = (Array.isArray(answerValue) ? answerValue : [answerValue])
-        .filter(v => v !== 'other' && v != null);
-        if (options.length) {
-        respuesta.options = options;
+        // Short/Long text
+        if ((question.type === 'short_text' || question.type === 'long_text') && answerValue) {
+          respuesta.answer = answerValue;
         }
-      }
 
-      // openAnswer (otros)
-      if (this.otherResponses[question.idPregunta]) {
-        respuesta.openAnswer = this.otherResponses[question.idPregunta];
-      }
+        // Options (multiple, single, likert, true/false, ranking)
+        if (
+          ['multiple_choice', 'single_choice', 'likert_scale', 'true_false', 'ranking'].includes(question.type)
+        ) {
+          const options = (Array.isArray(answerValue) ? answerValue : [answerValue])
+          .filter(v => v !== 'other' && v != null);
+          if (options.length) {
+          respuesta.options = options;
+          }
+        }
 
-      // rangeValue (numeric_scale)
-      if (question.type === 'numeric_scale' && answerValue != null) {
-        respuesta.rangeValue = answerValue;
-      }
+        // openAnswer (otros)
+        if (this.otherResponses[question.idPregunta]) {
+          respuesta.openAnswer = this.otherResponses[question.idPregunta];
+        }
 
-      return respuesta;
+        // rangeValue (numeric_scale)
+        if (question.type === 'numeric_scale' && answerValue != null) {
+          respuesta.rangeValue = answerValue;
+        }
+
+        return respuesta;
       })
     };
 
@@ -204,5 +212,13 @@ export default class SurveyViewPageComponent implements OnInit {
 
   trackByOption(index: number, option: any): number {
     return option.id;
+  }
+
+  getRangeLabels(from: number, to: number): number[] {
+    const labels = [];
+    for (let i = from; i <= to; i++) {
+      labels.push(i);
+    }
+    return labels;
   }
 }
