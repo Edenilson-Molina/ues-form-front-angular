@@ -58,6 +58,7 @@ export default class FormEditorComponent {
 
   // FormGroups para datos internos y generales
   idForm!: number;
+  codigo!: string;
   internalDataForm!: FormGroup;
   generalInfoForm!: FormGroup;
 
@@ -97,6 +98,7 @@ export default class FormEditorComponent {
       });
       this.survyService.getInternalDataSurvey(this.idForm).then((response: any) => {
         if (response.success) {
+          this.codigo = response.data.codigo;
           this.internalDataForm.patchValue({
             id_grupo_meta: response.data.id_grupo_meta,
             objetivo: response.data.objetivo,
@@ -327,5 +329,18 @@ export default class FormEditorComponent {
         }
       });
     } catch (error) {}
+  }
+
+  publicForm() {
+    this.survyService.publicFormSurvey(this.idForm).then((response: any) => {
+      if (response.success) {
+        sendNotification({
+          type: 'success',
+          summary: 'Formulario publicado',
+          message: 'Actualizado',
+          description: response.message,
+        });
+      }
+    });
   }
 }
