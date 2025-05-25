@@ -36,6 +36,12 @@ export const routes: Routes = [
         loadComponent: () => import('./presentation/modules/survy/form-editor/form-editor.component')
       },
       {
+        path: 'survy/statistics/:formId',
+        canActivate: [AuthGuard],
+        data: { Permissions: ['encuesta_ver'] },
+        loadComponent: () => import('./presentation/modules/survy/statistics-view-page/statistics-view-page.component')
+      },
+      {
         path: 'survy/catalogues/target-group',
         canActivate: [AuthGuard],
         data: { Permissions: ['encuesta_ver'] },

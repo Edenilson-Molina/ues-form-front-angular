@@ -71,4 +71,8 @@ export class SurvyService {
     }
     return await this.axiosService.post(`/external/answer-survey`, data, config);
   }
+
+  async getStatisticsSurvey(id: number) {
+    return await this.axiosService.get(`/encuestas/statistics/${id}`);
+  }
 }

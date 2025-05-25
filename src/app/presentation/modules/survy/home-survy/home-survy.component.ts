@@ -136,10 +136,8 @@ export default class HomeSurvyComponent {
       label: 'Estadísticas',
       icon: 'bar_chart',
       class: 'text-green-500 dark:text-green-400 bg-transparent',
-      onClick: (data: any) => console.log('Delete item:', data),
+      onClick: (data: any) => this.router.navigate(['/dashboard/survy/statistics/' + data.id]),
     },
-
-
   ]
 
   handlePagination(event: any) {

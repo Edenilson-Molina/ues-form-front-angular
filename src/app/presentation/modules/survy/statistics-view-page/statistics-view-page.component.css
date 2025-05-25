@@ -1,0 +1,22 @@
+/* statistics-view-page.component.css */
+.text-responses {
+  margin-top: 1rem;
+}
+.chart-container {
+  margin-top: 1rem;
+}
+.export-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.p-table {
+  width: 100%;
+}
+.p-table td {
+  padding: 0.5rem;
+  border-bottom: 1px solid #ddd;
+}
+.p-chart {
+  max-width: 100%;
+}
