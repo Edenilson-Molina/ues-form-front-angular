@@ -85,11 +85,11 @@ export class DrawerComponent {
         }
       ]
     },
-    {
-      name: 'Pruebas de componentes',
-      path: '/dashboard/test',
-      icon: 'experiment'
-    },
+    // {
+    //   name: 'Pruebas de componentes',
+    //   path: '/dashboard/test',
+    //   icon: 'experiment'
+    // },
   ];
 
   visible = false;
