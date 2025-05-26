@@ -5,10 +5,11 @@ import { localStorageSync } from 'ngrx-store-localstorage';
 import CryptoJS from 'crypto-js';
 
 import { sessionReducer } from './session.reducer';
-import { Session } from '@app/interfaces/store';
+import { requestRegisterReducer } from './request-register.reducer';
 
 export const reducers = {
   session: sessionReducer,
+  requestRegister: requestRegisterReducer,
 };
 
 export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionReducer<any> {
@@ -30,6 +31,24 @@ export function localStorageSyncReducer(reducer: ActionReducer<any>): ActionRedu
             ).toString(CryptoJS.enc.Utf8)
             return JSON.parse(decryptedData)
           },
+        },
+      },
+      {
+        requestRegister: {
+          encrypt: (data) => {
+            const encryptedData = CryptoJS.AES.encrypt(
+              JSON.stringify(data),
+              environment.secret
+            ).toString()
+            return encryptedData
+          },
+          decrypt: (data) => {
+            const decryptedData = CryptoJS.AES.decrypt(
+              data,
+              environment.secret
+            ).toString(CryptoJS.enc.Utf8)
+            return JSON.parse(decryptedData)
+          }
         }
       }
     ],

@@ -34,7 +34,7 @@
         [readonly]="readonly"
         [variant]="variant"
         [size]="size!"
-        (input)="onInputChange($event)"
+        (onChange)="onInputChange($event)"
         (blur)="onTouched()"
       >
         @if(selectedItemTemplate){
@@ -132,7 +132,7 @@
       [readonly]="readonly"
       [variant]="variant"
       [size]="size!"
-      (input)="onInputChange($event)"
+      (onChange)="onInputChange($event)"
       (blur)="onTouched()"
     >
       @if(selectedItemTemplate){

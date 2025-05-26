@@ -1,5 +1,13 @@
-import { ApplicationConfig, provideZoneChangeDetection, isDevMode } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import {
+  ApplicationConfig,
+  provideZoneChangeDetection,
+  isDevMode,
+} from '@angular/core';
+import {
+  provideRouter,
+  withInMemoryScrolling,
+  withViewTransitions,
+} from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { routes } from './app.routes';
 
@@ -15,14 +23,23 @@ import { reducers, metaReducers } from '@store/index';
 
 const MyPreset = definePreset(Aura, {
   semantic: {
-    primary: JSON.parse(localStorage.getItem('color-palette') as string)?.primary ?? colorPaletteMap.primary,
-  }
+    primary:
+      JSON.parse(localStorage.getItem('color-palette') as string)?.primary ??
+      colorPaletteMap.primary,
+  },
 });
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes),
+    provideRouter(
+      routes,
+      withViewTransitions(),
+      withInMemoryScrolling({
+        scrollPositionRestoration: 'enabled',
+        anchorScrolling: 'enabled',
+      })
+    ),
     provideStore(reducers, { metaReducers }),
     provideHttpClient(),
     provideStoreDevtools({

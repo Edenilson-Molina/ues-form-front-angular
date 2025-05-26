@@ -1,36 +1,46 @@
-<p-menubar styleClass="m-0 py-2 px-0  bg-transparent border-none">
+<p-menubar styleClass="m-0 py-2 px-0 bg-transparent border-none">
   <ng-template #end>
     <div class="flex items-center gap-x-4">
+      <!-- Usuario -->
+      <div
+        class="flex flex-col items-center relative h-auto group select-none"
+      >
+        <div
+          class="w-full h-full rounded-full flex flex-col items-center"
+        >
+          <span class="text-[0.9rem] text-black/50 font-bold dark:text-white/50">
+            {{ name }}
+          </span>
+          <span class="text-[0.5rem] text-black/50 font-bold dark:text-white/50">
+            {{ role }}
+          </span>
+        </div>
+      </div>
 
-      <!-- Boton de cambio de tema -->
-      <p-button [icon]="sessionValue.darkMode ? 'pi pi-moon' : 'pi pi-sun'" variant="text" size="large"
-        rounded aria-label="Theme" (onClick)="toggleDarkMode()" tooltipPosition="bottom"
+      <!-- Avatar -->
+      <div
+        class="flex flex-col items-center relative cursor-pointer h-auto group select-none"
+        (click)="router.navigate(['/'])"
+      >
+        <p-avatar
+          icon="pi pi-user"
+          size="large"
+          shape="circle"
+          class="border-[3px] group-hover:border-none dark:border-primary-400 border-primary-500 p-[2px] group-hover:p-0 w-[3rem] h-[3rem] transition-all ease-linear"
+        />
+      </div>
+
+      <!-- Cambio de tema -->
+      <p-button
+        [icon]="sessionValue.darkMode ? 'pi pi-moon' : 'pi pi-sun'"
+        variant="text"
+        size="large"
+        rounded
+        aria-label="Theme"
+        (onClick)="toggleDarkMode()"
+        tooltipPosition="bottom"
         [pTooltip]="'Tema ' + (sessionValue.darkMode ? 'Oscuro' : 'Claro')"
       />
-
-      <!-- Boton de cambio de idioma -->
-      <!-- <SplitButton :label="rootStore.language.toUpperCase()" icon="pi pi-language" severity="secondary"
-        outlined dropdownIcon="pi pi-angle-down" :model="items" size="small" :pt="{
-          pcMenu : {
-            root: 'min-w-[6.8rem]',
-          }
-        }" /> -->
-
-      <!-- Componente de notificaciones -->
-      <!-- <NotificacionComponent /> -->
-
-      <div class="flex flex-col items-center relative cursor-pointer h-auto group select-none"
-        (click)="router.navigate(['/perfil'])">
-        <p-avatar image="https://i.ibb.co/Yt6XZrc/DALL-E-2025-01-17-08-30-30-A-highly-realistic-portrait-of-a-young-woman-with-long-wavy-hair-in-a-ric.webp"
-          size="xlarge" shape="circle"
-          class="border-[3px] group-hover:border-none dark:border-primary-400 border-primary-500 p-[2px] group-hover:p-0 w-[3.7rem] h-[3.7rem] transition-all ease-linear" />
-
-          <div class="absolute bg-blend-overlay bg-gray-900 bg-opacity-60 w-full h-full rounded-full top-0 left-0 flex justify-center items-center opacity-0 group-hover:opacity-100 transition-all ease-linear">
-            <span class="text-[0.9rem] text-white font-medium relative" :title="username.split(' ')[0]">
-              {{ username.split(' ')[0].length > 5 ? username.split(' ')[0].substring(0, 5) + '...' : username.split(' ')[0] }}
-            </span>
-          </div>
-      </div>
     </div>
   </ng-template>
 </p-menubar>

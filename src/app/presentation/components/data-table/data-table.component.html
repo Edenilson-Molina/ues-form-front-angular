@@ -1,6 +1,6 @@
 <div
-  class="flex flex-col w-full datatable-custom-component shadow-md dark:shadow-[0_3px_5px_0px_rgba(255,255,255,0.2)] border dark:border-none"
-  [ngClass]="'rounded-' + roundedTypeTable"
+  class="flex flex-col w-full border-t datatable-custom-component dark:border-none"
+
   [ngStyle]="getCustomStyles()"
 >
   <p-table
@@ -64,6 +64,7 @@
           >
             <div
               [class]="'flex items-center gap-2 cursor-pointer justify-' + this.headerAlign"
+              [ngClass]="getHeaderClass(column, index)"
             >
               {{ column.header }}
               <p-sortIcon
@@ -160,7 +161,7 @@
   >
     <p-paginator
       styleClass="py-5 bg-transparent"
-      [rows]="pagination.limit"
+      [rows]="pagination.per_page"
       [first]="pagination.from - 1"
       [totalRecords]="pagination.totalItems"
       [rowsPerPageOptions]="rowsPerPageOptions"

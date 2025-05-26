@@ -17,6 +17,22 @@ import { isLoading, login, resetState } from '@store/auth.actions';
 
 import type { HttpAdapter } from '@interfaces/index';
 
+let isRefreshing = false;
+let refreshSubscribers: unknown[] = [];
+
+function onRefreshed(token: string) {
+  refreshSubscribers.forEach((callback) => {
+    if (typeof callback === 'function') {
+      callback(token);
+    }
+  });
+  refreshSubscribers = [];
+}
+
+function addRefreshSubscriber(callback: unknown) {
+  refreshSubscribers.push(callback);
+}
+
 export class AxiosAdapter implements HttpAdapter<AxiosRequestConfig> {
   private axios: AxiosInstance;
   private store = inject(Store);
@@ -29,9 +45,7 @@ export class AxiosAdapter implements HttpAdapter<AxiosRequestConfig> {
     });
 
     this.axios = axios.create({
-      baseURL:
-        `${environment.api}/${environment.apiVersion}` ||
-        'http://localhost:4000/api/v1',
+      baseURL: `${environment.api}` || 'http://localhost:8321/api',
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
@@ -115,11 +129,13 @@ export class AxiosAdapter implements HttpAdapter<AxiosRequestConfig> {
       this.store.dispatch(isLoading(false));
       return response.data;
     } catch (error: any) {
+      const originalRequest = error.config;
       this.store.dispatch(isLoading(false));
       let message: string = '';
+      let errors: {};
       let summary = '';
       let type: ToastType = 'error';
-      let details: string[] = [];
+      let details: Record<string, string[]> = {};
 
       if (error.code === 'ERR_NETWORK') {
         summary = 'Error de conexión';
@@ -136,25 +152,54 @@ export class AxiosAdapter implements HttpAdapter<AxiosRequestConfig> {
         case 401:
           summary = 'Advertencia';
           message = error.response.data.message ?? 'Acceso no autorizado';
-          if (this.sessionStore?.refreshToken) {
+          if (
+            this.router.url !== '/login' &&
+            this.router.url !== '/request-register' &&
+            !originalRequest._retry
+          ) {
             try {
+
+              // Para manejar multiples solicitudes de refresh
+              if (isRefreshing) {
+                return new Promise((resolve) => {
+                  addRefreshSubscriber((token: string) => {
+                    originalRequest.headers['Authorization'] =
+                      'Bearer ' + token;
+                    resolve(axios(originalRequest));
+                  });
+                });
+              }
+              isRefreshing = true;
+              originalRequest._retry = true;
+
+
               const response = await axios.post(
-                `${environment.api}/v1/auth/refresh-token`,
+                `${environment.api}/auth/refresh`,
+                {},
                 {
-                  refreshToken: this.sessionStore.refreshToken,
+                  headers: {
+                    Authorization: `Bearer ${this.sessionStore.accessToken}`,
+                  },
                 }
               );
               this.store.dispatch(
-                login(response.data.accessToken, response.data.refreshToken)
+                login(response.data.accessToken, this.sessionStore.isUnlocked)
               );
 
-              const config = error.config;
-              config.headers.Authorization = `Bearer ${response.data.accessToken}`;
-              return (await axios.request(config)).data;
+              onRefreshed(response.data.accessToken);
+              isRefreshing = false;
+
+              originalRequest.headers.Authorization = `Bearer ${response.data.accessToken}`;
+              return (await axios.request(originalRequest)).data;
             } catch (error: any) {
+              isRefreshing = false;
               this.store.dispatch(resetState());
               this.router.navigate(['login']);
-              if (error.response?.data?.message && ((error.response?.status >= 400 && error.response?.status < 500))) {
+              if (
+                error.response?.data?.message &&
+                error.response?.status >= 400 &&
+                error.response?.status < 500
+              ) {
                 if (error.response?.data?.details) {
                   details = error.response?.data?.details;
                 }
@@ -166,31 +211,46 @@ export class AxiosAdapter implements HttpAdapter<AxiosRequestConfig> {
           if (error.response?.status >= 400 && error.response?.status < 500) {
             if (error.response?.data?.message) {
               message = error.response?.data?.message;
-              if (error.response?.data?.details) {
-                details = error.response?.data?.details;
+              if (error.response?.data?.errors) {
+                details = error.response?.data?.errors;
               }
             }
             summary = 'Advertencia';
           } else {
-            if (!message) message = error.response.statusText;
+            console.error(error);
+            if (!message) message = error?.response?.statusText || 'Error';
           }
           break;
       }
 
       // Mostrar notificación en el UI
-      sendNotification({
-        type: type,
-        summary: summary,
-        message: message,
-      });
-
-      if (details.length > 0) {
-        details.forEach((detail) => {
+      if (typeof details === 'string') {
+        sendNotification({
+          type: type,
+          summary: summary,
+          message: message,
+          description: details, // Usar el string directamente
+        });
+      } else if (
+        typeof details === 'object' &&
+        details !== null &&
+        Object.keys(details).length > 0
+      ) {
+        Object.keys(details).forEach((key) => {
           sendNotification({
             type: type,
             summary: summary,
-            message: detail,
+            message: message,
+            description: Array.isArray(details[key])
+              ? details[key][0]
+              : details[key], // Manejar array o valor directo
           });
+        });
+      } else {
+        sendNotification({
+          type: type,
+          summary: summary,
+          message: message,
         });
       }
 

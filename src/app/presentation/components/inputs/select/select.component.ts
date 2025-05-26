@@ -9,7 +9,7 @@ import {
 } from '@angular/forms';
 
 import { FloatLabelModule } from 'primeng/floatlabel';
-import { SelectModule } from 'primeng/select';
+import { SelectChangeEvent, SelectModule } from 'primeng/select';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { FluidModule } from 'primeng/fluid';
@@ -46,8 +46,8 @@ import { InputErrorsComponent } from '@components/inputs/input-errors/input-erro
 })
 export class SelectComponent implements ControlValueAccessor {
   value: string | null = '';
-  onChange: (value: string | null) => void = () => {};
-  onTouched: () => void = () => {};
+  onChange: (value: string | null) => void = () => { };
+  onTouched: () => void = () => { };
 
   // Input properties
   @Input() id: string = '';
@@ -107,10 +107,9 @@ export class SelectComponent implements ControlValueAccessor {
     this.onTouched = fn;
   }
 
-  public onInputChange(event: Event): void {
-    const newValue = (event.target as HTMLInputElement).value;
-    this.value = newValue;
-    this.onChange(newValue);
+  public onInputChange(event: SelectChangeEvent): void {
+    this.value = event.value;
+    this.onChange(this.value);
   }
 
   public onInputBlur(): void {

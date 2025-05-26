@@ -1,0 +1,74 @@
+<header class="flex flex-wrap justify-between items-center my-16 gap-4">
+  <div class="flex flex-col gap-2">
+    <h1 class="text-primary-600 text-3xl font-bold">Mis encuestas</h1>
+    <p class="text-gray-500">Crea, publica y comparte tus encuestas</p>
+  </div>
+  <div class="flex flex-wrap gap-4">
+    <c-button label="Grupos meta" [severity]="'primary'" [variant]="'outlined'" [icon]="'login'" routerLink="/dashboard/survy/catalogues/target-group"/>
+    <c-button label="Agregar" [severity]="'primary'" [icon]="'add'" (onClick)="createSurveys()"/>
+  </div>
+</header>
+<section class="flex flex-col gap-4">
+  <article class="flex flex-col md:flex-row gap-4">
+    <c-card class="w-full">
+      <section>
+        <header class="flex flex-col lg:flex-row items-center justify-center gap-4">
+          <article class="grid grid-cols-1 lg:grid-cols-3 gap-x-4 gap-y-2 w-full">
+            <c-float-input [(ngModel)]="filterSurveys().titulo" type="text" label="Título" icon="filter_alt" iconPosition="left"/>
+            <c-float-input [(ngModel)]="filterSurveys().grupo_meta" type="text" label="Grupo meta" icon="account_tree" iconPosition="left"/>
+            <c-select
+              label="Estado"
+              [options]="[
+                { label: 'Activo', value: '1' },
+                { label: 'Inactivo', value: '2' },
+                { label: 'En edición', value: '4' }
+              ]"
+              [(ngModel)]="filterSurveys().id_estado"
+              [placeholder]="'Selecciona una opción'"
+              />
+          </article>
+          <article class="flex flex-row gap-4 mt-2">
+            <c-button label="" [severity]="'primary'" [iconOnly]="true" [icon]="'search'" rounded="full" (onClick)="filterSurveysData()"/>
+            <c-button label="" [severity]="'secondary'" variant="outlined" [iconOnly]="true" [icon]="'replay'" rounded="full" (onClick)="resetFilters()"/>
+          </article>
+        </header>
+        <section class="flex flex-col gap-4 mt-10">
+          <data-table
+            [data]="encuestas()"
+            [columns]="columns"
+            [isLoading]="isLoading()"
+            [actionButtonsConfiguration]="actionButtons"
+            [pagination]="pagination()"
+            [paginationCustomDesign]="false"
+            [showPagination]="true"
+            [showPerPageOptionsDropdown]="false"
+            [showPrevNextLinks]="true"
+            [showFirstLastLinks]="true"
+            headerAlign="start"
+            actionsAlign="center"
+            (onPageChange)="handlePagination($event)"
+          >
+            <ng-template dataTableColumn="grupo_meta" let-data>
+              <div class="flex items-center justify-center">
+                <p-tag severity="secondary" value="{{ data.grupo_meta ? data.grupo_meta.nombre : 'Sin asignar' }}" [rounded]="true" />
+              </div>
+            </ng-template>
+
+            <ng-template dataTableColumn="fecha_publicacion" let-data>
+              <div class="flex items-center justify-center">
+                <span>{{ data.fecha_publicacion ?? '-' }}</span>
+              </div>
+            </ng-template>
+
+
+            <ng-template dataTableColumn="estado" let-data>
+              <div class="flex items-center justify-center">
+                <p-tag [value]="data.estado.nombre" [severity]="data.estado.nombre === 'Activo' ? 'success' : data.estado.nombre == 'En edición' ? 'info': undefined" [rounded]="true"/>
+              </div>
+            </ng-template>
+          </data-table>
+        </section>
+      </section>
+    </c-card>
+  </article>
+</section>

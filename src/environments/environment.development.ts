@@ -1,5 +1,5 @@
 export const environment = {
-  api: "http://localhost:4000/api",
-  apiVersion: "v1",
-  secret: 'my-secret-key',
+  apiPublic: "http://localhost:8321/public",
+  api: "http://localhost:8321/api",
+  secret: 'is-this-safe-naa',
 };

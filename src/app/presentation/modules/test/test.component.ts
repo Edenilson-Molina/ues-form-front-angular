@@ -93,7 +93,7 @@ export default class TestComponent implements OnInit {
 
     effect(() => {
       this.userService
-        .getAllUsers(this.paginationParams())
+        .getUsersTest(this.paginationParams())
         .subscribe((response) => {
           if ('data' in response) {
             this.users.set(response.data);
@@ -303,13 +303,13 @@ export default class TestComponent implements OnInit {
   users = signal<UserResponse[]>([]);
   paginationParams = signal<PaginationParams>({
     page: 1,
-    limit: 10,
+    per_page: 10,
     paginate: true,
   });
   pagination = signal<Pagination>({
     from: 0,
     page: 1,
-    limit: 10,
+    per_page: 10,
     to: 0,
     totalItems: 0,
   });
@@ -318,7 +318,7 @@ export default class TestComponent implements OnInit {
     this.users.set([]);
     this.paginationParams.set({
       page: event.page,
-      limit: event.limit,
+      per_page: event.per_page,
       paginate: true,
     });
   }

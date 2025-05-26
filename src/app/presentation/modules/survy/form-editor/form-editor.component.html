@@ -1,0 +1,442 @@
+<header class="flex flex-wrap justify-between items-center my-16 gap-4">
+  <div class="flex flex-col gap-2">
+    <h1 class="text-primary-500 text-3xl font-bold">FormDV - Editor</h1>
+    <p class="text-gray-500">Editor de encuestas</p>
+  </div>
+  <div class="flex flex-wrap gap-4">
+    <c-button label="Mis encuestas" [severity]="'primary'" [variant]="'outlined'" [icon]="'login'"
+      routerLink="/dashboard/survy/my-surveys" />
+  </div>
+  <div class="flex flex-wrap justify-end gap-4 w-full">
+    <c-button *ngIf="isSeeAnswer" label="Respuestas" [severity]="'primary'" [variant]="'outlined'" [icon]="'monitoring'"
+      routerLink="/dashboard/survy/my-surveys" />
+    <c-button *ngIf="codigo" label="Ver encuesta" [severity]="'primary'" [variant]="'outlined'" [icon]="'visibility'"
+      [routerLink]="'/survey/'+ codigo" />
+    <c-button label="Publicar" [severity]="'primary'" [icon]="'publish'" (onClick)="publicForm()" />
+  </div>
+</header>
+<section class="flex flex-col gap-4">
+  <article class="flex flex-col gap-4">
+    <c-panel class="w-full" title="Datos internos" subTitle="No es visible para los encuestados">
+      <form [formGroup]="internalDataForm">
+        <section class="flex flex-col gap-4">
+          <div>
+            <label class="block font-semibold text-gray-800 dark:text-white">Grupo meta <span class="text-primary-500">*</span></label>
+            <span class="text-gray-500 dark:text-gray-400">Clasifica las encuestas para una mejor gestión</span>
+            <div class="w-full sm:w-72">
+              <c-select placeholder="Seleccione grupo meta" formControlName="id_grupo_meta" name="targetGroup" [options]="targetGroups()" optionLabel="nombre" optionValue="id" />
+              <ng-container *ngIf="getInternalDataField('id_grupo_meta').invalid && (getInternalDataField('id_grupo_meta').dirty || getInternalDataField('id_grupo_meta').touched)">
+                <small class="text-red-500">El grupo meta es requerido.</small>
+              </ng-container>
+            </div>
+          </div>
+          <div>
+            <label class="block font-semibold text-gray-800 dark:text-white">Objetivo <span class="text-primary-500">*</span></label>
+            <span class="text-gray-500 dark:text-gray-400">Lo que buscas conseguir realizando esta encuesta</span>
+            <c-textarea placeholder="Conocer..." formControlName="objetivo" name="goal" />
+            <ng-container *ngIf="getInternalDataField('objetivo').invalid && (getInternalDataField('objetivo').dirty || getInternalDataField('objetivo').touched)">
+              <small class="text-red-500" *ngIf="getInternalDataField('objetivo').errors?.['required']">El objetivo es requerido.</small>
+              <small class="text-red-500" *ngIf="getInternalDataField('objetivo').errors?.['minlength']">El objetivo debe tener al menos 3 caracteres.</small>
+            </ng-container>
+          </div>
+          <div>
+            <label class="block font-semibold text-gray-800 dark:text-white">Identificador <span class="text-primary-500">*</span></label>
+            <span class="text-gray-500 dark:text-gray-400">Identifica el enlace de tu encuesta de forma única</span>
+            <div class="flex flex-wrap items-center gap-4">
+              <div class="w-full sm:w-72">
+                <c-float-input placeholder="Código de la encuesta" icon="refresh" iconPosition="left" formControlName="codigo" name="identifier" />
+                <ng-container *ngIf="getInternalDataField('codigo').invalid && (getInternalDataField('codigo').dirty || getInternalDataField('codigo').touched)">
+                  <small class="text-red-500" *ngIf="getInternalDataField('codigo').errors?.['required']">El identificador es requerido.</small>
+                  <small class="text-red-500" *ngIf="getInternalDataField('codigo').errors?.['minlength']">El identificador debe tener al menos 3 caracteres.</small>
+                </ng-container>
+              </div>
+              <span class="text-gray-500 dark:text-gray-400">URL: https://ues-forms.wood-agent.site/surveys/{{ internalDataForm.value.codigo }}</span>
+            </div>
+          </div>
+          <div class="flex justify-end">
+            <c-button label="Guardar" [severity]="'primary'" [icon]="'save'" (onClick)="saveInternalData()" />
+          </div>
+        </section>
+      </form>
+    </c-panel>
+    <c-panel class="w-full" title="Información general"
+      subTitle="Datos generales de la encuesta. Este apartado será lo primero que verán los encuestados">
+      <form [formGroup]="generalInfoForm">
+        <section class="flex flex-col gap-4">
+          <div>
+            <label class="block font-semibold text-gray-800 dark:text-white">Título<span
+                class="text-primary-500">*</span></label>
+            <span class="text-gray-500 dark:text-gray-400">Escribe un nombre corto e identificativo para tu
+              encuesta</span>
+            <div class="w-full sm:w-72">
+              <c-float-input placeholder="" icon="title" iconPosition="left" formControlName="titulo" name="title" />
+              <ng-container *ngIf="getGeneralInfoField('titulo').invalid && (getGeneralInfoField('titulo').dirty || getGeneralInfoField('titulo').touched)">
+                <small class="text-red-500" *ngIf="getGeneralInfoField('titulo').errors?.['required']">El título es requerido.</small>
+                <small class="text-red-500" *ngIf="getGeneralInfoField('titulo').errors?.['minlength']">El título debe tener al menos 3 caracteres.</small>
+              </ng-container>
+            </div>
+          </div>
+          <div>
+            <label class="block font-semibold text-gray-800 dark:text-white">Descripción <span
+                class="text-primary-500">*</span></label>
+            <span class="text-gray-500 dark:text-gray-400">Describe, explica, da instrucciones, etc.</span>
+            <c-textarea placeholder="Conocer..." formControlName="descripcion" name="description" />
+            <ng-container *ngIf="getGeneralInfoField('descripcion').invalid && (getGeneralInfoField('descripcion').dirty || getGeneralInfoField('descripcion').touched)">
+              <small class="text-red-500" *ngIf="getGeneralInfoField('descripcion').errors?.['required']">La descripción es requerida.</small>
+              <small class="text-red-500" *ngIf="getGeneralInfoField('descripcion').errors?.['minlength']">La descripción debe tener al menos 3 caracteres.</small>
+            </ng-container>
+          </div>
+          <div>
+            <p class="text-gray-500 dark:text-gray-400">Además de mostrar esta información, por defecto, cada encuesta
+              posee los siguientes campos para recolectar datos sobre los encuestados:</p>
+            <ul class="list-disc pl-5">
+              <li>
+                <span class="text-gray-500 dark:text-gray-400">Nombres</span>
+              </li>
+              <li>
+                <span class="text-gray-500 dark:text-gray-400">Apellidos</span>
+              </li>
+              <li>
+                <span class="text-gray-500 dark:text-gray-400">Correo electrónico</span>
+              </li>
+              <li>
+                <span class="text-gray-500 dark:text-gray-400">Fecha de nacimiento</span>
+              </li>
+              <li>
+                <span class="text-gray-500 dark:text-gray-400">Teléfono</span>
+              </li>
+              <li>
+                <span class="text-gray-500 dark:text-gray-400">Edad</span>
+              </li>
+            </ul>
+          </div>
+          <div class="flex justify-end">
+            <c-button label="Guardar" severity="primary" icon="save" [iconPosition]="'left'"
+              (onClick)="saveGeneralInfo()" />
+          </div>
+        </section>
+      </form>
+    </c-panel>
+    <c-panel class="w-full" title="Formulario" subTitle="Crea y edita las preguntas de tu encuesta">
+      <section class="border dark:border-gray-600 p-4 rounded-sm">
+        <h3 class="block font-semibold text-gray-800 dark:text-white">Agregar nueva pregunta</h3>
+        <label class="text-gray-500 dark:text-gray-400">Tipo de pregunta</label>
+        <div class="flex flex-wrap items-end gap-4">
+          <div class="w-full sm:w-72">
+            <c-select placeholder="Seleccione tipo de pregunta" [options]="questionTypes()" [optionLabel]="'nombre'"
+              [(ngModel)]="newQuestionType" name="newQuestionType">
+            </c-select>
+          </div>
+          <c-button label="Agregar" severity="primary" variant="outlined" icon="add" iconPosition="left"
+            (onClick)="addQuestion()" />
+        </div>
+      </section>
+      <p-divider />
+      <section class="mt-4">
+        <h3 class="block font-semibold text-gray-800 dark:text-white mb-4">Preguntas agregadas</h3>
+        <!-- Lista de preguntas con drag-and-drop -->
+        <form #questionForm="ngForm">
+          <div cdkDropList (cdkDropListDropped)="drop($event)">
+            <div
+              *ngFor="let question of questions; let i = index; trackBy: trackByQuestion"
+              cdkDrag
+              class="border bg-transparent p-4 rounded-sm mb-4 dark:border-gray-600 shadow-sm">
+              <div class="flex justify-center drag-handle cursor-pointer" cdkDragHandle>☰</div>
+              <p-tag severity="secondary" [value]="question.nombre" [rounded]="true" />
+
+              <!-- Campo Pregunta -->
+              <div class="mt-4 mb-2">
+                <textarea
+                class="w-full font-medium border-none dark:bg-transparent focus:outline-none focus:ring-0 focus:border-primary-500 resize-none"
+                type="text"
+                [(ngModel)]="question.shortQuestion"
+                placeholder="Escribe tu pregunta aquí"
+                [name]="'shortQuestion_' + i"
+                rows="1"
+                appAutosize
+                [ngClass]="{'border-red-500': !question.shortQuestion || question.shortQuestion.trim().length < 3}"
+                ></textarea>
+                <div *ngIf="!question.shortQuestion || question.shortQuestion.trim().length < 3" class="text-red-500 text-xs">
+                  La pregunta es obligatoria y debe tener al menos 3 caracteres.
+                </div>
+              </div>
+
+              <!-- Campo según el tipo de pregunta -->
+              <ng-container [ngSwitch]="question.type">
+                <!-- Pregunta Abierta Corta -->
+                <div *ngSwitchCase="'short_text'">
+                  <div class="flex items-center gap-3 mb-2">
+                    <div class="group-input relative w-full">
+                      <input
+                        type="text"
+                        class="w-full p-1 border-none dark:bg-transparent focus:outline-none input"
+                        placeholder="Respuesta corta"
+                        disabled
+                      />
+                      <span class="hover-input"></span>
+                    </div>
+                  </div>
+                </div>
+                <!-- Pregunta Abierta Larga -->
+                <div *ngSwitchCase="'long_text'">
+                  <div class="flex items-center gap-3 mb-2">
+                    <div class="group-input relative w-full">
+                      <textarea
+                        class="w-full p-1 border-none dark:bg-transparent focus:outline-none input resize-none"
+                        placeholder="Respuesta larga"
+                        disabled
+                      ></textarea>
+                      <span class="hover-input"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Selección Múltiple -->
+                <div *ngSwitchCase="'multiple_choice'">
+                  <div class="flex flex-col mb-2"
+                    *ngFor="let option of question.options; let optIndex = index; trackBy: trackByOption">
+                    <article class="flex items-center gap-3">
+                      <input type="checkbox" [value]="option" disabled />
+                      <div class="group-input relative w-full">
+                        <input
+                          type="text"
+                          class="w-full p-1 border-none dark:bg-transparent focus:outline-none input"
+                          [(ngModel)]="question.options[optIndex]"
+                          placeholder="Opción"
+                          [name]="'option_' + i + '_' + optIndex"
+                          [ngClass]="{'border-red-500': !option || option.trim().length < 1}"
+                        />
+                        <span class="hover-input"></span>
+                      </div>
+                      <i
+                      class="pi pi-times cursor-pointer hover:text-gray-950 dark:hover:text-gray-400 transition-opacity"
+                      (click)="removeOption(i, optIndex)"
+                      title="Eliminar opción"
+                      *ngIf="question.options.length > 1"
+                      ></i>
+                    </article>
+                    <div *ngIf="!option || option.trim().length < 1" class="w-full">
+                      <span class="text-red-500 text-xs pl-6">
+                        La opción es obligatoria.
+                      </span>
+                    </div>
+                  </div>
+                  <article *ngIf="question.allowOtherOption" class="flex items-center gap-3">
+                    <input type="checkbox" [value]="false" disabled />
+                    <div class="group-input relative w-full">
+                      <input type="text" class="w-full p-1 border-none dark:bg-transparent focus:outline-none input" value="Otros"
+                        placeholder="Opción" disabled />
+                      <span class="hover-input"></span>
+                    </div>
+                    <i class="pi pi-times cursor-pointer hover:text-gray-950 dark:hover:text-gray-400 transition-opacity"
+                      (click)="removeOtherOption(i)" title="Eliminar opción"></i>
+                  </article>
+                  <div class="flex flex-wrap gap-4 mt-2">
+                    <c-button label="Agregar opción" (onClick)="addOption(i)" styleClass="p-button-warning"></c-button>
+                    <c-button
+                      label='Agregar opción de "Otros"'
+                      (onClick)="addOtherOption(i)"
+                      variant="outlined"
+                      styleClass="p-button-warning"
+                      *ngIf="!question.allowOtherOption" />
+                  </div>
+                </div>
+
+                <!-- Selección Única -->
+                <div *ngSwitchCase="'single_choice'" >
+                  <div class="flex flex-col mb-2"
+                    *ngFor="let option of question.options; let optIndex = index; trackBy: trackByOption">
+                    <article class="flex items-center gap-3">
+                      <input type="radio" [value]="option" disabled />
+                      <div class="group-input relative w-full">
+                        <input
+                          type="text"
+                          class="w-full p-1 border-none dark:bg-transparent focus:outline-none input"
+                          [(ngModel)]="question.options[optIndex]"
+                          placeholder="Opción"
+                          [name]="'option_' + i + '_' + optIndex"
+                          [ngClass]="{'border-red-500': !option || option.trim().length < 1}"
+                        />
+                        <span class="hover-input"></span>
+                      </div>
+                      <i
+                      class="pi pi-times cursor-pointer hover:text-gray-950 dark:hover:text-gray-400 transition-opacity"
+                      (click)="removeOption(i, optIndex)"
+                      title="Eliminar opción"
+                      *ngIf="question.options.length > 1"
+                      ></i>
+                    </article>
+                    <div *ngIf="!option || option.trim().length < 1" class="w-full">
+                      <span class="text-red-500 text-xs pl-6">
+                        La opción es obligatoria.
+                      </span>
+                    </div>
+                  </div>
+                  <article *ngIf="question.allowOtherOption" class="flex items-center gap-3">
+                    <input type="checkbox" [value]="false" disabled />
+                    <div class="group-input relative w-full">
+                      <input type="text" class="w-full p-1 border-none dark:bg-transparent focus:outline-none input" value="Otros"
+                        placeholder="Opción" disabled />
+                      <span class="hover-input"></span>
+                    </div>
+                    <i class="pi pi-times cursor-pointer hover:text-gray-950 dark:hover:text-gray-400 transition-opacity"
+                      (click)="removeOtherOption(i)" title="Eliminar opción"></i>
+                  </article>
+                  <div class="flex flex-wrap gap-4 mt-2">
+                    <c-button label="Agregar opción" (onClick)="addOption(i)" styleClass="p-button-warning"></c-button>
+                    <c-button
+                      label='Agregar opción de "Otros"'
+                      (onClick)="addOtherOption(i)"
+                      variant="outlined"
+                      styleClass="p-button-warning"
+                      *ngIf="!question.allowOtherOption" />
+                  </div>
+                </div>
+
+                <!-- Falso / Verdadero -->
+                <div *ngSwitchCase="'true_false'" class="flex flex-col gap-2">
+                  <div class="flex flex-col mb-2"
+                    *ngFor="let option of question.options; let optIndex = index; trackBy: trackByOption">
+                    <article class="flex items-center gap-3">
+                      <input type="radio" [value]="option" disabled />
+                      <div class="group-input relative w-full">
+                        <input
+                          type="text"
+                          class="w-full p-1 border-none dark:bg-transparent focus:outline-none input"
+                          [(ngModel)]="question.options[optIndex]"
+                          placeholder="Opción"
+                          [name]="'option_' + i + '_' + optIndex"
+                          [ngClass]="{'border-red-500': !option || option.trim().length < 1}"
+                        />
+                        <span class="hover-input"></span>
+                      </div>
+                    </article>
+                    <div *ngIf="!option || option.trim().length < 1" class="w-full">
+                      <span class="text-red-500 text-xs pl-6">
+                        La opción es obligatoria.
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Escala Numérica -->
+                <div *ngSwitchCase="'numeric_scale'" class="flex flex-col gap-6">
+                  <div class="flex items-start gap-3">
+                    <!-- Input "Desde" -->
+                    <div class="relative">
+                      <c-float-input label="Desde" [(ngModel)]="question.rangeFrom.value" [name]="'rangeFrom_' + i" [type]="'number'"
+                        required #rangeFrom="ngModel" />
+                      <div *ngIf="rangeFrom.invalid && (rangeFrom.dirty || rangeFrom.touched)" class="text-red-500 text-xs mt-1">
+                        <div *ngIf="rangeFrom.errors?.['required']">El valor es requerido.</div>
+                        <!-- Mensaje de error para no numérico -->
+                      </div>
+                    </div>
+
+                    <!-- Input "Hasta" -->
+                    <div class="relative">
+                      <c-float-input label="Hasta" [(ngModel)]="question.rangeTo.value" [name]="'rangeTo_' + i" [type]="'number'"
+                        required #rangeTo="ngModel" />
+                      <div *ngIf="rangeTo.invalid && (rangeTo.dirty || rangeTo.touched)" class="text-red-500 text-xs mt-1">
+                        <div *ngIf="rangeTo.errors?.['required']">El valor es requerido.</div>
+                        <!-- Mensaje de error para no numérico -->
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="flex flex-col justify-center items-center relative">
+                    <div class="w-full sm:w-60">
+                      <div class="flex justify-between items-center mb-2">
+                        <span
+                          *ngFor="let value of getRangeLabels(getSafeRangeFrom(question.rangeFrom.value), getSafeRangeTo(question.rangeTo.value))"
+                          class="text-sm text-gray-700 dark:text-gray-300">
+                          {{ value }}
+                        </span>
+                      </div>
+                      <p-slider [step]="1" [min]="getSafeRangeFrom(question.rangeFrom.value)"
+                        [max]="getSafeRangeTo(question.rangeTo.value)" value="question.rangeFrom.value" disabled></p-slider>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Escala / Escala Likert -->
+                <div *ngSwitchCase="'escale_likert'" class="flex flex-col gap-6">
+                  <div class="flex flex-wrap items-center justify-center gap-x-12 gap-y-6 w-full">
+                    <div class="flex flex-col items-center gap-3"
+                      *ngFor="let option of question.options; let optIndex = index; trackBy: trackByOption">
+                      <input type="radio" [value]="option" disabled />
+                      <div class="flex items-center gap-2">
+                        <div class="group-input relative w-full">
+                          <input
+                            type="text"
+                            class="w-full p-1 border-none dark:bg-transparent focus:outline-none input"
+                            [(ngModel)]="question.options[optIndex]"
+                            placeholder="Opción"
+                            [name]="'option_' + i + '_' + optIndex"
+                          />
+                          <span class="hover-input"></span>
+                        </div>
+                        <i class="pi pi-times cursor-pointer hover:text-gray-950 dark:hover:text-gray-400 transition-opacity" (click)="removeOption(i, optIndex)" title="Eliminar opción"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <c-button label="Agregar opción" (onClick)="addOption(i)" styleClass="p-button-warning"></c-button>
+                </div>
+
+                <!-- Ordenamiento -->
+                <div *ngSwitchCase="'ranking'" class="flex flex-col gap-2">
+                  <div class="flex flex-col mb-2"
+                    *ngFor="let option of question.options; let optIndex = index; trackBy: trackByOption">
+                    <article class="flex items-center gap-3">
+                      <span class="material-symbols-outlined">
+                        swap_vert
+                      </span>
+                      <div class="group-input relative w-full">
+                        <input
+                          type="text"
+                          class="w-full p-1 border-none dark:bg-transparent focus:outline-none input"
+                          [(ngModel)]="question.options[optIndex]"
+                          placeholder="Opción"
+                          [name]="'option_' + i + '_' + optIndex"
+                        />
+                        <span class="hover-input"></span>
+                      </div>
+                      <i
+                        class="pi pi-times cursor-pointer hover:text-gray-950 dark:hover:text-gray-400 transition-opacity"
+                        (click)="removeOption(i, optIndex)"
+                        title="Eliminar opción"
+                        *ngIf="question.options.length > 1">
+                      </i>
+                    </article>
+                    <div *ngIf="!option || option.trim().length < 1" class="w-full">
+                      <span class="text-red-500 text-xs pl-9">
+                        La opción es obligatoria.
+                      </span>
+                    </div>
+                  </div>
+                  <c-button label="Agregar opción" (onClick)="addOption(i)" styleClass="p-button-warning"></c-button>
+                </div>
+              </ng-container>
+
+              <!-- Pie de la pregunta -->
+              <div class="w-full flex justify-end items-center mt-4">
+                <div class="flex gap-4">
+                  <i class="pi pi-copy cursor-pointer" (click)="duplicateQuestion(i)" title="Duplicar pregunta"></i>
+                  <i
+                    class="pi pi-trash cursor-pointer"
+                    (click)="deleteQuestion(i)"
+                    title="Eliminar pregunta">
+                  </i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <!-- Botón Guardar -->
+        <div class="actions">
+          <c-button label="Guardar" (onClick)="saveForm()" styleClass="p-button-danger"></c-button>
+        </div>
+      </section>
+    </c-panel>
+  </article>
+</section>

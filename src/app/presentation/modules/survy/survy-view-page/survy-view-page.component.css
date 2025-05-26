@@ -1,0 +1,28 @@
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+.question {
+  margin-bottom: 1.5rem;
+}
+.required {
+  color: red;
+}
+input[type="checkbox"], p-radioButton {
+  @apply accent-primary-500;
+  width: 1rem;
+  height: 1rem;
+}
+textarea, input[type="text"], input[type="number"], input[type="email"], input[type="tel"], input[type="date"] {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+:host ::ng-deep .p-radiobutton{
+  display: block !important;
+}

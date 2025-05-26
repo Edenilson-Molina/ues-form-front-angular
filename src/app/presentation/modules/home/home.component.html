@@ -1,21 +1,39 @@
-<div class="flex-col justify-center items-center">
-  <div class="h-full w-full flex justify-center items-center mt-10 md:mt-0">
-    <div class="flex-col mt:10 md:mt-10 lg:mt-48">
-      <div class="flex w-full justify-center">
-        <div class="flex-col">
-          <span class="py-3 px-4 text-ellipsis text-4xl font-bold cursor-default border-none border-b-4 bg-clip-text text-transparent bg-gradient-to-r from-fuchsia-500 via-[#c038ff] to-violet-800">
-            Plantilla Angular
-          </span>
-        </div>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 items-center justify-center gap-x-14 gap-y-10 sm:gap-y-6 mt-10 md:mt-10 lg:mt-10 mb-20 md:mb-0">
-        <div class="flex justify-center w-full"><img src="assets/images/angular-icon.png" class="w-28 h-28 animation-for-vue text-center" /></div>
-        <div class="flex justify-center w-full"><img src="assets/images/ngrx-logo.svg" class="object-contain w-28 h-28 flash-light-animation" /></div>
-        <div class="flex justify-center w-full"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Typescript_logo_2020.svg/2048px-Typescript_logo_2020.svg.png " class="object-contain w-28 h-28 pulse-animation" /></div>
-        <div class="flex justify-center w-full"><img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Tailwind_CSS_Logo.svg" class="object-contain w-28 h-28 shadow-color-animation" /></div>
-        <div class="flex justify-center w-full"><img src="assets/images/luxon.png" class="object-cover w-28 h-28 floating-animation" /></div>
-        <div class="flex justify-center w-full"><img src="https://i0.wp.com/www.primefaces.org/wp-content/uploads/2018/05/primeng-logo.png?ssl=1" class="object-contain w-28 h-28 glitch-animation invert-0 dark:invert-0" /></div>
-      </div>
-    </div>
+<header class="flex flex-wrap justify-between items-center my-16 gap-4">
+  <div class="flex flex-col gap-2">
+    <h1 class="text-primary-600 text-3xl font-bold">Bienvenido al Sistema de Encuestas <br><span>de la Universidad de El Salvador</span></h1>
+    <p class="text-gray-500">Crea, enfoca y recopila información desde una plataforma</p>
   </div>
-</div>
+  <div class="flex flex-wrap gap-4">
+    <c-button label="Encuestas" [severity]="'primary'" [variant]="'outlined'" [icon]="'content_copy'" routerLink="/dashboard/survy/my-surveys"/>
+    <c-button label="Nuevo formulario" [severity]="'primary'" [icon]="'add'" (onClick)="createSurveys()"/>
+  </div>
+</header>
+<section class="flex flex-col gap-4">
+  <article class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <c-info-card title="13322" description="Respuestas esta semana" icon="description" severity="primary"/>
+    <c-info-card title="199" description="Nuevos usuarios registrados" icon="group" severity="secondary"/>
+    <c-info-card title="15" description="Nuevas encuestas generadas" icon="list" severity="info"/>
+  </article>
+  <article class="flex flex-col lg:flex-row gap-4">
+    <c-card titleCard="Encuestas con mayor actividad" chip="Semanal" icon="bar_chart" class="w-full lg:w-[70%]">
+      <data-table
+        [data]="encuestas()"
+        [columns]="columns"
+        [isLoading]="isLoading()"
+        [actionButtonsConfiguration]="actionButtons"
+        [pagination]="pagination()"
+        [paginationCustomDesign]="false"
+        [showPagination]="true"
+        [showPerPageOptionsDropdown]="true"
+        [showPrevNextLinks]="true"
+        [showFirstLastLinks]="true"
+        headerAlign="start"
+        actionsAlign="start"
+        (onPageChange)="handlePagination($event)"
+      />
+    </c-card>
+    <c-card titleCard="Estado de encuestas" chip="Anual" icon="analytics" class="w-full lg:w-[30%]">
+      <p-chart type="doughnut" [data]="data" [options]="options" class="flex justify-center w-full" />
+    </c-card>
+  </article>
+</section>

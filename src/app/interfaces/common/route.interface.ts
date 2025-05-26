@@ -3,6 +3,7 @@ export interface Route {
   path: string;
   icon: string;
   children?: Route[];
+  permission?: string[];
 }
 
 export interface CardMenu extends Route {

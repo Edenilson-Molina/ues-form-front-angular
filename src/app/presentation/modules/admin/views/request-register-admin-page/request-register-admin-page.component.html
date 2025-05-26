@@ -1,0 +1,170 @@
+<header class="flex flex-wrap justify-between items-end my-16 gap-4">
+  <div class="flex flex-col gap-2">
+    <h1 class="text-primary-600 text-3xl font-bold">Solicitudes de Registro</h1>
+    <p class="text-gray-500">Gestiona las solicitudes de registro de usuarios en el sistema, aprueba, rechaza y mantén control</p>
+  </div>
+  <div>
+    <c-button label="Listado de usuarios" [severity]="'primary'" [variant]="'outlined'" [icon]="'login'" routerLink="/dashboard/users/list"/>
+  </div>
+</header>
+<section class="flex flex-col gap-4">
+  <article class="flex flex-col md:flex-row gap-4">
+    <c-card class="w-full">
+      <section>
+        <header class="flex flex-col lg:flex-row items-center justify-center gap-4">
+          <article class="grid grid-cols-1 lg:grid-cols-2 gap-x-4 gap-y-2 w-full">
+            <c-float-input [(ngModel)]="filterRegister().nombre" type="text" label="Nombre / Usuario" icon="filter_alt" iconPosition="left"/>
+            <c-select
+              label="Estado"
+              [options]="states()"
+              optionLabel="nombre"
+              optionValue="id"
+              [(ngModel)]="filterRegister().id_estado"
+              [placeholder]="'Selecciona una opción'"
+              />
+          </article>
+          <article class="flex flex-row gap-4 mt-2">
+            <c-button label="" [severity]="'primary'" [iconOnly]="true" [icon]="'search'" rounded="full" (onClick)="filterRegisterData()"/>
+            <c-button label="" [severity]="'secondary'" variant="outlined" [iconOnly]="true" [icon]="'replay'" rounded="full" (onClick)="resetFilters()"/>
+          </article>
+        </header>
+        <section class="flex flex-col gap-4 mt-10">
+          <data-table
+            [data]="users()"
+            [columns]="columns"
+            [isLoading]="isLoading()"
+            [actionButtonsConfiguration]="actionButtons"
+            [pagination]="pagination()"
+            [paginationCustomDesign]="false"
+            [showPagination]="true"
+            [showPerPageOptionsDropdown]="false"
+            [showPrevNextLinks]="true"
+            [showFirstLastLinks]="true"
+            headerAlign="start"
+            actionsAlign="center"
+            (onPageChange)="handlePagination($event)"
+          >
+            <ng-template dataTableColumn="usuario.persona" let-data>
+              {{ data.usuario.persona ? data.usuario.persona.nombre : '' }} {{ data.usuario.persona ? data.usuario.persona.apellido : '' }}
+            </ng-template>
+            <ng-template dataTableColumn="usuario.username" let-data>
+              {{ data.usuario.username }}
+            </ng-template>
+            <ng-template dataTableColumn="usuario.created_at" let-data>
+                {{ data.created_at | date: 'dd/MM/yyyy' }}
+            </ng-template>
+            <ng-template dataTableColumn="estado" let-data>
+              <div class="flex items-center justify-center">
+                <p-tag [value]="data.estado.nombre" [severity]="data.estado.nombre === 'Aprobado' ? 'success' : data.estado.nombre == 'Pendiente' ? 'info': undefined" [rounded]="true"/>
+              </div>
+            </ng-template>
+          </data-table>
+        </section>
+      </section>
+    </c-card>
+    <section>
+      <form [formGroup]="form" >
+        <modal
+          *ngIf="showModalUser()"
+          [visible]="showModalUser()"
+          [closable]="true"
+          (onClose)="showModalUser.set(false)"
+          styleClass="w-[90%] sm:w-[80%] md:w-[80%] lg:w-[80%] xl:w-[40%] bg-auto p-4"
+          [style]="{ 'border-radius': '20px' }"
+          >
+        <header class="w-full">
+          <div>
+            <h1 class="text-xl font-bold text-primary-600 dark:text-primary-500">
+              Solicitud de registro
+            </h1>
+          </div>
+        </header>
+        <content>
+          <section>
+            <article class="grid grid-cols-1 lg:grid-cols-2 gap-x-4 gap-y-2">
+              <h2 class="col-span-full text-gray-600 font-semibold text-lg">Información general</h2>
+              <div>
+                <span class="text-gray-600 font-medium">Nombres</span>
+                <p class="text-gray-500">{{ user().usuario.persona.nombre }}</p>
+              </div>
+              <div>
+                <span class="text-gray-600 font-medium">Apellidos</span>
+                <p class="text-gray-500">{{ user().usuario.persona.apellido }}</p>
+              </div>
+              <div>
+                <span class="text-gray-600 font-medium">Identificación</span>
+                <p class="text-gray-500">{{ user().usuario.persona.identificacion }}</p>
+              </div>
+              <div>
+                <span class="text-gray-600 font-medium">Usuario</span>
+                <p class="text-gray-500">{{ user().usuario.username }}</p>
+              </div>
+              <div>
+                <span class="text-gray-600 font-medium">Fecha de registro</span>
+                <p class="text-gray-500">{{ user().created_at | date }}</p>
+              </div>
+              <div>
+                <span class="text-gray-600 font-medium">Correo electrónico</span>
+                <p class="text-gray-500">{{ user().usuario.email }}</p>
+              </div>
+            </article>
+            <article class="grid grid-cols-1 lg:grid-cols-2 gap-x-4 gap-y-2 mt-4">
+              <h2 class="col-span-full text-gray-600 font-semibold text-lg">Detalle</h2>
+              <div>
+                <span class="text-gray-600 font-medium">Razón de solicitud</span>
+                <p class="text-gray-500">{{ user().justificacion_solicitud }}</p>
+              </div>
+            </article>
+            <article *ngIf="user().id_estado !== 6" class="flex flex-col gap-x-4 gap-y-2 mt-4">
+              <h2 class="col-span-full text-gray-600 font-semibold text-lg">Acciones</h2>
+              <c-select
+                required
+                label="Estado"
+                [options]="[
+                  { id: 6, nombre: 'Aprobada' },
+                  { id: 5, nombre: 'Rechazada' },
+                ]"
+                variant="outlined"
+                optionLabel="nombre"
+                optionValue="id"
+                formControlName="id_estado"
+                [placeholder]="'Selecciona una opción'"
+                [formControl]="getFormField('id_estado')"
+
+              />
+              <c-textarea
+                *ngIf="form.get('id_estado')?.value == 5"
+                required
+                label="Justificación"
+                typeLabel="label"
+                type="text"
+                labelClass="!font-medium"
+                formControlName="justificacion_rechazo"
+                placeholder="Escribe una justificación"
+                [formControl]="getFormField('justificacion_rechazo')"
+              />
+            </article>
+          </section>
+        </content>
+        <footer class="w-full">
+          <div class="flex justify-end w-full items-center gap-2">
+            <c-button
+              severity="danger"
+              variant="outlined"
+              label="Cerrar"
+              (onClick)="showModalUser.set(false)"
+            />
+            <c-button
+              *ngIf="user().id_estado !== 6"
+              severity="danger"
+              variant="solid"
+              label="Guardar"
+              (onClick)="updateUser()"
+            />
+          </div>
+        </footer>
+        </modal>
+      </form>
+    </section>
+  </article>
+</section>

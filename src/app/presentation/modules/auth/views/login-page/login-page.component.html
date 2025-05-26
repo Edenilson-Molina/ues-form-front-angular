@@ -1,11 +1,10 @@
 <div
-  class="w-full flex min-h-screen overflow-y-auto items-center justify-center px-4 bg-black/50"
+  class="w-full flex min-h-screen overflow-y-auto items-center justify-center px-4"
 >
   <img
     class="lg:mr-36 lg:ml-20 xl:mr-40 hidden lg:flex w-[50%] lg:w-[40%]"
-    src="assets/images/angular.png"
-    alt="angular-logo"
-    style="filter: brightness(200)"
+    src="assets/images/logo-system.png"
+    alt="UES Forms"
   />
   <form
     [formGroup]="form"
@@ -14,89 +13,153 @@
     class="flex w-full md:w-3/5 lg:w-3/6 xl:w-2/4 2xl:w-1/4 lg:mr-14"
   >
     <p-card
-      styleClass="p-10 md:px-16 text-center shadow-lg bg-white/10 backdrop-blur-md rounded-2xl"
+      styleClass="p-6 text-center shadow-xl bg-white/40 backdrop-blur-md rounded-2xl"
       class="w-full"
     >
       <ng-template #header>
         <div class="flex justify-center">
-          <img
-            class="w-20 mx-auto mt-4"
-            alt=""
-            src="assets/images/angular-icon.png"
-            style="filter: brightness(200)"
-          />
+          <img class="w-24 mx-auto mt-4" alt="" src="assets/images/logo.png" />
         </div>
       </ng-template>
       <ng-template #title>
-        <span class="text-gray-50">Incio de sesión</span>
+        <span class="text-gray-600">Inicio de sesión</span>
       </ng-template>
       <ng-template #content>
         <div class="mb-4 text-start">
           <p-iconfield>
             <p-inputicon class="pi pi-user" />
-            <input
-              pInputText
-              formControlName="email"
-              autocomplete="email"
-              type="text"
-              placeholder="Correo electrónico"
-              class="w-full"
-            />
+            <input pInputText formControlName="email" autocomplete="email" type="text" placeholder="Correo electrónico"
+              class="w-full" />
           </p-iconfield>
           @if(getFormField('email').invalid && (getFormField('email').dirty || getFormField('email').touched)) {
-            <input-errors
-              [errors]="getFormField('email').errors"
-              label="correo electrónico"
-              errorMessageClass="!text-red-400"
-            />
+          <input-errors [errors]="getFormField('email').errors" label="correo electrónico"
+            errorMessageClass="!text-red-400" />
           }
         </div>
         <div class="text-start">
           <p-iconfield>
             <p-inputicon class="pi pi-key z-10" />
-            <p-password
-              formControlName="password"
-              inputStyleClass="pl-10"
-              placeholder="Contraseña"
-              autocomplete="current-password"
-              class="w-full"
-              [feedback]="false"
-              [toggleMask]="true"
-              [fluid]="true"
-            ></p-password>
+            <p-password formControlName="password" inputStyleClass="pl-10" placeholder="Contraseña"
+              autocomplete="current-password" class="w-full" [feedback]="false" [toggleMask]="true"
+              [fluid]="true"></p-password>
           </p-iconfield>
-          @if(getFormField('password').invalid && (getFormField('password').dirty || getFormField('password').touched)) {
-            <input-errors
-              [errors]="getFormField('password').errors"
-              label="contraseña"
-              errorMessageClass="!text-red-400"
-            />
+          @if(getFormField('password').invalid && (getFormField('password').dirty || getFormField('password').touched))
+          {
+          <input-errors [errors]="getFormField('password').errors" label="contraseña"
+            errorMessageClass="!text-red-400" />
           }
         </div>
       </ng-template>
       <ng-template #footer>
         <p-button
-          label="Submit"
-          type="submit"
-          styleClass="w-full mt-4 bg-purple-500 border-purple-500 text-white"
+        label="Iniciar sesión"
+        type="submit"
+        styleClass="w-full mt-4 text-white"
         />
-        <!-- <ButtonComponent
-          :label="t('login.submit')"
-          @click="handleLogin()"
-          :loading="loading"
-          class="sm:w-52 mt-4 mx-auto block"
-        />
-        <div class="mt-5">
-          <p
-            class="text-sm text-center text-gray-50 font-light underline cursor-pointer"
-          >
-            <span
-              @click="router.push({ name: 'recover-password', replace: false })"
-              >{{ t("login.forgotPassword") }}</span
-            >
+        <div class="mt-3">
+          <p class="text-sm text-center cursor-pointer hover:text-gray-950">
+            <span (click)="navigateToRegister()">Registrarse</span>
           </p>
-        </div> -->
+        </div>
       </ng-template>
     </p-card>
   </form>
 </div>
+<section>
+  <!-- Modal para solicitud de desbloqueo -->
+  <form [formGroup]="formUnlock">
+    <modal
+      [visible]="showModalRequestUnlock()"
+      [closable]="false"
+      styleClass="w-[90%] sm:w-[80%] md:w-[80%] lg:w-[80%] xl:w-[30%] bg-auto"
+      [style]="{ 'border-radius': '20px' }">
+      <header class="w-full">
+        <div class="w-full flex flex-col justify-center items-center gap-y-2">
+          <img class="w-24 mx-auto mt-4" alt="" src="assets/images/logo.png" />
+          <h1 class="text-xl font-bold text-primary-600 dark:text-primary-500 ms-10">
+            Tu cuenta ha sido bloqueada
+          </h1>
+        </div>
+      </header>
+      <content>
+        <div class="flex flex-col w-full justify-center items-center gap-4">
+          <span class="text-center">
+            Se ha detectado actividad sospecha y tu cuenta ha sido bloqueada.
+            Si lo deseas puedes solicitar su restablecimiento
+          </span>
+          <i class="pi pi-exclamation-triangle text-orange-500" style="font-size: 3rem"></i>
+        </div>
+        <div class="flex flex-col w-full justify-center items-center gap-4 mt-4">
+          <c-textarea
+            required
+            label="Justificación"
+            typeLabel="label"
+            labelClass="!font-medium"
+            class="w-full resize-none"
+            [rows]="3"
+            formControlName="justificacion_solicitud"
+            [formControl]="getFormUnlockField('justificacion_solicitud')">
+          </c-textarea>
+        </div>
+      </content>
+      <footer class="w-full">
+        <div class="flex relative w-full items-center gap-x-2">
+          <span
+            class="absolute material-symbols-outlined cursor-pointer hover:opacity-80 transition-all duration-300"
+            (click)="showModalRequestUnlock.set(false)">
+            arrow_back
+          </span>
+          <div class="flex justify-center w-full">
+            <c-button
+              severity="danger"
+              variant="solid"
+              label="Enviar solicitud"
+              (onClick)="handleRequestUnlock()"
+            />
+          </div>
+        </div>
+      </footer>
+    </modal>
+  </form>
+
+  <modal
+    [visible]="showModalSubmittedRequest"
+    [closable]="false"
+    styleClass="w-[90%] sm:w-[80%] md:w-[80%] lg:w-[80%] xl:w-[30%] bg-auto"
+    [style]="{ 'border-radius': '20px' }">
+  >
+    <header class="w-full">
+      <div class="w-full flex flex-col justify-center items-center gap-y-2">
+        <img class="w-24 mx-auto mt-4" alt="" src="assets/images/logo.png" />
+        <h1 class="text-xl font-bold text-primary-600 dark:text-primary-500 ms-10">
+          Solicitud enviada
+        </h1>
+      </div>
+    </header>
+    <content>
+      <div class="flex flex-col w-full justify-center items-center gap-4">
+        <span class="text-center">
+          Tu solicitud de desbloqueo está siendo procesada por un administrador. Serás notificado mediante correo electrónico.
+        </span>
+        <i class="pi pi-check-circle text-green-500" style="font-size: 3rem"></i>
+      </div>
+    </content>
+    <footer class="w-full">
+      <div class="flex relative w-full items-center gap-x-2">
+        <span
+          class="absolute material-symbols-outlined cursor-pointer hover:opacity-80 transition-all duration-300"
+          (click)="showModalSubmittedRequest = false">
+          arrow_back
+        </span>
+        <div class="flex justify-center w-full">
+          <c-button
+            severity="primary"
+            variant="solid"
+            label="Regresar al inicio"
+            (onClick)="handleEndRequestUnlock()"
+          />
+        </div>
+      </div>
+    </footer>
+  </modal>
+</section>

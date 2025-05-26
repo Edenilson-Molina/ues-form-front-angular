@@ -1,11 +1,11 @@
 // Definir los colores default de la aplicación
-import { indigo, teal, green, sky, yellow, red } from 'tailwindcss/colors';
+import { rose, teal, green, sky, yellow, red } from 'tailwindcss/colors';
 import type { ColorPalette } from '@interfaces/common/color-palette.interface';
 
 // Al inicio de la aplicación se guardan los colores en el local storage y se asignan a las variables de la aplicación
 // Si se hace algún cambio en la sección de > Preferencias > Paleta de colores, se actualizarán los colores en el local storage
 export const colorPaletteMap: ColorPalette = {
-  primary: indigo,
+  primary: red,
   secondary: teal,
   success: green,
   info: sky,

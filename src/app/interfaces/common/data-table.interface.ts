@@ -48,7 +48,7 @@ export interface PaginationCustomDesignProperties {
 
 export interface PageEvent {
   first: number;
-  limit: number;
+  per_page: number;
   page: number;
   pageCount: number;
 }

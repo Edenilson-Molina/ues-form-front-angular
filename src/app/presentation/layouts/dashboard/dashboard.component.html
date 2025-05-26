@@ -1,7 +1,45 @@
-<div class="flex min-h-screen justify-center">
-  <drawer />
-  <div class="relative pt-0 md:ml-10 px-4 md:px-12 pb-6 w-full overflow-x-hidden">
+<div class="flex flex-col min-h-screen justify-center">
+  <header
+    class="flex justify-between backdrop-blur-xl bg-white/30 dark:bg-black/5 w-full px-3 sm:px-6 py-1 sticky top-0 z-20"
+  >
+    <div class="flex items-center gap-2">
+      <!-- Sidebar -->
+      <drawer class="flex items-center" />
+      <!-- Fecha del sistema -->
+      <div class="flex flex-col items-start ml-4">
+        <span class="text-[0.7rem] text-black/50 font-bold dark:text-white/50">
+          Fecha y hora del sistema
+        </span>
+        <span class="text-[0.6rem] text-black/50 font-medium dark:text-white/50">
+          {{ currentDate | date : "dd/MM/yyyy HH:mm a" }}
+        </span>
+      </div>
+    </div>
     <navbar />
+  </header>
+  <main
+    class="flex-1 pt-1 px-3 md:px-12 pb-6 w-full overflow-x-hidden background"
+  >
     <router-outlet />
-  </div>
+  </main>
+  <footer
+    class="flex flex-wrap justify-between items-center background w-full px-3 md:px-12 py-1 h-24"
+  >
+    <section class="flex flex-wrap items-center gap-x-10 gap-y-4">
+      <div class="flex items-center gap-2">
+        <img class="h-12" src="assets/images/minerva.png" alt="" />
+        <span class="text-primary-800 font-bold text-xl">UES-Forms</span>
+      </div>
+      <span class="text-gray-500 text-sm"
+        >© 2025 UESForms. Todos los derechos reservados</span
+      >
+    </section>
+    <section>
+      <ul class="flex gap-4">
+        <li class="text-gray-500 font-bold">UES</li>
+        <li class="text-gray-500 font-bold">FIA</li>
+        <li class="text-gray-500 font-bold">EISI</li>
+      </ul>
+    </section>
+  </footer>
 </div>
