@@ -26,7 +26,7 @@ export interface requestRolesDto {
   page?: number;
   per_page?: number;
   paginate?: boolean;
-  estado?: number;
+  estado?: number | null;
   name?: string;
 }
 

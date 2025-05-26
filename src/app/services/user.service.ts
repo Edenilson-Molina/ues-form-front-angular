@@ -10,7 +10,6 @@ import {
 } from '@interfaces/common/pagination.interface';
 import { EditUserAdmin, GetUsersDtoResponse, UserResponse } from '@interfaces/responses/user.dto';
 import { CreateUserDto, requestUsersDto, UserParams } from '@app/interfaces/request/user.dto';
-import { requestRolesDto } from '@app/interfaces/request/auth.dto';
 
 @Injectable({
   providedIn: 'root',
@@ -74,18 +73,6 @@ export class UserService {
         roles,
       }
     );
-  }
-
-  async getRoles(requestRolesDto: requestRolesDto) {
-      const params = [
-        requestRolesDto.paginate ? `paginate=${requestRolesDto.paginate}` : 'paginate=false',
-        requestRolesDto.page ? `page=${requestRolesDto.page}` : '',
-        requestRolesDto.per_page ? `per_page=${requestRolesDto.per_page}` : '',
-        requestRolesDto.estado ? `estado=${requestRolesDto.estado}` : '',
-        requestRolesDto.name ? `name=${requestRolesDto.name}` : ''
-      ].filter(Boolean).join('&');
-      const filter = params ? `${params}` : '';
-      return await this.axiosAdapter.get(`/auth/roles?${filter}`);
   }
 
   async getUserById(id: number) {

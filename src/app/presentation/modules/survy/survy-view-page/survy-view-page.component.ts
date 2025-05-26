@@ -46,6 +46,8 @@ export default class SurveyViewPageComponent implements OnInit {
   // Banderas
   isSeeAnswer: boolean = false;
   isLoading: boolean = true;
+  isSubmitted: boolean = false;
+  isError: boolean = false;
 
   constructor(private fb: FormBuilder, private route: ActivatedRoute, private survyService: SurvyService) {
     // Formulario de datos personales
@@ -92,6 +94,7 @@ export default class SurveyViewPageComponent implements OnInit {
         message: 'Error al cargar la encuesta',
         description: error.message
       });
+      this.isError = true;
     });
   }
 
@@ -195,6 +198,7 @@ export default class SurveyViewPageComponent implements OnInit {
           summary: 'Respuestas guardadas',
           message: 'Gracias por completar la encuesta'
         });
+        this.isSubmitted = true;
       }
     }).catch((error) => {
       sendNotification({

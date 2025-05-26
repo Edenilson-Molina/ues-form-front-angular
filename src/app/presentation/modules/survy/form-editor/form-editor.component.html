@@ -11,7 +11,7 @@
     <c-button *ngIf="isSeeAnswer" label="Respuestas" [severity]="'primary'" [variant]="'outlined'" [icon]="'monitoring'"
       routerLink="/dashboard/survy/my-surveys" />
     <c-button *ngIf="codigo" label="Ver encuesta" [severity]="'primary'" [variant]="'outlined'" [icon]="'visibility'"
-      [routerLink]="'/survey/'+ codigo" />
+      (onClick)="openSurveyInNewTab()" />
     <c-button label="Publicar" [severity]="'primary'" [icon]="'publish'" (onClick)="publicForm()" />
   </div>
 </header>
@@ -50,7 +50,20 @@
                   <small class="text-red-500" *ngIf="getInternalDataField('codigo').errors?.['minlength']">El identificador debe tener al menos 3 caracteres.</small>
                 </ng-container>
               </div>
-              <span class="text-gray-500 dark:text-gray-400">URL: https://ues-forms.wood-agent.site/surveys/{{ internalDataForm.value.codigo }}</span>
+              <span class="text-gray-500 dark:text-gray-400 flex items-center gap-2">
+                URL:
+                <span class="select-all">
+                  https://ues-forms.vercel.app/survey/{{ internalDataForm.value.codigo }}
+                </span>
+                <button
+                  type="button"
+                  class="ml-2 text-primary-500 hover:underline focus:outline-none"
+                  (click)="copyUrlToClipboard()"
+                  title="Copiar URL"
+                >
+                  <i class="pi pi-copy"></i>
+                </button>
+              </span>
             </div>
           </div>
           <div class="flex justify-end">
@@ -155,6 +168,7 @@
                 rows="1"
                 appAutosize
                 [ngClass]="{'border-red-500': !question.shortQuestion || question.shortQuestion.trim().length < 3}"
+                maxlength="50"
                 ></textarea>
                 <div *ngIf="!question.shortQuestion || question.shortQuestion.trim().length < 3" class="text-red-500 text-xs">
                   La pregunta es obligatoria y debe tener al menos 3 caracteres.
@@ -359,12 +373,12 @@
                 </div>
 
                 <!-- Escala / Escala Likert -->
-                <div *ngSwitchCase="'escale_likert'" class="flex flex-col gap-6">
-                  <div class="flex flex-wrap items-center justify-center gap-x-12 gap-y-6 w-full">
-                    <div class="flex flex-col items-center gap-3"
+                <div *ngSwitchCase="'likert_scale'" class="flex flex-col gap-6">
+                  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-6 w-full">
+                    <div class="border rounded-lg p-2 relative flex flex-col items-center gap-3 w-full"
                       *ngFor="let option of question.options; let optIndex = index; trackBy: trackByOption">
                       <input type="radio" [value]="option" disabled />
-                      <div class="flex items-center gap-2">
+                      <div class="flex items-center gap-2 w-full">
                         <div class="group-input relative w-full">
                           <input
                             type="text"
@@ -375,8 +389,8 @@
                           />
                           <span class="hover-input"></span>
                         </div>
-                        <i class="pi pi-times cursor-pointer hover:text-gray-950 dark:hover:text-gray-400 transition-opacity" (click)="removeOption(i, optIndex)" title="Eliminar opción"></i>
                       </div>
+                      <i class="absolute right-1 pi pi-times cursor-pointer hover:text-gray-950 dark:hover:text-gray-400 transition-opacity" (click)="removeOption(i, optIndex)" title="Eliminar opción"></i>
                     </div>
                   </div>
                   <c-button label="Agregar opción" (onClick)="addOption(i)" styleClass="p-button-warning"></c-button>

@@ -9,6 +9,7 @@ import { FloatInputTextComponent } from "../../../components/inputs/float-input-
 import { SelectComponent } from "../../../components/inputs/select/select.component";
 import { DataTableComponent } from "../../../components/data-table/data-table.component";
 import { DataTableColumnDirective } from '../../../components/data-table/data-table.component';
+import { sendNotification, ToastType } from '@adapters/sonner-adapter';
 
 import { SurvyService } from '@app/services/survy.service';
 import { SurveyDto } from '@app/interfaces/responses/survy.dto';
@@ -130,13 +131,30 @@ export default class HomeSurvyComponent {
       label: 'Responder Encuesta',
       icon: 'arrow_outward',
       class: 'text-primary-500 dark:text-primary-400 bg-transparent',
-      onClick: (data: any) => this.router.navigate(['/survey/' + data.codigo]),
+      onClick: (data: any) => window.open('/survey/' + data.codigo, '_blank'),
     },
     {
       label: 'Estadísticas',
       icon: 'bar_chart',
       class: 'text-green-500 dark:text-green-400 bg-transparent',
       onClick: (data: any) => this.router.navigate(['/dashboard/survy/statistics/' + data.id]),
+    },
+    {
+      label: 'Copiar Enlace',
+      icon: 'content_copy',
+      class: 'text-red-500 dark:text-red-400 bg-transparent',
+      onClick: (data: any) => {
+        const url = `${window.location.origin}/survey/${data.codigo}`;
+        navigator.clipboard.writeText(url).then(() => {
+          sendNotification({
+            type: 'success',
+            summary: 'URL copiada',
+            message: 'La URL se ha copiado al portapapeles.',
+            description: '',
+          });
+        }).catch(err => {
+        });
+      },
     },
   ]
 
