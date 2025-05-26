@@ -157,6 +157,7 @@ export default class FormEditorComponent {
       rangeTo: new FormControl(5, [Validators.required]),
       allowOtherOption: false,
     };
+
     this.questions.push(newQuestion);
   }
 
@@ -279,9 +280,6 @@ export default class FormEditorComponent {
   }
 
   isQuestionsValid(): boolean {
-    if (this.questions.length < 1) {
-      return false;
-    }
     for (const q of this.questions) {
       if (!q.shortQuestion || q.shortQuestion.trim().length < 3) {
         return false;
@@ -308,10 +306,26 @@ export default class FormEditorComponent {
   }
 
   saveForm() {
-    if (!this.isQuestionsValid()) {
-      alert('Por favor, completa todas las preguntas, opciones y rangos válidos antes de guardar.');
+    if (this.questions.length < 1) {
+      sendNotification({
+        type: 'error',
+        summary: 'Error al guardar',
+        message: 'Por favor, agrega al menos una pregunta.',
+        description: 'Asegúrate de que el formulario tenga al menos una pregunta antes de guardar.',
+      });
       return;
     }
+
+    if (!this.isQuestionsValid()) {
+      sendNotification({
+        type: 'error',
+        summary: 'Error al guardar',
+        message: 'Por favor, completa todas las preguntas correctamente.',
+        description: 'Asegúrate de que todas las preguntas tengan un texto válido y que los rangos numéricos sean correctos.',
+      });
+      return;
+    }
+
     try {
       let type: ToastType = 'success';
       this.survyService.putFormSurvey(this.idForm, this.questions.map(q => ({
@@ -342,5 +356,27 @@ export default class FormEditorComponent {
         });
       }
     });
+  }
+
+  copyUrlToClipboard() {
+    const span = document.querySelector('span.select-all');
+    if (span) {
+      const url = span.textContent;
+      if (url) {
+        navigator.clipboard.writeText(url).then(() => {
+          sendNotification({
+            type: 'success',
+            summary: 'URL copiada',
+            message: 'La URL se ha copiado al portapapeles.',
+            description: '',
+          });
+        });
+      }
+    }
+  }
+
+  openSurveyInNewTab(): void {
+    const url = `/survey/${this.codigo}`;
+    window.open(url, '_blank');
   }
 }
