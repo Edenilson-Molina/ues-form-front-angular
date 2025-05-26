@@ -19,7 +19,7 @@
           <ul class="flex flex-col gap-1 list-none p-0 m-0 overflow-hidden">
             @for(route of menu; track route.path){
               <li class="flex flex-col list-none p-0 m-0 overflow-hidden">
-                @if(!route.children){
+                @if(!route.children && hasPermission(route.permission!)){
                   <a
                     pRipple
                     [routerLink]="[route.path]"
@@ -41,6 +41,7 @@
                   <a
                     pRipple
                     (click)="toggleMenu(route.path)"
+                    *ngIf="hasPermission(route.permission!)"
                     [ngClass]="{
                       'flex items-center cursor-pointer rounded p-2 p-ripple': true,
                       'hover:bg-slate-200': !isParentRouteActive(route),
@@ -60,6 +61,7 @@
                           pRipple
                           [routerLink]="[subroute.path]"
                           (click)="setVisible(false)"
+                          *ngIf="hasPermission(subroute.permission!)"
                           routerLinkActive="text-red-800 font-bold"
                           [ngClass]="{
                             'flex gap-2 p-1 items-center cursor-pointer transition-all duration-300': true,

@@ -83,4 +83,14 @@ export class AuthService {
       return true; // Si hay error, considera el token como expirado
     }
   }
+
+  inRole(permission: string): boolean {
+    const permissions = this.getPermissions();
+    return permissions.includes(permission);
+  }
+
+  inRoles(permissions: string[]): boolean {
+    const userPermissions = this.getPermissions();
+    return permissions.some(permission => userPermissions.includes(permission));
+  }
 }

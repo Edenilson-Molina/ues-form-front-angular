@@ -49,22 +49,45 @@ export class DrawerComponent {
     {
       name: 'Inicio',
       path: '/dashboard',
-      icon: 'home'
+      icon: 'home',
+      permission: [
+        'encuesta_ver',
+        'encuesta_editor',
+        'encuesta_estadisticas',
+        'encuesta_publicar'
+      ]
     },
     {
       name: 'Usuarios',
       path: '/dashboard/users',
       icon: 'person',
+      permission: [
+        'usuario_ver',
+        'solicitud_desbloqueo_ver',
+      ],
       children: [
         {
           name: 'Listado',
           path: '/dashboard/users/list',
           icon: 'manage_accounts',
+          permission:[
+            'usuario_ver',
+            'usuario_crear',
+            'usuario_actualizar',
+            'solicitud_ver',
+            'solicitud_crear',
+            'solicitud_actualizar'
+          ]
         },
         {
           name: 'Registro',
           path: '/dashboard/users/request-register',
           icon: 'admin_panel_settings',
+          permission: [
+            'solicitud_desbloqueo_ver',
+            'solicitud_desbloqueo_crear',
+            'solicitud_desbloqueo_actualizar'
+          ]
         }
       ]
     },
@@ -72,16 +95,31 @@ export class DrawerComponent {
       name: 'Encuestas',
       path: '/dashboard/survy',
       icon: 'assignment',
+      permission: [
+        'encuesta_ver',
+        'grupo_meta_ver'
+      ],
       children: [
         {
           name: 'Mis encuestas',
           path: '/dashboard/survy/my-surveys',
           icon: 'assignment_ind',
+          permission:[
+            'encuesta_ver',
+            'encuesta_editor',
+            'encuesta_estadisticas',
+            'encuesta_publicar'
+          ]
         },
         {
           name: 'Grupos metas',
           path: '/dashboard/survy/catalogues/target-group',
           icon: 'group',
+          permission: [
+            'grupo_meta_ver',
+            'grupo_meta_crear',
+            'grupo_meta_actualizar'
+          ]
         }
       ]
     },
@@ -103,28 +141,28 @@ export class DrawerComponent {
   sessionValue = signal<Session | null>(null);
 
   constructor() {
-  this.session$ = this.store.select('session');
-  this.session$.subscribe((session) => {
-    this.sessionValue.set(session);
-    this.visible = session.showMenu;
-  });
+    this.session$ = this.store.select('session');
+    this.session$.subscribe((session) => {
+      this.sessionValue.set(session);
+      this.visible = session.showMenu;
+    });
 
-  this.router.events.subscribe(() => {
-    this.activeRoute = this.router.url;
-    // Expandir automáticamente los menús padres si una subruta está activa
+    this.router.events.subscribe(() => {
+      this.activeRoute = this.router.url;
+      // Expandir automáticamente los menús padres si una subruta está activa
+      this.menu.forEach((route) => {
+        if (route.children) {
+          this.expandedMenus[route.path] = this.isParentRouteActive(route);
+        }
+      });
+    });
+
     this.menu.forEach((route) => {
       if (route.children) {
-        this.expandedMenus[route.path] = this.isParentRouteActive(route);
+        this.expandedMenus[route.path] = false;
       }
     });
-  });
-
-  this.menu.forEach((route) => {
-    if (route.children) {
-      this.expandedMenus[route.path] = false;
-    }
-  });
-}
+  }
 
   setVisible(value: boolean): void {
     this.store.dispatch(showMenu(value));
@@ -170,5 +208,10 @@ export class DrawerComponent {
   // Método para verificar si un menú está expandido
   isMenuExpanded(path: string): boolean {
     return this.expandedMenus[path] || false;
+  }
+
+  // Validar si el usuario tiene permiso para ver un menú
+  hasPermission(permisos: string[]): boolean {
+    return this.authService.inRoles(permisos);
   }
 }
