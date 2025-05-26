@@ -123,6 +123,28 @@ export class DrawerComponent {
         }
       ]
     },
+    {
+      name: 'Seguridad',
+      path: '/dashboard/security',
+      icon: 'security',
+      permission: [
+        'rol_ver',
+        'rol_crear',
+        'rol_actualizar',
+      ],
+      children: [
+        {
+          name: 'Roles',
+          path: '/dashboard/security/roles',
+          icon: 'badge',
+          permission: [
+            'rol_ver',
+            'rol_crear',
+            'rol_actualizar',
+          ]
+        },
+      ]
+    }
     // {
     //   name: 'Pruebas de componentes',
     //   path: '/dashboard/test',

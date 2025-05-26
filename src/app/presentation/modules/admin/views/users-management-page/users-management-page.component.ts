@@ -15,6 +15,7 @@ import { StateService } from '@app/services/catalogues/states.service';
 import { DataUser, User } from '@app/interfaces/responses/user.dto';
 import { RouterLink } from '@angular/router';
 import { MultiSelectComponent } from "../../../../components/inputs/multiselect/multiselect.component";
+import { RoleService } from '@app/services/catalogues/roles.service';
 
 @Component({
   selector: 'app-users-management-page',
@@ -40,6 +41,7 @@ export default class UsersManagementPageComponent {
   // Inyeccion de servicios
   private userService = inject(UserService);
   private stateService = inject(StateService);
+  private roleService = inject(RoleService);
 
   filterUsers = signal({
     nombre: '',
@@ -114,7 +116,7 @@ export default class UsersManagementPageComponent {
 
   async getRoles() {
     try{
-      const response: any = await this.userService.getRoles({
+      const response: any = await this.roleService.getAllRoles({
         estado: 1,
       });
       this.roles.set(response.data.map((role: any) => ({
