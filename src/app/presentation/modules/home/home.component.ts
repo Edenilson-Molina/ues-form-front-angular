@@ -13,9 +13,8 @@ import { SurvyService } from '@app/services/survy.service';
   imports: [
     RouterLink,
     ButtonComponent,
-    InfoCardComponent,
-    CardComponent,
-    DataTableComponent,
+    // CardComponent,
+    // DataTableComponent,
     ChartModule
   ],
   templateUrl: './home.component.html',
