@@ -8,7 +8,19 @@
     <c-button label="Nuevo formulario" [severity]="'primary'" [icon]="'add'" (onClick)="createSurveys()"/>
   </div>
 </header>
+
 <section class="flex flex-col gap-4">
+  <article class="bg-white rounded-lg shadow p-6 flex flex-col gap-4">
+    <h2 class="text-xl font-semibold text-primary-700">¿Qué puedes hacer en UES-Forms?</h2>
+    <ul class="list-disc pl-6 text-gray-700 space-y-2">
+      <li>Crea encuestas personalizadas para recopilar información relevante.</li>
+      <li>Gestiona y organiza tus formularios de manera sencilla.</li>
+      <li>Visualiza estadísticas y resultados en tiempo real.</li>
+      <li>Comparte encuestas con estudiantes, docentes y personal administrativo.</li>
+    </ul>
+  </article>
+</section>
+<!-- <section class="flex flex-col gap-4">
   <article class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
     <c-info-card title="13322" description="Respuestas esta semana" icon="description" severity="primary"/>
     <c-info-card title="199" description="Nuevos usuarios registrados" icon="group" severity="secondary"/>
@@ -36,4 +48,4 @@
       <p-chart type="doughnut" [data]="data" [options]="options" class="flex justify-center w-full" />
     </c-card>
   </article>
-</section>
+</section> -->
